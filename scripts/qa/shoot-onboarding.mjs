@@ -14,20 +14,16 @@ const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
 const page = await ctx.newPage(); page.on('pageerror', (e) => errors.push(String(e))); page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
 await page.clock.install();
 await page.goto('http://localhost:5199/'); await page.evaluate((t) => { localStorage.clear(); localStorage.setItem('sanket-theme', t); }, theme);
-await page.goto('http://localhost:5199/'); await page.reload();   // no hash, fresh profile: onboarding must be the default
-const shot = async (n) => { await page.evaluate(() => document.fonts.ready); await page.clock.runFor(700); await page.screenshot({ path: `${SP}/ob/v2-${theme}-${n}.png` }); };
-await page.getByRole('heading', { name: /Tap your district/ }).waitFor(); console.log('default entry is onboarding: yes');
-await shot('1a-empty');
-await page.locator('svg.dmap circle.district').click(); await page.clock.runFor(150); await page.screenshot({ path: `${SP}/ob/v2-${theme}-1b-pulse.png` });
-await shot('1c-clinics');
-await page.getByRole('radio', { name: /District Medical Officer/ }).click(); await shot('1d-role');
-await page.getByRole('button', { name: 'Continue as demo DMO' }).click(); await page.getByRole('heading', { name: /Choose the waybill language/ }).waitFor();
-await page.waitForTimeout(6000); await shot('2a-live-marathi');
-const note = await page.locator('.wb-live .src').first().textContent().catch(() => null); console.log('screen 2 source note:', note);
-await page.getByRole('radio', { name: /^தமிழ்/ }).click(); await page.waitForTimeout(6000); await shot('2b-live-tamil');
-await page.getByRole('radio', { name: /^मराठी/ }).click(); await page.waitForTimeout(500);
-await page.getByRole('button', { name: 'Continue' }).click(); await page.getByRole('heading', { name: /One safety rule/ }).waitFor();
-await page.getByRole('checkbox').click(); await shot('3b-ack');
-await page.getByRole('button', { name: 'Start the guided run' }).click();
-for (const [ms, n] of [[800, '3c-map'], [6000, '3d-day2'], [10000, '3e-day4'], [4000, '3f-stepper'], [5000, '3g-delivered']]) { await page.clock.runFor(ms); await page.waitForTimeout(700); await shot(n); }
+await page.goto('http://localhost:5199/#dashboard'); await page.reload();   // fresh profile: the splash is the only way in
+const shot = async (n) => { await page.evaluate(() => document.fonts.ready); await page.clock.runFor(700); await page.screenshot({ path: `${SP}/ob/v3-${theme}-${n}.png` }); };
+await page.getByRole('button', { name: 'Get started' }).waitFor(); console.log('default entry is the splash: yes');
+await shot('1-splash');
+await page.getByRole('button', { name: 'Get started' }).click(); await page.getByRole('heading', { name: 'Set up your dashboard' }).waitFor();
+await page.waitForTimeout(6000); await shot('2a-setup-marathi');
+const note = await page.locator('.wb-live .src').first().textContent().catch(() => null); console.log('setup source note:', note);
+await page.getByRole('radio', { name: /^தமிழ்/ }).click(); await page.waitForTimeout(6000); await shot('2b-setup-tamil');
+await page.getByRole('checkbox').click(); await shot('2c-ack');
+await page.getByRole('button', { name: 'Open dashboard' }).click(); await page.locator('.role-chip').waitFor(); await shot('3-dashboard');
+await page.getByRole('button', { name: 'Take a 30-second tour' }).click();
+for (const [ms, n] of [[800, '4a-tour-map'], [16000, '4b-tour-day4'], [14000, '4c-tour-end']]) { await page.clock.runFor(ms); await page.waitForTimeout(700); await shot(n); }
 await ctx.close(); await browser.close(); console.log('errors:', errors.length ? errors : 'none');

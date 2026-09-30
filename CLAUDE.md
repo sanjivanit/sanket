@@ -61,7 +61,7 @@ The primary model is `gemini-3.5-flash-lite`, set by `GEMINI_MODEL`. The fallbac
 ## Product decisions already made
 
 - Sanket is a **desktop web app**. The layout is fixed at 1440 px wide by decision. Do not build a responsive or mobile layout. Show a short note "Best viewed on a desktop browser, 1440 px or wider" and let smaller windows scroll sideways.
-- The onboarding is **3 screens**, approved and built (decision 30 Sep 2026), and it is the default entry on a first visit. The old 6-step flow in `design/Main.dc.html` is superseded and must not be ported. (1) Tap your district on the map and choose a role, on one screen, with a sample dashboard building behind the card. Sign-in is "Continue as demo DMO", labelled simulated. (2) Choose a language and see the real waybill in that language, with its "not yet reviewed by a native speaker" chip. (3) One safety acknowledgement, then a skippable 30-second guided run with a spotlight. A Skip button is always visible. Onboarding uses Frontend Design plus UI/UX Pro Max. The dashboard uses Frontend Design plus Taste. The design record is `DESIGN.md`, section 13.
+- The onboarding is **2 screens and an optional tour** (decision 30 Sep 2026), and it is the default entry. The old 6-step flow in `design/Main.dc.html` and the 3-screen version are superseded and must not be ported. (1) A splash: the logo, one line on what the app does, "Get started". (2) One setup screen: district (District A, current), role (District Medical Officer preselected, plus Facility in-charge and State programme officer), language with the real waybill and its "not yet reviewed by a native speaker" chip, and one safety acknowledgement, then "Open dashboard". The role is only a label in the header and changes nothing. The dashboard is not mounted until setup is done and no URL opens it, including `#dashboard`. Pressing the logo anywhere clears the setup flag (`localStorage` key `sanket-setup`) and returns to the splash. The 30-second tour is a "Take a 30-second tour" button on the dashboard. Sign-in is simulated and must be labelled. Onboarding uses Frontend Design plus UI/UX Pro Max. The design record is `DESIGN.md`, section 13.
 - The visual design is locked. Port it faithfully first. Polish comes after it works.
 
 ## Frontend build
@@ -80,7 +80,7 @@ Build in phases. Finish and check each phase before starting the next:
 Follow `DESIGN.md`. In Claude Code, use this order:
 
 1. Anthropic **Frontend Design** is always the base layer.
-2. Use **Taste** as the one style driver on the dashboard with DESIGN_VARIANCE 3, MOTION_INTENSITY 2, VISUAL_DENSITY 6. The 3 onboarding screens use **UI/UX Pro Max** as their one style driver instead, and not Taste. Never use both drivers on the same screen.
+2. Use **Taste** as the one style driver on the dashboard with DESIGN_VARIANCE 3, MOTION_INTENSITY 2, VISUAL_DENSITY 6. The 2 onboarding screens use **UI/UX Pro Max** as their one style driver instead, and not Taste. Never use both drivers on the same screen.
 3. Keep **Interface Design** on so the tokens persist. If a token changes, update `DESIGN.md`, section 3, first.
 4. Do not use Emil Kowalski Design. This is an internal tool.
 5. Do not use Designer Skills. That suite is for UX research.

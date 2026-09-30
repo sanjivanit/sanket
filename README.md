@@ -43,7 +43,7 @@ If Gemini fails or takes over 8 seconds, a template waybill is returned and the 
 | `config/` | `rules.json` (thresholds) and `languages.json` (waybill templates and review status) |
 | `data/` | Sample clinics for Maharashtra and Tamil Nadu, surge scenarios, federated inputs |
 | `test/` | 16 API tests (rules, guardrails, fallback, federated maths) and 17 web tests (the dashboard model against the design, and live API answers) |
-| `web/` | The React web app (Vite): dashboard, 3-screen onboarding, and the calls to the API |
+| `web/` | The React web app (Vite): dashboard, splash and setup onboarding, and the calls to the API |
 | `design/` | The approved design prototype (`Main.dc.html`), kept as a read-only reference |
 | `Dockerfile`, `firebase.json` | Cloud Run deployment (builds the web app and API together). `firebase.json` is for optional Hosting |
 | `docs/` | PRD, design, engineering, plan, progress, checklist, user journey, pitch deck text |

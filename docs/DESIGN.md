@@ -1,6 +1,6 @@
 # DESIGN.md: Sanket
 
-Status: locked for the submission build. Decisions on 30 Sep 2026: onboarding is being redesigned to 3 screens (sections 7 and 10), and Sanket is a desktop web app fixed at 1440 px wide (no responsive layout for now). Section 10 lists what remains as debt.
+Status: locked for the submission build. Decisions on 30 Sep 2026: onboarding is a splash and one setup screen, with an optional tour on the dashboard (section 13), and Sanket is a desktop web app fixed at 1440 px wide (no responsive layout for now). Section 10 lists what remains as debt.
 Live prototype: https://claude.ai/artifact/BXZcM8UJMTFXFGioHwNgDz
 All clinic, stock, bed and doctor data on screen is sample data. Not for clinical use.
 
@@ -35,7 +35,7 @@ Everything else is support. If a feature does not help one of those four things,
 | Anthropic Frontend Design (base layer) | Yes | Read before designing. Applied throughout |
 | Design canvas artifact type | Yes | The prototype is a Design artifact, so it is editable and shareable |
 | Taste Skill | Not in the design chat | Not installed in the chat that built the prototype. Its parameters were applied by hand. It is installed in your Claude Code, so use it there (see section 11) |
-| UI/UX Pro Max | Onboarding only | Style driver for the 3 redesigned onboarding screens (decision 30 Sep 2026). Only one style driver per screen: Taste drives the dashboard, UI/UX Pro Max drives onboarding |
+| UI/UX Pro Max | Onboarding only | Style driver for the 2 onboarding screens, the splash and the setup screen (decision 30 Sep 2026). Only one style driver per screen: Taste drives the dashboard, UI/UX Pro Max drives onboarding |
 | Interface Design | Not in the design chat | Installed in your Claude Code. Its job is to persist these tokens across sessions. This file is that record |
 | Emil Kowalski Design | No | Skipped on purpose. This is an internal tool, not a delight-driven consumer product |
 | Designer Skills (63-skill suite) | No | It is for UX research work, not for building screens |
@@ -139,7 +139,7 @@ Reading path: the eye lands on the large red number in the action card and on th
 
 | # | Screen | Status |
 |---|---|---|
-| 1 to 3 | Onboarding: district and role; language and live waybill; safety acknowledgement and guided run | Built, approved, and the default entry. Design record in section 13 |
+| 1 to 2 | Onboarding: a splash, then one setup screen (district, role, language with a live waybill, safety acknowledgement). An optional 30-second tour sits on the dashboard | Built. The dashboard cannot be opened until setup is done. Design record in section 13 |
 | 7 | State node dashboard | Built and clickable end to end |
 | 8 | National view | Planned. The National tab is a placeholder |
 | 9 | Anonymized export | Planned, optional |
@@ -164,7 +164,7 @@ Dashboard states, all built: calm, early warning (days 1 to 3), critical (day 4)
 
 ## 7. Onboarding
 
-Decision 30 Sep 2026: onboarding is being redesigned to 3 screens, described in section 10. The six-step flow below is superseded and is kept only as a record of what `design/Main.dc.html` contains.
+Decision 30 Sep 2026: onboarding is 2 screens (splash and setup) plus an optional tour, recorded in section 13. The six-step flow below, and the 3-screen version that replaced it earlier the same day, are superseded and is kept only as a record of what `design/Main.dc.html` contains.
 
 Old flow: six steps, left rail with progress, one card on the right. The last step opens the dashboard calm, with a tip to press Advance day. The language chosen in step 3 sets the waybill language. "Replay setup" restarts it. Sign-in is simulated.
 
@@ -197,18 +197,13 @@ Fixed:
 Open:
 
 - The board is a fixed 1440 px desktop layout and does not reflow at 200% zoom or on a phone.
-- The old 6-step setup let the dashboard behind it be tabbed to. The 3-screen onboarding makes it `inert` (checked, section 13).
+- The old 6-step setup let the dashboard behind it be tabbed to. The two-screen onboarding no longer sits over the dashboard: the dashboard is not in the page until setup is done (checked, section 13).
 - No real screen reader or keyboard-only pass has been done.
 - The map dots have no individual text status. The tiles and table carry it.
 
 ## 10. Design debt and the morning brief
 
-1. **Onboarding: being redesigned to 3 screens (decision 30 Sep 2026).** The brief:
-   - One screen that changes as you answer. Pick your district by tapping the map. The map and a sample dashboard preview build behind the card as choices are made.
-   - Choosing a language shows the waybill in that language live, with its "not reviewed" status.
-   - Fewer steps: merge role and district, and fold the safety rules into a single acknowledgement on the last card.
-   - A 30-second guided first run that plays the surge for you (a skip button stays visible).
-   - Keep sign-in honest: real Google sign-in is Firebase Authentication.
+1. **Onboarding: done as 2 screens and an optional tour (section 13).** Not yet reviewed by a person and not run through GStack.
 2. Merge or hide the stats strip so only two bands of chrome remain above the content.
 3. Standardise corner radii and chip styles.
 4. Reword unclear labels: "Standby plan", "Inject crisis surge".
@@ -219,10 +214,10 @@ Open:
 ## 11. How to use your Claude Code skills on this
 
 1. Frontend Design is the base layer for every UI change.
-2. Use Taste as the one style driver on the dashboard with DESIGN_VARIANCE 3, MOTION_INTENSITY 2, VISUAL_DENSITY 6. The 3 onboarding screens use UI/UX Pro Max as their driver instead. Never enable both on the same screen.
+2. Use Taste as the one style driver on the dashboard with DESIGN_VARIANCE 3, MOTION_INTENSITY 2, VISUAL_DENSITY 6. The 2 onboarding screens use UI/UX Pro Max as their driver instead. Never enable both on the same screen.
 3. Keep Interface Design on so these tokens persist. If a token changes, change section 3 of this file first.
 4. Do not add Emil Kowalski or Designer Skills.
-5. Generate the redesigned onboarding as a proof screen, run GStack on it, and get approval before building more.
+5. Run GStack on the onboarding and get approval before building more.
 
 ## 12. Self-check against a generic design doc
 
@@ -231,97 +226,71 @@ Open:
 - A generic doc hides its debt. Section 10 lists it, including the parts of the screen that are still busy.
 - Weak spots left honest: the Marathi, Hindi and Tamil text is unreviewed, the doctor names are sample names, and the layout is desktop only.
 
-## 13. Onboarding design record (UI/UX Pro Max, 30 Sep 2026)
+## 13. Onboarding design record (UI/UX Pro Max, 30 Sep 2026, second revision)
 
-Status: **approved on 30 Sep 2026 and the default entry.** A first visit opens onboarding. "Skip setup" or finishing it is remembered in the browser. `#onboarding` and "Replay setup" open it again. `#dashboard` skips it.
+Status: **built, checked by script, not yet reviewed by a person.** It replaces the 3-screen version approved on 30 Sep 2026. A first visit opens the splash. The dashboard is not in the page until setup is finished, and no URL opens it: `#dashboard` and `#onboarding` do nothing.
 
 ### Method
 
 | Step | What was done |
 |---|---|
-| Base layer | Anthropic Frontend Design: design plan first, checked against the generic-design list before building |
-| Style driver | UI/UX Pro Max, on these 3 screens only. Taste was not used here. Dials passed to it: variance 3, motion 2, density 5 |
-| Queries run | `--design-system` for a calm, trust-first health operations onboarding. UX domain: multi-step progress and back navigation, guided tour skip, modal keyboard focus, dragging alternative for a map, scrim and blur |
+| Base layer | Anthropic Frontend Design |
+| Style driver | UI/UX Pro Max, on these 2 screens only. Taste was not used here. Same dials as before: variance 3, motion 2, density 5. Its search script was not re-run for this revision, because the style (minimalism and Swiss) and the rules used were already chosen and recorded in the 30 Sep version |
 | Fixed, not open to the skill | Brand, the semantic colours in section 3, Public Sans, the radius scale (12 panel, 8 control, 4 chip), the 1440 px desktop rule |
 
-### What was taken from the skill, and what was rejected
+### The two screens and the tour
 
-| Taken | Why it fits |
+| Piece | Layout | Behaviour |
+|---|---|---|
+| Splash | Centred on the page ground: the logo mark, "Sanket" with "संकेत", one line ("Warns your district before a clinic runs out of anti-snake venom, then recommends a safe transfer for you to approve."), one primary button "Get started", and "Sample data. Not for clinical use." A theme button is top right | Nothing moves. The title takes focus on load |
+| Setup | One card, 1120 px wide, two columns. Left: district, role, language. Right: the live waybill preview, the four safety rules, the acknowledgement checkbox. Footer: Back and "Open dashboard" | District A is preselected and labelled "Current". District B is shown as Roadmap and cannot be chosen, as before. Role is a single choice with District Medical Officer preselected, plus Facility in-charge and State programme officer. **The role is a label only.** It appears in the dashboard header and changes nothing else, and the screen says so. The language list is a 2 by 2 grid. The preview asks the real API for the chosen language and shows the Gemini waybill, its back-translation, its source ("Written by Gemini, model" or "Offline fallback used") and the "Not yet reviewed by a native speaker" chip for Marathi, Hindi and Tamil. "Open dashboard" stays disabled until the box is ticked, and a status line says why |
+| Tour | A "Take a 30-second tour" button in the demo strip, beside "Inject crisis surge". It starts the same coach bar and spotlight as before: 7 moments over 30 seconds, driven by the dashboard's own model, with Pause and "End the tour" | Optional and never shown on its own. The dashboard is `inert` while it runs. It ends with "Back to dashboard", resets the demo to its calm state and puts focus at the top of the dashboard |
+
+### Decisions
+
+| Decision | Reason |
 |---|---|
-| Style: minimalism and Swiss (grid, high contrast, functional, spacious) | Matches an internal operations tool. Its suggested primary `#0891B2` is close to our locked `--acc` `#0E7490`, which confirms the direction. Ours stays |
-| Motion: subtle | Four motions only, all off under reduced motion (below) |
-| One primary action per screen, with Skip and Back always available ("User Freedom") | The primary button is the only filled control. "Skip setup" is on every screen. Back is on screens 2 and 3. "Skip the run" is on the coach bar |
-| A step indicator for a multi-step flow | The 3 steps are a real sequence, so numbered markers are honest here |
-| Blur only to show the background is inactive | 1.5 px blur on a light scrim. The dashboard behind is also `inert` |
-| A pointer-only gesture needs a single-pointer and keyboard alternative | The district map is a shortcut (hidden from assistive tech). The district and role lists beside it are the keyboard and screen-reader path |
-| Rejected: its "Hero + Testimonials + CTA" pattern | A landing-page template. Testimonials would be invented content, which rule 8 forbids |
-| Rejected: its font (Figtree) and colour set | Public Sans and the section 3 tokens are locked |
-| Rejected: its GSAP scroll-reveal snippet | This is a card in a dialog, not a scrolling page. No animation library was added |
-
-### The three screens
-
-| Screen | Layout | Behaviour |
-|---|---|---|
-| 1. District and role | Card 860 px wide over the live dashboard. One header row: brand, the 3-step indicator, a theme icon button and "Skip setup". Left: a district map built from the dashboard's own rings (inner disc District A at 35 km, outer ring District B at 80 km). Right: district and role as hairline radio rows | The map starts empty. Choosing District A sends one ring pulse and the clinics appear one after another, at their real positions. The backdrop starts as dashed outlines. Choosing a district reveals the stats, map and clinics. Choosing a role reveals the demo controls, action card and detail panel. The button reads "Continue as demo DMO", and a note says sign-in is simulated. Only District A and the DMO role can be chosen. District B, State health cell and PHC medical officer are tagged Roadmap |
-| 2. Language | Left: four language rows in their own script, with the English name. Right: the real waybill component | The preview asks the real API for the chosen language and shows the Gemini waybill, its English back-translation and the source ("Written by Gemini, model" or "Offline fallback used"). The template shows first, and stays if the API cannot answer. Local languages carry the "Not yet reviewed by a native speaker" chip |
-| 3. Safety and first run | The four safety rules, one acknowledgement, then a coach bar docked at the bottom of the real dashboard | The start button stays disabled until the box is ticked. The run lasts 30 seconds across 7 moments (Normal, Day 1 to 4, Approved, Delivered), driven by the same model as the dashboard. The page dims and a window with a teal outline glides between the map, the action card and the progress stepper. It has Pause and "Skip the run". It ends on "Open dashboard", which returns to the calm state and puts focus at the top of the dashboard |
-
-### Motion
-
-| Motion | Cause it shows | Off under reduced motion |
-|---|---|---|
-| Regions of the backdrop fade in (350 ms) | A choice was made | Yes |
-| Ring pulse and clinics appearing on the map (800 ms and 45 ms apart) | District A was chosen | Yes |
-| Waybill preview cross-fades (180 ms) | The language changed | Yes |
-| The spotlight window glides between regions (400 ms) | The run moved to the next moment | Yes (it jumps) |
-| Coach progress bar | Time left in the run | It is a state readout, so it stays, with Pause |
+| The dashboard is a separate component that is mounted only when setup is done | "Not reachable" then holds in the page itself, not only in the URL. A `#dashboard` hash is dropped, also when it changes while the page is open |
+| The setup flag is one `localStorage` key, `sanket-setup`, holding `{district, role, language}` | Setup survives a reload. A value that does not parse, or names a role or language that does not exist, counts as not set up. If storage is blocked, the code keeps setup in memory for the session and asks again next time (by design, not tested) |
+| The logo is a button on the splash, the setup screen and the dashboard header. It clears the flag and returns to the splash | The rule asked for it. Its accessible name starts with the visible word ("Sanket. Clear setup and return to the start screen") |
+| Back on the setup screen returns to the splash and keeps the choices | The logo also leaves setup, but it discards them, so a plain Back is needed for someone who only wants to look again |
+| "Skip setup", the district map, the step indicator, the guided run inside setup and "Replay setup" were removed | Skipping conflicts with the gate. The map chose between one real district and one that cannot be chosen. The logo replaces Replay |
+| Role rows carry no description | The role changes nothing, so a line such as "approve transfers" would promise access that does not exist (`CLAUDE.md`, rule 9) |
+| The language was persisted with the flag | Before, a reload returned to the default language. Setup now keeps it |
 
 ### Verified on 30 Sep 2026
 
+Run against the dev server with the API stopped, so every waybill preview used the template and said "Offline fallback used".
+
 | Check | Result |
 |---|---|
-| Contrast, both themes, all 3 screens, all 4 languages, 4 moments of the run | 594 text nodes, 0 failures (4.5:1 text, 3:1 large text) |
-| Contrast, ported dashboard, 5 states, 3 views, 4 tabs, both themes | 18,816 text nodes, 0 failures |
-| Touch targets | Every button and radio is at least 44 px. The scan found one miss in my own work ("Replay setup", 41 px) and it was fixed |
-| Keyboard | Full path with Tab, Space and Enter. Focus moves to the screen title on each step and to the dashboard heading when setup ends. Focus never reaches the dashboard behind (it is `inert`). The primary button has a visible focus ring |
-| Accessibility tree (what a screen reader is given) | Read for all 3 screens and the dashboard. The dialog is named by its title, radiogroups are labelled, disabled options say why, every control has a name. Fixed: no `h1` on the dashboard, no "completed" state on finished steps, no focus return after setup |
-| Reduced motion | 0 running animations |
-| Fit | The card fits a 1440 by 900 window with no inner scroll |
-| Live API | Waybill, reasons, dispatch number and warning brief shown from the real API. With the API stopped, every screen falls back to the template and says "Offline fallback used". No console errors either way |
+| Contrast, both themes: splash, setup in all 4 languages, the tour at 4 moments | 516 text nodes, 0 failures (4.5:1 text, 3:1 large text) |
+| Contrast, dashboard with the role label and tour button, 5 states, 3 views, 4 tabs, both themes | 19,056 text nodes, 0 failures, no small targets, no horizontal overflow |
+| Touch targets | Every button and radio on the new screens is at least 44 px |
+| Fit | The setup card ends at 847 px in a 1440 by 900 window, so it does not scroll |
+| The gate | With no flag, `#dashboard` shows the splash, the hash is removed and there is no dashboard in the page. A flag of `1`, or a flag with an unknown role, shows the splash. After setup a reload stays on the dashboard |
+| The logo | On the dashboard it clears the flag and shows the splash. On the setup screen it returns to the splash. On the splash it leaves the splash in place |
+| Keyboard | The splash and setup titles take focus on load. Language and role can be chosen with Space. Enter on "Open dashboard" opens the dashboard and puts focus at its heading. The primary button has a visible focus ring. The tour bar takes focus when it opens and focus returns to the dashboard heading when it ends |
+| Role label | Shows in the header after setup |
+| Reduced motion | 0 running animations on the setup screen |
+| Accessibility tree | Read for the splash, the setup screen and the dashboard. The logo, radiogroups, checkbox and disabled button all have names and states |
+| Tests | `npm test` 16 of 16, `npm run test:web` 17 of 17. Neither covers the interface, which is why the scripts in `scripts/qa/` were rewritten for this flow |
 
-Not done: **a real screen-reader run (VoiceOver, NVDA).** The accessibility-tree pass above is a strong proxy and not a substitute. Native-speaker review of the three languages is prepared in `docs/LANGUAGE_REVIEW.md` and is not done. A test on a window narrower than 1440 px is out of scope by decision.
+Not done: **a real screen-reader run (VoiceOver, NVDA)**, a check with the live API on the new setup screen (the earlier screen 2 was checked live and this one shares its code, but it was not re-run), native-speaker review of the three languages (`docs/LANGUAGE_REVIEW.md`), and GStack. A window narrower than 1440 px is out of scope by decision.
 
 ### Self-check against the generic defaults (section 8)
 
-| Generic default | Result on onboarding |
+| Generic default | Result |
 |---|---|
-| Grid of identical rounded cards with a coloured border | **Reduced.** Options are now hairline rows with a side bar, not boxes. The map and the waybill are the only panels |
-| Near-black background with one acid accent | No. Light is the default. Dark uses the locked teal |
-| Gradient washes and glassmorphism | No gradients. A light blur and scrim mark the background as inactive |
-| All-caps eyebrow labels | None |
-| Monospace for small labels | None |
-| Charts as decoration | No. The map is drawn from real coordinates and answers "which district is mine" |
-| Emoji as icons | None. Icons are Phosphor. The check mark on the map is a status glyph, as elsewhere |
-| Extra tells: em dashes, middle dots, arrows, uppercase tracking, fake numbers | None found by search of the source. Every number comes from the model or the API |
+| Grid of identical rounded cards | No. Options are hairline rows with a side bar. The waybill is the only inner panel |
+| Near-black background with one acid accent | No. Light is the default and dark uses the locked teal |
+| Gradient washes and glassmorphism | None |
+| All-caps eyebrow labels, monospace small labels | None |
+| Emoji as icons | None. Icons are Phosphor |
+| Em dashes, middle dots, arrows, fake numbers | None added. The waybill numbers come from the model or the API |
 
 Tells that remain:
 
-- A centred card over a dimmed page is the most familiar onboarding shape. It is clear, not distinctive. The map-first opening and the spotlight run are what set it apart.
-- Choosing a district and a role is thin in this demo, because one option each is real.
-- The coach bar covers the lower part of the clinics panel on a 900 px high window.
-
-### Quality score
-
-GStack was not run. This is a self-assessed rubric, not GStack's score, and no person has reviewed it yet.
-
-| Criterion | Score out of 10 | Was | Evidence |
-|---|---|---|---|
-| Meets the brief | 9 | 8 | All three screens and every listed behaviour, running on real API answers |
-| Accessibility | 9 | 9 | The verification table. Held back because no real screen reader was run |
-| Honest labelling | 9 | 9 | Simulated sign-in, sample data, "not yet reviewed" chip, Roadmap tags, the source of every AI-written line |
-| Avoids generic defaults | 7 | 6 | Rows instead of cards, an empty map that fills on choice, a spotlight tour. The centred card remains |
-| Visual craft and hierarchy | 8 | 7 | One header row instead of five layers. The dashboard shows through the dimmed page more clearly |
-| Motion restraint | 9 | 9 | Four motions, each with a cause, all off under reduced motion |
-| **Overall** | **8.5** | 8.0 | Mean of the six |
-
-Run GStack on the finished onboarding if you want an independent score.
+- A centred logo, name, one line and one button is the most familiar splash there is. It is clear and short, and it is not distinctive.
+- The setup screen is dense for one screen: three choices, a live preview, four rules and a checkbox. It fits the window, and it is the price of having one screen.
+- A person has not looked at either screen yet.

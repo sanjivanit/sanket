@@ -1,31 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Lock, Check, Pause, Play } from '@phosphor-icons/react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Pause, Play } from '@phosphor-icons/react';
 import { buildView, actions, vials } from '../model.js';
-
-export const RULES = [
-  'A donor always keeps at least 3 days of its own supply.',
-  'Same district first, within 35 km. Then the next district, within 80 km, with two approvals.',
-  'Never a donor with no doctor on duty, beds 85% full, or an expired batch.',
-  'Nothing is sent until you approve.',
-];
-
-export function SafetyBody({ ack, setAck }) {
-  return (
-    <div>
-      <ul className="rules">
-        {RULES.map((r) => (
-          <li key={r}><span className="ic"><Lock size={14} weight="bold" color="var(--acc)" aria-hidden="true" /></span><span>{r}</span></li>
-        ))}
-      </ul>
-      <div className="fine" style={{ marginTop: 12 }}>These rules run in plain code, from the repository configuration. Gemini cannot change them.</div>
-      <button type="button" role="checkbox" className="ack" aria-checked={ack} onClick={() => setAck(!ack)}>
-        <span className="box">{ack && <Check size={14} weight="bold" color="var(--acc-on)" aria-hidden="true" />}</span>
-        <span>I understand Sanket only recommends. I approve every transfer.</span>
-      </button>
-      <p className="run-intro">Next, a 30-second guided run plays a surge on sample data so you see the whole flow. You can skip it at any time.</p>
-    </div>
-  );
-}
 
 // 7 moments, 30 seconds. Node numbers match the demo timeline (0 normal ... 5 approved, 6 delivered).
 const DURATIONS = [4, 4, 4, 4, 6, 4, 4];
@@ -42,7 +17,10 @@ const CAPTIONS = [
 ];
 const LABELS = ['Normal', 'Day 1', 'Day 2', 'Day 3', 'Day 4', 'Approved', 'Delivered'];
 
-export function Coach({ lang, onNode, onTour, onFinish }) {
+// The optional 30-second tour: a coach bar docked at the bottom, driving the dashboard's own simulation.
+export default function Tour({ lang, onNode, onRegion, onFinish }) {
+  const ref = useRef(null);
+  useEffect(() => { ref.current?.focus(); }, []);
   const [elapsed, setElapsed] = useState(0);
   const [playing, setPlaying] = useState(true);
   const views = useMemo(() => LABELS.map((_, i) => buildView(actions.goto(i), lang)), [lang]);
@@ -56,16 +34,16 @@ export function Coach({ lang, onNode, onTour, onFinish }) {
     return () => clearInterval(id);
   }, [playing, done]);
 
-  useEffect(() => { onNode(idx); onTour(REGION[idx]); }, [idx]); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => () => onTour(null), []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { onNode(idx); onRegion(REGION[idx]); }, [idx]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => () => onRegion(null), []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className="coach" role="region" aria-label="Guided run">
-      <div className="cap" aria-live="polite">{done ? 'That is the whole flow. Press Advance day on the dashboard to play it yourself.' : CAPTIONS[idx](views[idx])}</div>
+    <div className="coach" role="region" aria-label="30-second tour" tabIndex={-1} ref={ref}>
+      <div className="cap" aria-live="polite">{done ? 'That is the whole flow. Press Advance day to play it yourself.' : CAPTIONS[idx](views[idx])}</div>
       <div className="row">
         <div className="prog">
           <div className="lbl"><span>{done ? 'Finished' : `Step ${idx + 1} of 7: ${LABELS[idx]}`}</span><span className="num">{Math.min(Math.round(elapsed), TOTAL)} of {TOTAL} s</span></div>
-          <div className="track" role="progressbar" aria-valuemin={0} aria-valuemax={TOTAL} aria-valuenow={Math.round(elapsed)} aria-label="Guided run progress"><div style={{ width: (elapsed / TOTAL * 100) + '%' }} /></div>
+          <div className="track" role="progressbar" aria-valuemin={0} aria-valuemax={TOTAL} aria-valuenow={Math.round(elapsed)} aria-label="Tour progress"><div style={{ width: (elapsed / TOTAL * 100) + '%' }} /></div>
         </div>
         {!done && (
           <button type="button" className="ob-btn" onClick={() => setPlaying(!playing)} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -73,8 +51,8 @@ export function Coach({ lang, onNode, onTour, onFinish }) {
           </button>
         )}
         {done
-          ? <button type="button" className="ob-btn primary" onClick={onFinish}>Open dashboard</button>
-          : <button type="button" className="ob-btn" onClick={onFinish}>Skip the run</button>}
+          ? <button type="button" className="ob-btn primary" onClick={onFinish}>Back to dashboard</button>
+          : <button type="button" className="ob-btn" onClick={onFinish}>End the tour</button>}
       </div>
     </div>
   );

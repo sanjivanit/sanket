@@ -90,6 +90,7 @@ If you cannot deploy to Google Cloud in time: submit the repo, the prototype lin
 | Action-first dashboard with folded details | The first version was too busy |
 | Federated design kept small and labelled "simulated" | The challenge names it; it is not a real network yet |
 | Onboarding redesign deferred to the morning | You asked for it to be done properly |
+| Onboarding is a splash and one setup screen, with the tour as an optional dashboard button (30 Sep 2026) | Simpler to use. The dashboard cannot be opened before setup, and the logo resets it. Replaces the 3-screen version |
 | App name: Sanket (संकेत, "signal") | A pan-Indian word, understood across Indo-Aryan and Dravidian languages, and it says what the app does: the early signal. Trademark not checked. Ask a Malayalam speaker about the related word, which can mean "refuge" |
 
 ## 8. Risks

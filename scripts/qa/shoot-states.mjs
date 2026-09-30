@@ -31,7 +31,7 @@ for (const theme of ['light', 'dark']) {
     await page.evaluate(() => document.fonts.ready); await page.waitForTimeout(300);
     await page.screenshot({ path: `${SP}/shots/ref-${theme}-${name}.png`, clip: { x: 0, y: 0, width: 1440, height: 1330 } });
     // the app
-    await page.goto('http://localhost:5199/#dashboard');
+    await page.addInitScript(() => localStorage.setItem('sanket-setup', JSON.stringify({ district: 'A', role: 'dmo', lang: 'mr' }))); await page.goto('http://localhost:5199/');
     await page.evaluate((t) => { try { localStorage.setItem('sanket-theme', t); } catch {} }, theme);
     await page.reload();
     await page.getByRole('button', { name: 'Dismiss tip' }).click();

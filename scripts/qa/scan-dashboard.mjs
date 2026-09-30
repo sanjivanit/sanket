@@ -32,7 +32,7 @@ const scan = () => page.evaluate(() => {
 });
 let total = 0; const allFails = new Set();
 for (const theme of ['light', 'dark']) for (const [name, nodes] of Object.entries(NODES)) {
-  await page.goto('http://localhost:5199/#dashboard'); await page.evaluate((t) => localStorage.setItem('sanket-theme', t), theme); await page.reload();
+  await page.addInitScript(() => localStorage.setItem('sanket-setup', JSON.stringify({ district: 'A', role: 'dmo', lang: 'mr' }))); await page.goto('http://localhost:5199/'); await page.evaluate((t) => localStorage.setItem('sanket-theme', t), theme); await page.reload();
   await page.getByRole('button', { name: 'Dismiss tip' }).click();
   for (const n of nodes) await page.getByRole('button', { name: new RegExp('^' + n) }).click();
   for (const view of ['Tiles', 'Table', 'Charts']) {

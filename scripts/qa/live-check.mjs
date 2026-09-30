@@ -13,7 +13,7 @@ const browser = await chromium.launch(); const errors = [];
 const ctx = await browser.newContext({ viewport: { width: 1440, height: 1330 } }); const page = await ctx.newPage();
 page.on('pageerror', (e) => errors.push(String(e)));
 page.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource|ECONNREFUSED|500|502|504/.test(m.text())) errors.push(m.text()); });
-await page.goto('http://localhost:5199/#dashboard'); await page.evaluate(() => { localStorage.clear(); localStorage.setItem('sanket-theme', 'light'); }); await page.goto('http://localhost:5199/#dashboard'); await page.reload();
+await page.addInitScript(() => localStorage.setItem('sanket-setup', JSON.stringify({ district: 'A', role: 'dmo', lang: 'mr' }))); await page.goto('http://localhost:5199/'); await page.evaluate(() => { localStorage.clear(); localStorage.setItem('sanket-theme', 'light'); }); await page.addInitScript(() => localStorage.setItem('sanket-setup', JSON.stringify({ district: 'A', role: 'dmo', lang: 'mr' }))); await page.goto('http://localhost:5199/'); await page.reload();
 await page.getByRole('button', { name: 'Dismiss tip' }).click();
 await page.getByRole('button', { name: /^Day 1/ }).click(); await page.waitForTimeout(4000);
 await page.getByRole('button', { name: /^Day 4/ }).click(); await page.waitForTimeout(mode === 'live' ? 9000 : 3000);

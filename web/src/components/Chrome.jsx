@@ -1,22 +1,22 @@
 import { Fragment } from 'react';
 import { Sun, Moon } from '@phosphor-icons/react';
-import { BrandMark } from './shared.jsx';
+import { BrandButton } from '../onboarding/Gate.jsx';
 
-export function Header({ theme, setTheme }) {
+export function Header({ theme, setTheme, role, onHome }) {
   return (
     <header className="hdr">
-      <div className="brand">
-        <BrandMark />
-        <div>
-          <div className="brand-name">Sanket</div>
-          <div className="brand-sub">National Health Resource Command</div>
-        </div>
-      </div>
+      <BrandButton onHome={onHome}>
+        <span style={{ textAlign: 'left' }}>
+          <span className="brand-name">Sanket</span>
+          <span className="brand-sub">National Health Resource Command</span>
+        </span>
+      </BrandButton>
       <nav className="nav" aria-label="Screens">
         <button type="button" className="nav-btn" aria-current="page">State node</button>
         <button type="button" className="nav-btn" aria-disabled="true" title="The National view is planned, not built">National</button>
       </nav>
       <div className="grow" />
+      <span className="role-chip"><span className="k">Role</span>{role}</span>
       <select className="select" aria-label="State" disabled title="Fixed in this demo">
         <option>Maharashtra</option>
       </select>
@@ -31,7 +31,7 @@ export function Header({ theme, setTheme }) {
   );
 }
 
-export function DemoControls({ v, onGoto, onReset, onAdvance, onInject }) {
+export function DemoControls({ v, onGoto, onReset, onAdvance, onInject, onTour }) {
   return (
     <div className="demo" role="group" aria-label="Demo controls: surge simulation">
       <div className="demo-label">
@@ -57,6 +57,7 @@ export function DemoControls({ v, onGoto, onReset, onAdvance, onInject }) {
         <button type="button" className="btn-ghost" onClick={onReset}>Reset</button>
         <button type="button" className="btn-line" onClick={onAdvance} disabled={v.advanceOff}>Advance day</button>
         <button type="button" className="btn-line" onClick={onInject}>Inject crisis surge</button>
+        <button type="button" className="btn-line" onClick={onTour}>Take a 30-second tour</button>
       </div>
     </div>
   );
