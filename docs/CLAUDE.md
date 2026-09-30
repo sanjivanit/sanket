@@ -23,16 +23,19 @@ All clinic, stock, bed and doctor data is sample data. Say so wherever data appe
 | `PROGRESS.md` | What is done, checked and open |
 | `API_CONTRACT.md` | Request and response shapes the web app uses |
 | `ARCHITECTURE.md`, `README.md` | Google Cloud setup and run instructions |
-| `design/Main.dc.html` | The approved design prototype. Read-only reference for layout, copy, states and tokens. It is a Claude Design file with its own runtime, so it cannot be deployed. Port it, do not edit it |
+| `design/Main.dc.html` | The approved dashboard prototype (its 6-step onboarding is superseded). Read-only reference for layout, copy, states and tokens. It is a Claude Design file with its own runtime, so it cannot be deployed. Port it, do not edit it |
 
 ## Commands
 
 ```bash
-npm test          # 16 tests, no API key needed
+npm test          # 16 API tests, no API key needed
+npm run test:web  # 17 web model tests, no API key needed
 npm start         # API on http://localhost:8080 (needs GEMINI_API_KEY for live Gemini)
+npm run dev:web   # web app on http://localhost:5173, /api proxied to the API on 8080
+npm run build     # web app to dist/, served by Firebase Hosting
 ```
 
-No dependencies to install for the API. Node 20 or newer.
+No dependencies to install for the API. The web app needs `npm install` at the repo root. Node 20 or newer.
 
 ## Rules that must not break
 
@@ -56,7 +59,7 @@ The primary model is `gemini-3.5-flash-lite`, set by `GEMINI_MODEL`. The fallbac
 ## Product decisions already made
 
 - Sanket is a **desktop web app**. The layout is fixed at 1440 px wide by decision. Do not build a responsive or mobile layout. Show a short note "Best viewed on a desktop browser, 1440 px or wider" and let smaller windows scroll sideways.
-- The onboarding (6 steps) is approved as designed in `design/Main.dc.html`. Do not redesign it. Port it as it is.
+- The onboarding is **3 screens**, approved and built (decision 30 Sep 2026), and it is the default entry on a first visit. The old 6-step flow in `design/Main.dc.html` is superseded and must not be ported. (1) Tap your district on the map and choose a role, on one screen, with a sample dashboard building behind the card. Sign-in is "Continue as demo DMO", labelled simulated. (2) Choose a language and see the real waybill in that language, with its "not yet reviewed by a native speaker" chip. (3) One safety acknowledgement, then a skippable 30-second guided run with a spotlight. A Skip button is always visible. Onboarding uses Frontend Design plus UI/UX Pro Max. The dashboard uses Frontend Design plus Taste. The design record is `DESIGN.md`, section 13.
 - The visual design is locked. Port it faithfully first. Polish comes after it works.
 
 ## Frontend build
@@ -65,9 +68,9 @@ The web app lives in `web/` (Vite and React). `npm run build` writes to `dist/`,
 
 Build in phases. Finish and check each phase before starting the next:
 
-1. **Port.** Rebuild the approved design in `web/`, including onboarding, both themes and every dashboard state, still running on the scripted demo data. It must look the same as `design/Main.dc.html`.
-2. **Wire.** Replace the scripted parts with `/api/dispatch` and `/api/warning-brief` (see `API_CONTRACT.md`). Show the offline template and "Offline fallback used" if a call fails.
-3. **Check.** Run the app locally against the API, in light and dark, and run `npm test`.
+1. **Port.** Done. The approved dashboard is in `web/`, in both themes and every dashboard state. It must keep matching `design/Main.dc.html` (`npm run test:web` checks the model against the design file).
+2. **Wire.** Done. `/api/dispatch` and `/api/warning-brief` feed the waybill, reasons, dispatch number and warning brief (see `API_CONTRACT.md`). The app shows the template and "Offline fallback used" if a call fails. On-screen numbers stay computed in the browser.
+3. **Check.** Done for the current build: run against the API and with it stopped, in light and dark, `npm test` and `npm run test:web`. Repeat after every change.
 4. **Deploy.** Follow the README.
 
 ## Working on the design
@@ -75,7 +78,7 @@ Build in phases. Finish and check each phase before starting the next:
 Follow `DESIGN.md`. In Claude Code, use this order:
 
 1. Anthropic **Frontend Design** is always the base layer.
-2. Use **Taste** as the one style driver with DESIGN_VARIANCE 3, MOTION_INTENSITY 2, VISUAL_DENSITY 6. Do not also use UI/UX Pro Max on the same screen.
+2. Use **Taste** as the one style driver on the dashboard with DESIGN_VARIANCE 3, MOTION_INTENSITY 2, VISUAL_DENSITY 6. The 3 onboarding screens use **UI/UX Pro Max** as their one style driver instead, and not Taste. Never use both drivers on the same screen.
 3. Keep **Interface Design** on so the tokens persist. If a token changes, update `DESIGN.md`, section 3, first.
 4. Do not use Emil Kowalski Design. This is an internal tool.
 5. Do not use Designer Skills. That suite is for UX research.
@@ -93,9 +96,9 @@ Semantic colours are fixed: green stable, amber early warning, red critical, tea
 
 ## Next tasks, in order
 
-1. Frontend phase 1 to 3 (see "Frontend build").
-2. Deploy and update `PROGRESS.md`.
-3. After the submission: the National screen, native-speaker review of Marathi, Hindi and Tamil (then `verified: true` with a reviewer name), and replacing the two assumption numbers ("0 hours today", "14 to 21 days") with sources or removing them.
+1. Deploy (Frontend phase 4). It needs a billing account and your approval, so it is yours to trigger. Follow the README.
+2. Native-speaker review of Marathi, Hindi and Tamil (`docs/LANGUAGE_REVIEW.md`), then a real screen-reader pass (VoiceOver or NVDA).
+3. After the submission: the National screen, and replacing the two assumption numbers ("0 hours today", "14 to 21 days") with sources or removing them.
 
 ## Style for docs and copy
 

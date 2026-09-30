@@ -42,8 +42,8 @@ If Gemini fails or takes over 8 seconds, a template waybill is returned and the 
 | `schemas/` | JSON schemas that force Gemini's structured output |
 | `config/` | `rules.json` (thresholds) and `languages.json` (waybill templates and review status) |
 | `data/` | Sample clinics for Maharashtra and Tamil Nadu, surge scenarios, federated inputs |
-| `test/` | 16 tests for the rules, guardrails, fallback and federated maths |
-| `web/` | The React web app (Vite). Being built from `design/`, see "Frontend" below |
+| `test/` | 16 API tests (rules, guardrails, fallback, federated maths) and 17 web tests (the dashboard model against the design, and live API answers) |
+| `web/` | The React web app (Vite): dashboard, 3-screen onboarding, and the calls to the API |
 | `design/` | The approved design prototype (`Main.dc.html`), kept as a read-only reference |
 | `firebase.json`, `Dockerfile` | Firebase Hosting and Cloud Run deployment |
 | `docs/` | PRD, design, engineering, plan, progress, checklist, user journey, pitch deck text |
@@ -54,7 +54,8 @@ If Gemini fails or takes over 8 seconds, a template waybill is returned and the 
 Needs Node 20 or newer. No dependencies to install for the API.
 
 ```bash
-npm test                                   # 16 tests, no key needed
+npm test                                   # 16 API tests, no key needed
+npm run test:web                           # 17 tests for the web app's model and its use of API answers, no key needed
 cp .env.example .env                       # add GEMINI_API_KEY from Google AI Studio
 export $(grep -v '^#' .env | xargs)
 npm start                                  # API on http://localhost:8080
@@ -105,7 +106,7 @@ Region: the commands use `asia-south1` (Mumbai), which Cloud Run supports. Fireb
 
 ## Frontend
 
-Sanket is a desktop web app, designed at 1440 px wide. The design is in `design/Main.dc.html` and the API shapes are in `docs/API_CONTRACT.md`. The React app in `web/` is built from that design, and `npm run build` writes it to `dist/` for Firebase Hosting. Status is tracked in `docs/PROGRESS.md`.
+Sanket is a desktop web app, designed at 1440 px wide. The design is in `design/Main.dc.html` and the API shapes are in `docs/API_CONTRACT.md`. The React app in `web/` is built from that design and calls `/api/dispatch` and `/api/warning-brief`. In development run the API (`npm start`) and the web app (`npm run dev:web`) together: Vite proxies `/api` to port 8080. `npm run build` writes `dist/` for Firebase Hosting. If the API cannot be reached, or Gemini fails, the app shows the template waybill and the words "Offline fallback used". A first visit opens a 3-screen onboarding. Status is tracked in `docs/PROGRESS.md`.
 
 ## Honest limits
 
@@ -113,6 +114,6 @@ Sanket is a desktop web app, designed at 1440 px wide. The design is in `design/
 - The forecast is a straight-line trend on 5 days. The production path is BigQuery ML (AI.FORECAST with TimesFM) or Vertex AI.
 - Federated averaging is simulated in one service. Each state's inputs are separate, and only two numbers cross.
 - Each warning step in the demo is a snapshot. If stock falls between steps, the warning lead time shrinks.
-- Marathi, Hindi and Tamil templates are marked `verified: false` in `config/languages.json` until a native speaker reviews them.
+- Marathi, Hindi and Tamil templates are marked `verified: false` in `config/languages.json` until a native speaker reviews them. The review pack is `docs/LANGUAGE_REVIEW.md`.
 - Not yet tested against the live Gemini API from this repo. The tests use a stand-in.
 - "Today: about 0 h warning" and "central restock: 14 to 21 days" are assumptions and need a source.
