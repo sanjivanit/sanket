@@ -36,7 +36,7 @@ Solid lines are built and in this repo. Dotted lines are the roadmap and are **n
 5. Code writes the drug name, vial count and temperature into the waybill from `config/languages.json`.
 6. A second, separate Gemini call translates the local text back into English so a DMO who cannot read that language can check it.
 7. The response returns to the browser. A DMO must approve (two DMOs for Tier 2). Nothing moves before that.
-8. If Gemini fails or takes over 8 seconds, step 3 to 6 are replaced by templates and the response says `source: fallback`.
+8. If the primary model (`GEMINI_MODEL`) fails or takes over 8 seconds, the fallback model (`GEMINI_FALLBACK_MODEL`) is tried for up to 8 seconds. The response says which one answered in `model`. If both fail, step 3 to 6 are replaced by templates and the response says `source: fallback`.
 
 ## Safety design
 

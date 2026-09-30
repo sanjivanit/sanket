@@ -24,9 +24,25 @@ const log = (severity, event, extra = {}) => console.log(JSON.stringify({ severi
 const MAX_BODY = 200_000;
 
 export function createApp({ callGemini = realCall, env = process.env, now = () => new Date() } = {}) {
-  const model = env.GEMINI_MODEL || 'gemini-3.5-flash';
+  const model = env.GEMINI_MODEL || 'gemini-3.5-flash-lite';
+  const fallbackModel = env.GEMINI_FALLBACK_MODEL || 'gemini-3.1-flash-lite';
+  const models = model === fallbackModel ? [model] : [model, fallbackModel];
   const apiKey = env.GEMINI_API_KEY;
-  const ask = (mode, user) => callGemini({ apiKey, model, system: PROMPTS[mode], user, schema: SCHEMAS[mode], timeoutMs: 8000 });
+  // Tries each model in order, 8 seconds each. Any failure (timeout, 429, 503, bad JSON) moves to the next model.
+  async function askWithModel(mode, user) {
+    let lastError;
+    for (const m of models) {
+      try {
+        const value = await callGemini({ apiKey, model: m, system: PROMPTS[mode], user, schema: SCHEMAS[mode], timeoutMs: 8000 });
+        return { value, model: m };
+      } catch (e) {
+        lastError = e;
+        log('WARNING', 'gemini_model_failed', { mode, model: m, reason: e.message });
+      }
+    }
+    throw lastError;
+  }
+  const ask = async (mode, user) => (await askWithModel(mode, user)).value;
 
   const hits = new Map();
   const limited = (ip) => {
@@ -47,10 +63,10 @@ export function createApp({ callGemini = realCall, env = process.env, now = () =
 
     const recipient = clinics.find((c) => c.id === recipientId);
     const top = t.eligible[0];
-    let pick = top, source = 'gemini', guardrail = null;
+    let pick = top, source = 'gemini', guardrail = null, answeredBy = null;
     let reasoning = { english: '', local: '' };
     try {
-      const out = await ask('dispatch', {
+      const { value: out, model: m } = await askWithModel('dispatch', {
         recipient: { name: recipient.name, daysOfSupply: Math.round(E.daysOfSupply(recipient, today) * 10) / 10 },
         need: t.need, tier: t.tier, language: LANGS[lang].name,
         eligible: t.eligible,
@@ -58,6 +74,7 @@ export function createApp({ callGemini = realCall, env = process.env, now = () =
       const chosen = t.eligible.find((d) => d.id === out.selectedDonorId);
       if (chosen) pick = chosen; else guardrail = 'Gemini picked a donor that is not eligible. Used the nearest eligible donor.';
       reasoning = { english: out.reasoningEnglish, local: out.reasoningLocal };
+      answeredBy = m;
     } catch (e) {
       source = 'fallback';
       reasoning = fallbackReasoning({ donor: pick.name, vials: t.need, keepsDays: pick.keepsDaysAfter });
@@ -87,11 +104,11 @@ export function createApp({ callGemini = realCall, env = process.env, now = () =
       expiryDate: pick.expiryDate,
       coldChain: { required: true, tempRangeCelsius: tempRange, carrier: 'insulated box' },
     };
-    log('INFO', 'dispatch', { source, tier: t.tier, vials: t.need, donor: pick.id, guardrail: !!guardrail });
+    log('INFO', 'dispatch', { source, model: answeredBy, tier: t.tier, vials: t.need, donor: pick.id, guardrail: !!guardrail });
     return {
       status: 'recommended', ...core,
       waybill: { ...instructions, backTranslation },
-      reasoning, restockToken: E.restockToken(core), source, guardrail, rejected: t.rejected,
+      reasoning, restockToken: E.restockToken(core), source, model: answeredBy, guardrail, rejected: t.rejected,
     };
   }
 
@@ -146,7 +163,7 @@ export function createApp({ callGemini = realCall, env = process.env, now = () =
     try {
       const path = new URL(req.url, 'http://x').pathname;
       if (req.method === 'OPTIONS') return send(204, {});
-      if (path === '/api/health') return send(200, { ok: true, model, geminiKeyConfigured: !!apiKey });
+      if (path === '/api/health') return send(200, { ok: true, model, fallbackModel, geminiKeyConfigured: !!apiKey });
       const handler = routes[path];
       if (!handler || req.method !== 'POST') return send(404, { error: 'not found' });
       if (limited(req.socket.remoteAddress || 'x')) return send(429, { error: 'too many requests' });

@@ -9,7 +9,7 @@ JSON with: `recipient`, `need` (vials, already calculated), `tier`, `eligible` (
 1. Choose exactly ONE donor, and only from `eligible`. Never name a clinic that is not in that list.
 2. Never change, add or remove vials. The quantity is decided by code, not by you.
 3. Never write the drug name, the vial count or the temperature in your text. Code adds those.
-4. Write `reasoningEnglish` in 2 to 3 short sentences in plain English. Give the real reasons: nearest, doctor on duty, beds not full, keeps its own supply.
+4. Write `reasoningEnglish` in 2 to 3 short sentences in plain English. Give the real reasons: it is the nearest, a doctor is on duty, beds are not full, it keeps its own supply. Write "beds are not full", never "vacant" or "empty". Write "a doctor is on duty" in the singular.
 5. Write `reasoningLocal` in the `language` given, in simple formal words a clinic officer would use. Keep clinic names in their original spelling.
 6. Use only facts in the input. Do not invent numbers, names or reasons.
 7. If two donors are equally good, choose the nearest.

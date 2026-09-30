@@ -42,6 +42,6 @@ Submit with what exists. Cut in this order: message check-in, deck polish, nativ
 ## Not verified
 
 - Not deployed and not tested against the live Gemini API. The tests use a stand-in for Gemini.
-- The Gemini model ID (`gemini-3.5-flash`) must be confirmed in Google AI Studio. The older `gemini-2.5-flash` is scheduled for retirement and may not be available to new keys.
+- The Gemini model IDs (`gemini-3.5-flash-lite` primary, `gemini-3.1-flash-lite` fallback) must be confirmed in Google AI Studio. Both answered a live test on 30 Sep 2026. The older `gemini-2.5-flash` is scheduled for retirement and may not be available to new keys.
 - Cloud Run and Secret Manager need billing on the project. Confirm your credits.
 - Marathi, Hindi and Tamil text has not been reviewed by a native speaker.

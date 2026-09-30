@@ -85,7 +85,7 @@ printf %s "YOUR_GEMINI_KEY" | gcloud secrets create gemini-api-key --data-file=-
 
 # 2. Deploy the API (from the repo root, where the Dockerfile is)
 gcloud run deploy sanket-api --source . --region asia-south1 --allow-unauthenticated \
-  --set-secrets GEMINI_API_KEY=gemini-api-key:latest --set-env-vars GEMINI_MODEL=gemini-3.5-flash
+  --set-secrets GEMINI_API_KEY=gemini-api-key:latest --set-env-vars GEMINI_MODEL=gemini-3.5-flash-lite,GEMINI_FALLBACK_MODEL=gemini-3.1-flash-lite
 # If it says the service account cannot read the secret:
 # gcloud secrets add-iam-policy-binding gemini-api-key \
 #   --member="serviceAccount:PROJECT_NUMBER-compute@developer.gserviceaccount.com" --role="roles/secretmanager.secretAccessor"
@@ -98,7 +98,7 @@ npx firebase-tools deploy --only hosting
 
 Then open `https://YOUR_PROJECT_ID.web.app` and check `/api/health`. Cloud Run and Secret Manager need billing enabled on the project. Check whether your hackathon credits cover it.
 
-Model: the default is `gemini-3.5-flash`. Google's docs (checked 30 Sep 2026) list `gemini-2.5-flash` for retirement from 16 Oct 2026 and limit new users' access to 2.5 models, and recommend newer models for new projects. Confirm the exact model ID in Google AI Studio and set `GEMINI_MODEL` if you prefer another (for example `gemini-3.1-flash-lite` for lower cost).
+Model: the API tries `GEMINI_MODEL` (default `gemini-3.5-flash-lite`) first and `GEMINI_FALLBACK_MODEL` (default `gemini-3.1-flash-lite`) second, 8 seconds each, and returns the template waybill if both fail. On 30 Sep 2026 `gemini-3.5-flash` returned 503 "high demand" on a test call, which is why the defaults are the lite models. Google's docs (checked 30 Sep 2026) list `gemini-2.5-flash` for retirement from 16 Oct 2026 and limit new users' access to 2.5 models, and recommend newer models for new projects. Confirm the exact model ID in Google AI Studio and set `GEMINI_MODEL` or `GEMINI_FALLBACK_MODEL` if you prefer others.
 
 Region: the commands use `asia-south1` (Mumbai), which Cloud Run supports. Firebase Hosting can only forward to some Cloud Run regions. If the Hosting deploy rejects the region, redeploy Cloud Run in `us-central1` and change the region in `firebase.json`. Firebase Hosting also cuts a request off after 60 seconds, which is why Gemini calls time out at 8 seconds.
 

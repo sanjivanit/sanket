@@ -38,11 +38,11 @@ Legend: Done = built and checked. Checked = tested or rendered in the build envi
 
 | Area | Status | Notes |
 |---|---|---|
-| Engine rules | Checked | 14 of 14 tests pass |
+| Engine rules | Checked | 16 of 16 tests pass (14 original, 2 for model fallback) |
 | Cloud Run API and routes | Checked | Tested with a stand-in for Gemini |
-| Gemini client, prompts, schemas | Checked | Not run against the live Gemini API |
-| Fallback and guardrails | Checked | Covered by tests |
-| Default model | Done | Changed to `gemini-3.5-flash` after finding `gemini-2.5-flash` is scheduled for retirement |
+| Gemini client, prompts, schemas | Checked | One live dispatch (Marathi) on 30 Sep 2026 answered by `gemini-3.5-flash-lite` in 2.5 s, with back-translation. Other routes not run live |
+| Fallback and guardrails | Checked | Covered by tests, including first model failing and both models failing |
+| Models | Done | `GEMINI_MODEL=gemini-3.5-flash-lite`, then `GEMINI_FALLBACK_MODEL=gemini-3.1-flash-lite`, 8 s each, then template waybill. Dispatch reply has a `model` field. `gemini-3.5-flash` returned 503 "high demand" in a live test, so it is no longer the default |
 | Firebase Hosting rewrite | Not done | Written in `firebase.json`, not deployed. Region support to be confirmed |
 | Secret Manager and Cloud Run deploy | Not done | Commands in README |
 | React app connected to the API | Not done | Notes in `docs/LOVABLE_BACKEND_SWAP.md` |
@@ -52,7 +52,7 @@ Legend: Done = built and checked. Checked = tested or rendered in the build envi
 1. The exact submission cut-off time is unknown.
 2. Marathi, Hindi and Tamil text is unreviewed (`verified: false`).
 3. The two comparison numbers "0 hours today" and "14 to 21 days" have no source. They carry an asterisk.
-4. The exact model ID for Gemini 3.8 Flash was not confirmed. `gemini-3.5-flash` was.
+4. `gemini-3.8-flash` appears in the key's model list but was not tested. `gemini-3.5-flash-lite` and `gemini-3.1-flash-lite` both answered live.
 5. Whether Firebase Hosting forwards to `asia-south1` was not confirmed.
 6. The prototype is a Design artifact with fixed desktop sizing. It is not the deployed React app.
 7. Doctor names are sample names.
@@ -62,6 +62,7 @@ Legend: Done = built and checked. Checked = tested or rendered in the build envi
 
 | Date | Change |
 |---|---|
+| 30 Sep 2026 | Model fallback: tries `GEMINI_MODEL`, then `GEMINI_FALLBACK_MODEL`, then the template. Defaults changed to the lite models after `gemini-3.5-flash` returned 503. Dispatch reply and log show which model answered. 2 tests added. Key verified against the live API |
 | 30 Sep 2026 | App renamed from PulseGrid to **Sanket** (संकेत, "signal") everywhere. Dispatch IDs now start with SK-. Cloud Run service is `sanket-api` |
 | 30 Sep 2026 | Docs written: DESIGN, ENGINEERING, PLAN, PROGRESS, CLAUDE. Default model changed to `gemini-3.5-flash`. Accessibility review run and fixes applied |
 | 30 Sep 2026 | Dashboard rebuilt action-first: tiles, table and charts views, timeline, vial icons, merged action card |

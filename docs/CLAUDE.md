@@ -49,7 +49,7 @@ No dependencies to install for the API. Node 20 or newer.
 
 ## Model
 
-The default is `gemini-3.5-flash`, set by `GEMINI_MODEL`. `gemini-2.5-flash` is scheduled for retirement and limited for new keys, so do not use it. Confirm model IDs in Google AI Studio before changing them, because model names change.
+The primary model is `gemini-3.5-flash-lite`, set by `GEMINI_MODEL`. The fallback is `gemini-3.1-flash-lite`, set by `GEMINI_FALLBACK_MODEL`. Each gets 8 seconds, then the template waybill is used. `gemini-2.5-flash` is scheduled for retirement and limited for new keys, so do not use it. Confirm model IDs in Google AI Studio before changing them, because model names change.
 
 ## Working on the design
 

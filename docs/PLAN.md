@@ -85,7 +85,7 @@ If you cannot deploy to Google Cloud in time: submit the repo, the prototype lin
 |---|---|
 | Code decides, Gemini writes, a person approves | Safety in a medicine workflow |
 | Cloud Run behind Firebase Hosting, not Supabase | The checklist asks for Google Cloud with Gemini |
-| `gemini-3.5-flash` default, configurable | `gemini-2.5-flash` is scheduled for retirement and limited for new users |
+| `gemini-3.5-flash-lite` primary and `gemini-3.1-flash-lite` fallback, both configurable | `gemini-2.5-flash` is scheduled for retirement and limited for new users |
 | Light theme default, dark on a toggle | Bright offices and printed waybills |
 | Action-first dashboard with folded details | The first version was too busy |
 | Federated design kept small and labelled "simulated" | The challenge names it; it is not a real network yet |

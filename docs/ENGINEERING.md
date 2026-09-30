@@ -25,7 +25,7 @@ The design rule that matters most: **code decides, Gemini writes, a person appro
 
 | Area | Chosen | Alternatives considered | Trade-off in one line |
 |---|---|---|---|
-| Model | Gemini API, `gemini-3.5-flash` (configurable) | `gemini-3.8-flash` (newest), `gemini-3.1-flash-lite` (cheaper), older `gemini-2.5-flash` | 3.5 Flash is a current stable model; 3.8 is newer but the ID was not confirmed here, and 2.5 is scheduled for retirement and limited for new users |
+| Model | Gemini API. `GEMINI_MODEL` = `gemini-3.5-flash-lite`, then `GEMINI_FALLBACK_MODEL` = `gemini-3.1-flash-lite`, 8 seconds each, then the template waybill (both configurable) | `gemini-3.5-flash` (bigger, but returned 503 "high demand" on 30 Sep 2026), `gemini-3.8-flash` (newest), older `gemini-2.5-flash` | Lite models answered in about 1 second in a live test and give two chances before the template. 3.8 was not tested, and 2.5 is scheduled for retirement and limited for new users |
 | Model access route | Gemini Developer API with a server-held key | Vertex AI (Google's docs now call it the Agent Platform), Firebase AI Logic from the browser | Simplest and fastest today; Vertex gives regional data residency and no key, at the cost of more setup |
 | Backend | Cloud Run, Node 22, zero dependencies | Cloud Functions, Firebase Functions | A plain container is easy to test and move; Functions would be a little less setup but ties us to its runtime |
 | Front door | Firebase Hosting with a `/api/**` rewrite to Cloud Run | Public Cloud Run URL called from the browser | Same origin, no CORS, key never in the browser; Hosting cuts requests at 60 seconds and only forwards to some regions |
@@ -45,6 +45,7 @@ The design rule that matters most: **code decides, Gemini writes, a person appro
 |---|---|
 | `gemini-2.5-flash` availability | Google lists it for retirement from 16 Oct 2026 and says access to 2.5 models is limited to users who have actively used them. **Not used as the default** |
 | Current models | Google's docs recommend "3.5 Flash-Lite or 3.8 Flash" for new projects. `gemini-3.5-flash` (stable, no shutdown announced) and `gemini-3.1-flash-lite` (stable) appear by ID in the deprecations table. The exact ID for 3.8 Flash was not shown in the pages read |
+| Live test, 30 Sep 2026 | On 30 Sep 2026, `gemini-3.5-flash` returned 503 "high demand" after 22.8 seconds on a test call, while both lite models answered in about 1 second, which is why the server tries a primary and a fallback model |
 | Firebase Hosting forwarding to Cloud Run | Confirmed. Requires a Cloud Billing account (Cloud Run has a free quota) and a response within 60 seconds |
 | Cloud Run in Mumbai | `asia-south1` is a Cloud Run region. That Firebase Hosting can forward to it was **not confirmed**. Fallback is `us-central1` |
 | BigQuery ML forecasting | Two routes: `AI.FORECAST` with the built-in TimesFM model (no training; one page marks it Preview) and `ML.FORECAST` with `ARIMA_PLUS` (trained per series, explains its components) |

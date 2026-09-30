@@ -8,8 +8,8 @@ const load = (f) => JSON.parse(readFileSync(new URL('../data/' + f, import.meta.
 const MH = load('maharashtra.json'), TN = load('tamilnadu.json'), SC = load('scenarios.json'), FED = load('federated_episodes.json');
 const TODAY = new Date('2026-09-30T00:00:00Z');
 
-async function withServer(callGemini, fn) {
-  const server = createApp({ callGemini, env: { GEMINI_API_KEY: 'test' }, now: () => TODAY });
+async function withServer(callGemini, fn, env = {}) {
+  const server = createApp({ callGemini, env: { GEMINI_API_KEY: 'test', ...env }, now: () => TODAY });
   await new Promise((r) => server.listen(0, r));
   const base = `http://127.0.0.1:${server.address().port}`;
   const post = async (path, body) => (await fetch(base + path, { method: 'POST', body: JSON.stringify(body) })).json();
@@ -118,6 +118,37 @@ test('api: Gemini failure falls back to a template waybill, never an error', asy
     assert.equal(r.vials, 16);
     assert.ok(r.waybill.english && r.waybill.local);
   });
+});
+
+test('api: first model fails, second model answers', async () => {
+  const clinics = E.applyScenario(MH.clinics, SC.oneClinic, 'MH-01');
+  const tried = [];
+  const flaky = async (args) => {
+    tried.push(args.model);
+    if (args.model === 'model-a') throw new Error('Gemini HTTP 503');
+    return geminiPicks('MH-02')(args);
+  };
+  await withServer(flaky, async (post) => {
+    const r = await post('/api/dispatch', { stateCode: 'MH', clinics, recipientId: 'MH-01', language: 'en' });
+    assert.equal(r.source, 'gemini');
+    assert.equal(r.model, 'model-b');
+    assert.equal(r.donor.name, 'PHC Shivpuri');
+    assert.deepEqual(tried, ['model-a', 'model-b']);
+  }, { GEMINI_MODEL: 'model-a', GEMINI_FALLBACK_MODEL: 'model-b' });
+});
+
+test('api: both models fail, template waybill is returned', async () => {
+  const clinics = E.applyScenario(MH.clinics, SC.oneClinic, 'MH-01');
+  const tried = [];
+  await withServer(async ({ model }) => { tried.push(model); throw new Error('Gemini HTTP 429'); }, async (post) => {
+    const r = await post('/api/dispatch', { stateCode: 'MH', clinics, recipientId: 'MH-01', language: 'mr' });
+    assert.equal(r.status, 'recommended');
+    assert.equal(r.source, 'fallback');
+    assert.equal(r.model, null);
+    assert.equal(r.vials, 16);
+    assert.ok(r.waybill.english && r.waybill.local);
+    assert.deepEqual(tried, ['model-a', 'model-b']);
+  }, { GEMINI_MODEL: 'model-a', GEMINI_FALLBACK_MODEL: 'model-b' });
 });
 
 test('api: district-wide surge needs two approvals', async () => {
