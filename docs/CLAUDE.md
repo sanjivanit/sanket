@@ -95,7 +95,7 @@ Semantic colours are fixed: green stable, amber early warning, red critical, tea
 The dashboard has purposeful motion, all in the "Motion" block at the end of `web/src/styles.css`, plus `web/src/motion.js` (a counting number). Rules:
 
 - Animate only `transform`, `opacity`, `clip-path` and SVG stroke. Curves are the tokens `--ease-out`, `--ease-in-out` and `--ease-drawer`. Never `transition: all`, never `ease-in`, never `scale(0)`.
-- Every animation has a purpose: first load builds top to bottom, numbers count to their new value, rings and bars settle, the proposed donor pings three times, vials fill in, the QR reveals on approval, the telemetry panel slides in and out.
+- Every animation has a purpose: first load builds top to bottom, numbers count to their new value, rings and bars settle, the donor rings keep pinging until the transfer is delivered, vials fill in, the QR reveals on approval, the telemetry panel slides in and out.
 - `prefers-reduced-motion` keeps the fades and drops the movement and the loops. New motion ships with its reduced-motion rule.
 - Nothing the person reads or acts on moves for style, and nothing animates on a keyboard shortcut.
 - `scripts/qa/scan-dashboard.mjs` waits for animations to finish before it measures contrast. Keep that wait.

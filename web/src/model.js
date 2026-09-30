@@ -170,7 +170,8 @@ export function buildView({ step, phase, qty, rejected }, lang = 'or', ds = DEFA
     if (isDonor) donorPt = { x, y };
     const rad = 4 + Math.sqrt(p.isDonor ? shivStock : p.stock) * 1.15;
     const hot = isDonor && step > 0;
-    return { label: p.short, x, y, rad, right: east >= 0, nodoc, hot };
+    // The donor keeps pinging from the first surge day, through the transfer, and stops once it is delivered.
+    return { label: p.short, x, y, rad, right: east >= 0, nodoc, hot, ping: hot && !delivered };
   });
   // Nudge labels up or down so they do not sit on each other, on a facility dot, or on the centre label.
   const boxes = [{ x0: 373, x1: 453, y0: 112, y1: 148 }, { x0: 340, x1: 486, y0: 88, y1: 108 }, { x0: 340, x1: 486, y0: 2, y1: 22 }].concat(mapNodes.map((n) => ({ x0: n.x - n.rad - 2, x1: n.x + n.rad + 2, y0: n.y - n.rad - 2, y1: n.y + n.rad + 2 })));

@@ -31,13 +31,15 @@ export function CountUp({ value, ms = 600 }) {
   const target = m ? Number(m[1]) : null;
   const decimals = m && m[1].includes('.') ? m[1].split('.')[1].length : 0;
   const suffix = m ? m[2] : '';
-  const current = useRef(target);
-  const [shown, setShown] = useState(target);
+  // A number that appears for the first time counts up from zero. With reduced motion it appears at once.
+  const start = target === null || reducedMotion() ? target : 0;
+  const current = useRef(start);
+  const [shown, setShown] = useState(start);
 
   useEffect(() => {
     if (target === null) { current.current = null; return undefined; }
-    if (reducedMotion() || current.current === null || current.current === target) { current.current = target; setShown(target); return undefined; }
-    const from = current.current, t0 = performance.now();
+    if (reducedMotion() || current.current === target) { current.current = target; setShown(target); return undefined; }
+    const from = current.current === null ? 0 : current.current, t0 = performance.now();
     let raf;
     const tick = (now) => {
       const p = Math.min(1, (now - t0) / ms);
@@ -51,6 +53,6 @@ export function CountUp({ value, ms = 600 }) {
   }, [target, ms]);
 
   // Right after a non-number turns into a number, `shown` still holds the old null for one render.
-  const now = shown === null ? target : shown;
+  const now = shown === null ? 0 : shown;
   return createElement('span', null, target === null ? text : now.toFixed(decimals) + suffix);
 }

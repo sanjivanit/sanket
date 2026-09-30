@@ -28,7 +28,7 @@ export default function ReachMap({ v }) {
           <circle cx="413" cy="178" r="68" style={{ fill: 'var(--acc-bg)', stroke: 'var(--rule3)' }} strokeWidth="1" />
           <text x="413" y="16" textAnchor="middle" style={{ fill: 'var(--muted)' }} fontSize="12">80 km, next district</text>
           <text x="413" y="102" textAnchor="middle" style={{ fill: 'var(--muted)' }} fontSize="12">35 km, same district</text>
-          <path className="route-fade" d={line.d} fill="none" style={{ stroke: 'var(--acc)', opacity: line.standbyOp }} strokeWidth="2" strokeDasharray="3 5" strokeLinecap="round" />
+          <path className={line.standbyOp ? 'route-fade route-march' : 'route-fade'} d={line.d} fill="none" style={{ stroke: 'var(--acc)', opacity: line.standbyOp }} strokeWidth="2" strokeDasharray="3 5" strokeLinecap="round" />
           <path className="flow" d={line.d} fill="none" style={{ stroke: 'var(--acc)', opacity: line.transitOp }} strokeWidth="3" strokeLinecap="round" />
           <path className="route-fade" d={line.d} fill="none" style={{ stroke: 'var(--acc)', opacity: line.doneOp }} strokeWidth="3" strokeLinecap="round" />
           <g style={{ opacity: line.transitOp }}>
@@ -60,7 +60,7 @@ export default function ReachMap({ v }) {
           const halo = n.nodoc ? 'var(--doc-halo)' : n.hot ? 'var(--acc-halo)' : 'var(--ok-halo)';
           return (
             <div key={n.label}>
-              {n.hot && <div className="abs node-ping" style={{ left: n.x - n.rad, top: n.y - n.rad, width: n.rad * 2, height: n.rad * 2, borderRadius: '50%', border: '2px solid var(--acc)' }} />}
+              {n.ping && <div className="abs node-ping" style={{ left: n.x - n.rad, top: n.y - n.rad, width: n.rad * 2, height: n.rad * 2, borderRadius: '50%', border: '2px solid var(--acc)' }} />}
               <div className="abs node-pop" style={{ '--i': idx,
                 left: n.x - n.rad, top: n.y - n.rad, width: n.rad * 2, height: n.rad * 2, borderRadius: '50%',
                 background: n.nodoc ? 'var(--doc)' : 'var(--ok)',

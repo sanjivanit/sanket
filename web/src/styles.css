@@ -306,6 +306,7 @@ h1, h2, h3, p { margin: 0; }
 @keyframes ecg-sweep { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
 @keyframes qr-reveal { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
 @keyframes ping { from { opacity: 0.55; transform: scale(1); } to { opacity: 0; transform: scale(2.2); } }
+@keyframes march { to { stroke-dashoffset: -16; } }
 @keyframes drawer-in { from { transform: translateX(var(--drawer-x)); } }
 @keyframes drawer-out { to { transform: translateX(var(--drawer-x)); } }
 @keyframes fade-in { from { opacity: 0; } }
@@ -334,9 +335,10 @@ h1, h2, h3, p { margin: 0; }
 .step.done .c svg { animation: pop 0.3s var(--ease-out) both; --pop-scale: 0.5; }
 .detail > :not(.tabs) { animation: tab-in 0.18s var(--ease-out) both; }
 
-/* The map: dots pop in, the proposed donor pings three times, then rests. */
+/* The map: dots pop in, the proposed donor pings until approved, then rests. */
 .node-pop { animation: pop 0.36s var(--ease-out) both; animation-delay: calc(var(--i, 0) * 50ms + 260ms); }
-.node-ping { animation: ping 1.6s var(--ease-out) 3 both; animation-delay: 0.4s; pointer-events: none; }
+.node-ping { animation: ping 2.2s var(--ease-out) infinite; pointer-events: none; }
+.route-march { animation: march 1.6s linear infinite; }
 
 /* Vials fill in one after another, so the count can be read as it lands. */
 .vials .vial { animation: pop 0.3s var(--ease-out) both; animation-delay: calc(var(--i, 0) * 24ms); --pop-scale: 0.6; }
@@ -356,6 +358,6 @@ h1, h2, h3, p { margin: 0; }
 
 @media (prefers-reduced-motion: reduce) {
   :root, .step.done .c svg, .vials .vial { --rise-y: 0px; --pop-scale: 1; --drawer-x: 0; }
-  .alert .ecg, .qr-reveal, .node-ping { animation: none; }
+  .alert .ecg, .qr-reveal, .node-ping, .route-march { animation: none; }
   .btn-primary:not(:disabled):active, .btn-ok:not(:disabled):active, .btn-line:not(:disabled):active { transform: none; }
 }
