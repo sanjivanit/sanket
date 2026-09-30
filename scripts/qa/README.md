@@ -14,7 +14,7 @@ npm run dev:web -- --port 5199 --strictPort        # the scripts expect the web 
 
 For the live checks also start the API in another terminal (`npm start`, with `GEMINI_API_KEY` in `.env`). Never print `.env` or the key.
 
-The dashboard scripts skip setup by seeding `localStorage` key `sanket-setup` (`{"district":"A","role":"dmo","lang":"mr"}`), because `#dashboard` no longer opens the dashboard.
+The dashboard scripts skip setup by seeding `localStorage` key `sanket-setup` (`{"district":"A","role":"dmo","lang":"mr"}`; the app only checks role and language), because `#dashboard` no longer opens the dashboard.
 
 Screenshots and diffs go to `$QA_OUT` (default: a `sanket-qa` folder in the system temp directory).
 
@@ -29,6 +29,7 @@ Screenshots and diffs go to `$QA_OUT` (default: a `sanket-qa` folder in the syst
 | `build-ref.mjs` | Builds `ref.html`, which renders `design/Main.dc.html` for any state, so the port can be compared with the design | none |
 | `shoot-states.mjs`, `shoot-views.mjs` | Screenshots the design reference and the app for 5 states and 9 views or tabs in both themes | web app, `ref.html` |
 | `diff-states.mjs`, `diff-hotspots.mjs` | Pixel diff of app against design, and where the differences cluster | screenshots |
+| `shoot-mayurbhanj.mjs` | Screenshots of the Mayurbhanj build in one theme: Odia setup, dashboard calm and day 4, waybill, table, charts, approved, telemetry slide-over, a rejected CSV, an accepted CSV, and the label after each. Prints the telemetry JSON | web app |
 | `shoot-onboarding.mjs` | Screenshots of the splash, the three setup steps, the dashboard and moments of the tour, in one theme (`light` or `dark`) | web app |
 | `crop.mjs`, `strip.mjs` | Helpers: crop matching regions, or stack screenshots into one image | screenshots |
 

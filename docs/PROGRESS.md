@@ -33,6 +33,10 @@ Legend: Done = built and checked. Checked = tested or rendered in the build envi
 | National screen | Not done | Placeholder tab only |
 | Anonymized export | Not done | Optional |
 | Responsive layout | Not done | Desktop 1440 px only |
+| Mayurbhanj pilot data | Checked | `data/odisha-mayurbhanj.json`, six facilities, is the default. Stock, beds and staffing are **simulated** and labelled "Simulated data" on every screen that shows them. Four facility names were verified against the Odisha health department list and OpenStreetMap. **Not verified:** PHC Badasahi (a CHC exists there) and PHC Baripada Rural. Coordinates are approximate on purpose. Detail and the real positions: `docs/REAL_DATA.md` |
+| Data-source layer and CSV import | Checked | `web/src/dataSource.js`: simulated (default) or csv. "Import CSV" reads a file in the browser, replaces the simulated numbers, and the label becomes "Imported data: <file>". Template in `data/templates/facilities.csv`. Tests cover good and bad files |
+| Anonymised telemetry preview | Checked | "Export anonymised telemetry" on the Impact tab opens a preview. Nothing is sent. Disease code `XM4KN1` (Snake venom), from the WHO ICD-11 file. ICD-11 has no single snakebite category, so a coder must confirm it |
+| Odia | Checked | Added to `config/languages.json`, default waybill language, `verified: false`. One live dispatch on 30 Sep 2026 answered by `gemini-3.1-flash-lite` with a matching back-translation. Nobody who reads Odia has reviewed it |
 
 ## Engineering
 
@@ -52,7 +56,7 @@ Legend: Done = built and checked. Checked = tested or rendered in the build envi
 ## Known issues and open questions
 
 1. The exact submission cut-off time is unknown.
-2. Marathi, Hindi and Tamil text is unreviewed (`verified: false`). Nobody has reviewed it, and no reviewer name is recorded. The review pack is `docs/LANGUAGE_REVIEW.md`.
+2. Odia, Marathi, Hindi and Tamil text is unreviewed (`verified: false`). Nobody has reviewed it, and no reviewer name is recorded. The review pack is `docs/LANGUAGE_REVIEW.md`.
 3. The two comparison numbers "0 hours today" and "14 to 21 days" have no source. They carry an asterisk.
 4. `gemini-3.8-flash` appears in the key's model list but was not tested. `gemini-3.5-flash-lite` and `gemini-3.1-flash-lite` both answered live.
 5. Whether Firebase Hosting forwards to `asia-south1` was not confirmed.
@@ -65,10 +69,16 @@ Legend: Done = built and checked. Checked = tested or rendered in the build envi
 7. Doctor names are sample names.
 8. The name Sanket has not been checked as a trademark. Search it before printing it on the deck. Clinic names and coordinates are invented.
 
+15. The web model was hard-wired to the Maharashtra sample clinics. It now reads a data set (`web/src/datasets.js`). The Maharashtra file stays as a fixture so `npm run test:web` can still check the port against the design prototype. Tile order in that fixture is set by hand because the design has its own order.
+16. The map labels of clustered facilities are nudged apart in `model.js` so they stay readable. The visible pills still say "No doctor" and the legend "No doctor on duty" (from the design), while the stats and tooltips say "Medical officer". Not changed.
+17. `docs/CLAUDE.md` is an older copy of `CLAUDE.md` and is out of date.
+18. The federated card on the Impact tab now shows "State A" and "State B" (two invented states), because the earlier labels Maharashtra and Tamil Nadu implied real data.
+
 ## Change log
 
 | Date | Change |
 |---|---|
+| 30 Sep 2026 | Branch `mayurbhanj`: Mayurbhanj, Odisha becomes the default data set. New: `data/odisha-mayurbhanj.json`, `web/src/datasets.js`, `dataSource.js` (simulated or CSV), `telemetry.js`, "Simulated data" and "Imported data" labels, CSV import, telemetry preview, Odia, title "Sanket: early warning for essential medicines" with the subtitle "Mayurbhanj pilot", `docs/REAL_DATA.md`, `scripts/qa/shoot-mayurbhanj.mjs`. Named doctors removed from the new data and tooltips. New dev dependency `@fontsource/noto-sans-oriya`. Engine, API routes, prompts and rules untouched. Tests: 21 API, 29 web. Scans clean in light and dark. Not merged to main |
 | 30 Sep 2026 | Setup split again into three steps (district and role, language with the waybill preview, safety), with one card size on all three. Earlier the same day: setup split into two steps after the single setup card proved too heavy: step 1 district, role and language with the waybill preview, step 2 the safety acknowledgement. Splash unchanged. QA scripts updated |
 | 30 Sep 2026 | Onboarding simplified from 3 screens to a splash and one setup screen. Role added as a header label. Guided run removed from setup and offered as "Take a 30-second tour" on the dashboard. Dashboard is unreachable until setup is done, including via `#dashboard`. Logo clears setup. QA scripts in `scripts/qa/` updated for the new flow (dashboard scripts now seed the `sanket-setup` key). API, data and engine untouched |
 | 30 Sep 2026 | Onboarding approved and made the default entry. Guided run now has a spotlight. Frontend phase 2: the app calls `/api/dispatch` and `/api/warning-brief`, with an offline fallback. Warning-brief prompt tightened. `npm run test:web` added (17 tests). `docs/LANGUAGE_REVIEW.md` added. Accessibility-tree pass done. Not committed |

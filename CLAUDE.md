@@ -4,13 +4,13 @@ Read this first. It tells you what this project is, the rules that must not brea
 
 ## Name
 
-The app is called **Sanket** (संकेत), which means "signal". Use the name in the UI, docs and code. The descriptor "National Health Resource Command" stays as the subtitle. Dispatch IDs start with `SK-`. The Cloud Run service is `sanket-api`. Do not reintroduce the old working name.
+The app is called **Sanket** (संकेत), which means "signal". Use the name in the UI, docs and code. The header title is "Sanket: early warning for essential medicines" and the subtitle is the district ("Mayurbhanj pilot"). The old descriptor "National Health Resource Command" is retired. Dispatch IDs start with `SK-`. The Cloud Run service is `sanket-api`. Do not reintroduce the old working name.
 
 ## What this is
 
 Sanket warns a District Medical Officer (DMO) before a Primary Health Centre (PHC) in India runs out of a life-saving medicine, then recommends a safe clinic-to-clinic transfer for the DMO to approve. The demo uses anti-snake venom (ASV) in monsoon season. Built for Code for Communities 2.0, track: Resilience.
 
-All clinic, stock, bed and doctor data is sample data. Say so wherever data appears. Never present it as real.
+All facility, stock, bed and staffing data is **simulated**. Show the "Simulated data" label wherever those numbers appear ("Imported data: <file>" after a CSV import). Never present it as real. Never show a named doctor: use "Medical officer on duty" or "absent". Do not add badges that claim compliance or status (no "BRICS Resilience Node: Active", no "DPDP 2023 Federated"). Use "Designed for" wording for what is planned. The default data set is Mayurbhanj, Odisha (`data/odisha-mayurbhanj.json`). The Maharashtra and Tamil Nadu files are older fixtures kept for the design-parity and engine tests.
 
 ## Files to read
 
@@ -22,14 +22,15 @@ All clinic, stock, bed and doctor data is sample data. Say so wherever data appe
 | `PLAN.md` | What to do next and what to cut |
 | `PROGRESS.md` | What is done, checked and open |
 | `API_CONTRACT.md` | Request and response shapes the web app uses |
+| `REAL_DATA.md` | What was checked against public sources, what can be real, the CSV import and the telemetry code |
 | `ARCHITECTURE.md`, `README.md` | Google Cloud setup and run instructions |
 | `design/Main.dc.html` | The approved dashboard prototype (its 6-step onboarding is superseded). Read-only reference for layout, copy, states and tokens. It is a Claude Design file with its own runtime, so it cannot be deployed. Port it, do not edit it |
 
 ## Commands
 
 ```bash
-npm test          # 16 API tests, no API key needed
-npm run test:web  # 17 web model tests, no API key needed
+npm test          # 21 API tests, no API key needed
+npm run test:web  # 29 web model tests, no API key needed
 npm start         # API on http://localhost:8080 (needs GEMINI_API_KEY for live Gemini)
 npm run dev:web   # web app on http://localhost:5173, /api proxied to the API on 8080
 npm run build     # web app to dist/, served by Cloud Run
@@ -61,7 +62,7 @@ The primary model is `gemini-3.5-flash-lite`, set by `GEMINI_MODEL`. The fallbac
 ## Product decisions already made
 
 - Sanket is a **desktop web app**. The layout is fixed at 1440 px wide by decision. Do not build a responsive or mobile layout. Show a short note "Best viewed on a desktop browser, 1440 px or wider" and let smaller windows scroll sideways.
-- The onboarding is **a splash, a three-step setup and an optional tour** (decision 30 Sep 2026), and it is the default entry. The old 6-step flow in `design/Main.dc.html` and the 3-screen version are superseded and must not be ported. (1) A splash: the logo, one line on what the app does, "Get started". (2) Setup, three steps on one card that keeps the same size on every step: step 1 district (District A, current) and role (District Medical Officer preselected, plus Facility in-charge and State programme officer); step 2 language with the real waybill and its "not yet reviewed by a native speaker" chip; step 3 one safety acknowledgement, then "Open dashboard". The role is only a label in the header and changes nothing. The dashboard is not mounted until setup is done and no URL opens it, including `#dashboard`. Pressing the logo anywhere clears the setup flag (`localStorage` key `sanket-setup`) and returns to the splash. The 30-second tour is a "Take a 30-second tour" button on the dashboard. Sign-in is simulated and must be labelled. Onboarding uses Frontend Design plus UI/UX Pro Max. The design record is `DESIGN.md`, section 13.
+- The onboarding is **a splash, a three-step setup and an optional tour** (decision 30 Sep 2026), and it is the default entry. The old 6-step flow in `design/Main.dc.html` and the 3-screen version are superseded and must not be ported. (1) A splash: the logo, one line on what the app does, "Get started". (2) Setup, three steps on one card that keeps the same size on every step: step 1 district (Mayurbhanj, Odisha, current) and role (District Medical Officer preselected, plus Facility in-charge and State programme officer); step 2 language with the real waybill and its "not yet reviewed by a native speaker" chip; step 3 one safety acknowledgement, then "Open dashboard". The role is only a label in the header and changes nothing. The dashboard is not mounted until setup is done and no URL opens it, including `#dashboard`. Pressing the logo anywhere clears the setup flag (`localStorage` key `sanket-setup`) and returns to the splash. The 30-second tour is a "Take a 30-second tour" button on the dashboard. Sign-in is simulated and must be labelled. Odia is the default waybill language, and it is unreviewed like Marathi, Hindi and Tamil. Onboarding uses Frontend Design plus UI/UX Pro Max. The design record is `DESIGN.md`, section 13.
 - The visual design is locked. Port it faithfully first. Polish comes after it works.
 
 ## Frontend build
@@ -70,7 +71,7 @@ The web app lives in `web/` (Vite and React). `npm run build` writes to `dist/`,
 
 Build in phases. Finish and check each phase before starting the next:
 
-1. **Port.** Done. The approved dashboard is in `web/`, in both themes and every dashboard state. It must keep matching `design/Main.dc.html` (`npm run test:web` checks the model against the design file).
+1. **Port.** Done. The approved dashboard is in `web/`, in both themes and every dashboard state. It must keep matching `design/Main.dc.html` (`npm run test:web` checks the model against the design file, using the Maharashtra fixture in `web/src/datasets.js`). The model reads its facilities from a data set (`datasets.js`), and `dataSource.js` chooses between the simulated file and an imported CSV.
 2. **Wire.** Done. `/api/dispatch` and `/api/warning-brief` feed the waybill, reasons, dispatch number and warning brief (see `API_CONTRACT.md`). The app shows the template and "Offline fallback used" if a call fails. On-screen numbers stay computed in the browser.
 3. **Check.** Done for the current build: run against the API and with it stopped, in light and dark, `npm test` and `npm run test:web`. Repeat after every change.
 4. **Deploy.** Follow the README.

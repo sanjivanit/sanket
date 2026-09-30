@@ -58,8 +58,8 @@ export function Place({ role, setRole, onNext, onBack, gate }) {
         <div>
           <div className="group-label" id="s-district">Your district</div>
           <div className="opts" role="radiogroup" aria-labelledby="s-district">
-            <Option checked onSelect={() => {}} title="District A" desc="8 clinics, where the surge happens." tag="Current" tagColor="var(--acc-t)" />
-            <Option checked={false} disabled title="District B" desc="3 clinics. The next district." tag="Roadmap" tagColor="var(--muted)" />
+            <Option checked onSelect={() => {}} title="Mayurbhanj, Odisha" desc="6 facilities. Simulated data." tag="Current" tagColor="var(--acc-t)" />
+            <Option checked={false} disabled title="Other districts" desc="Not in this pilot." tag="Roadmap" tagColor="var(--muted)" />
           </div>
         </div>
         <div>

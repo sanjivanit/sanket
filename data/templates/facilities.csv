@@ -1,0 +1,3 @@
+facility_name,block,latitude,longitude,asv_stock,baseline_burn_per_day,beds_total,beds_occupied,doctor_on_duty,batch_number,expiry_date
+EXAMPLE facility A (replace this row),Example block,21.90,86.70,8,2,10,8,yes,,
+EXAMPLE facility B (replace this row),Example block,21.80,86.60,40,3,16,6,yes,,

@@ -1,6 +1,6 @@
-# Language review pack: Marathi, Hindi, Tamil
+# Language review pack: Odia, Marathi, Hindi, Tamil
 
-Status on 30 Sep 2026: **not reviewed.** No native speaker has read these templates. The app marks all three "Not yet reviewed by a native speaker" until that changes. This file is the whole job for the reviewer. It should take about 10 minutes per language.
+Status on 30 Sep 2026: **not reviewed.** No native speaker has read these templates. The app marks all four "Not yet reviewed by a native speaker" until that changes. Odia was added on 30 Sep 2026 for the Mayurbhanj pilot and is the default language. This file is the whole job for the reviewer. It should take about 10 minutes per language.
 
 Why it matters: this text goes on a waybill that a person may follow to move anti-snake venom. Code, not Gemini, writes the drug name, the vial count and the temperature (rule 1 in `CLAUDE.md`), so a reviewer is checking a fixed sentence, not open-ended text.
 
@@ -9,6 +9,15 @@ Why it matters: this text goes on a waybill that a person may follow to move ant
 The waybill sentence is a template in `config/languages.json`. Three things fill it in: the donor clinic, the recipient clinic and the number of vials. The temperature range is always 2 to 8 °C.
 
 The reviewer does not need to read code. The sentences below are what appears on screen.
+
+### Odia (or)
+
+| Case | Sentence on the waybill |
+|---|---|
+| 14 vials | CHC Betnoti ରୁ PHC Badasahi କୁ 14 ଶିଶି ଆଣ୍ଟି-ସ୍ନେକ ଭେନମ୍ (ASV) ପହଞ୍ଚାନ୍ତୁ। 2 ରୁ 8 °C ତାପମାତ୍ରା ରଖନ୍ତୁ। |
+| 1 vial | CHC Betnoti ରୁ PHC Badasahi କୁ 1 ଶିଶି ଆଣ୍ଟି-ସ୍ନେକ ଭେନମ୍ (ASV) ପହଞ୍ଚାନ୍ତୁ। 2 ରୁ 8 °C ତାପମାତ୍ରା ରଖନ୍ତୁ। |
+
+Word parts: vial `ଶିଶି` (same singular and plural), range word `ରୁ`. The template was written by an AI model and has not been read by anyone who speaks Odia. Check especially the postpositions `ରୁ` (from) and `କୁ` (to), whether `ଶିଶି` is the word a nurse would use for a vial, and the transliteration of "anti-snake venom".
 
 ### Marathi (mr)
 

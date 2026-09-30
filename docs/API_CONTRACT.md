@@ -7,7 +7,7 @@ The web app calls the same-origin path `/api/...`. Firebase Hosting forwards it 
 No Supabase and no other backend. All AI calls go to the paths below with `fetch`. Keep the on-screen numbers (days of supply, vials needed) computed in the browser from the same rules as `server/engine.js`; the API result is the source of truth for the donor, vial count, waybill and IDs.
 
 1. `POST /api/dispatch`
-   Body: `{ "stateCode": "MH", "clinics": [ ...all clinics with today's footfall ], "recipientId": "MH-01", "language": "mr", "counter": 1 }`
+   Body: `{ "stateCode": "OD", "clinics": [ ...all facilities with today's footfall ], "recipientId": "OD-01", "language": "or", "counter": 1 }`
    Response fields to show: `status` (`recommended`, `no_transfer_needed`, `no_donor`), `tier`, `approvalsRequired`, `donor` (`name`, `distanceKm`, `etaMinutes`, `keepsDaysAfter`), `vials`, `batchNumber`, `expiryDate`, `coldChain`, `waybill.english`, `waybill.local`, `waybill.languageName`, `waybill.languageVerified`, `waybill.backTranslation.instruction.english`, `reasoning.english`, `dispatchId`, `restockToken`, `source`, `rejected`.
    Show a green chip "English back-translation matches" only when `backTranslation.instruction` exists. If `languageVerified` is false show a grey chip "Not yet reviewed by a native speaker".
 2. `POST /api/warning-brief` with `{ "clinic": {...}, "history": [14 daily footfall numbers], "threshold": 0.129 }`. Show `brief.headline`, `brief.explanation`.
@@ -19,4 +19,6 @@ There is no API key field anywhere in the app.
 
 ## Data contract for each clinic
 
-`id, name, stateCode, districtId, lat, lng, stock, baselineBurn, bedsTotal, bedsOcc, doctorOnDuty, doctorName, baselineFootfall, footfallToday, batchNumber, expiryDate`. See `data/maharashtra.json`.
+`id, name, stateCode, districtId, lat, lng, stock, baselineBurn, bedsTotal, bedsOcc, doctorOnDuty, baselineFootfall, footfallToday, batchNumber, expiryDate`. See `data/odisha-mayurbhanj.json` (the default). `doctorName` is no longer part of the contract: the server never used it and no screen shows it (the older `data/maharashtra.json` still has it). The web app sends only these fields, so extra fields in a data file (`block`, `coordinates`, `sources`) stay in the browser. In the Mayurbhanj file `lat` and `lng` are approximate, see `docs/REAL_DATA.md`.
+
+`stateCode` can be any short code. Dispatch IDs are `SK-<year>-<stateCode>-<counter>`, for example `SK-2026-OD-0001`. `language` also accepts `or` (Odia), which is unreviewed like the other local languages.

@@ -1,4 +1,5 @@
-import { Ring, BedSquares, DocPill, SupplyBar } from './shared.jsx';
+import { Ring, BedSquares, DocPill, SupplyBar, DataLabel } from './shared.jsx';
+import DataSourceControl from './DataSourceControl.jsx';
 
 const VIEWS = [{ key: 'tiles', label: 'Tiles' }, { key: 'table', label: 'Table' }, { key: 'charts', label: 'Charts' }];
 
@@ -26,12 +27,13 @@ function Tile({ c, extra }) {
   );
 }
 
-function DistrictB({ rows, open, onToggle, table }) {
+function DistrictB({ rows, open, onToggle, table, district }) {
+  if (rows.length === 0) return null;
   return (
     <div style={table ? { marginTop: 16 } : undefined}>
       <button type="button" className="disclose" style={table ? { paddingTop: 13, paddingBottom: 13 } : { marginTop: 12 }} onClick={onToggle} aria-expanded={open}>
-        <span className="a" style={table ? { fontSize: 16 } : undefined}>District B</span>
-        <span className="b">3 clinics, searched only if District A cannot cover the need</span>
+        <span className="a" style={table ? { fontSize: 16 } : undefined}>Next district</span>
+        <span className="b">{rows.length} facilities, searched only if {district} cannot cover the need</span>
         <span className="grow" />
         <span className="c">{open ? 'Hide' : 'Show'}</span>
       </button>
@@ -78,7 +80,7 @@ function Charts({ v }) {
     <div>
       <div className="charts2">
         <div>
-          <div style={{ fontSize: 14, fontWeight: 600 }}>Days of supply by clinic</div>
+          <div style={{ fontSize: 14, fontWeight: 600 }}>Days of supply by facility</div>
           <div className="fine" style={{ margin: '2px 0 10px' }}>Ticks at 1 and 3 days</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {v.chartSup.map((r) => (
@@ -91,7 +93,7 @@ function Charts({ v }) {
           </div>
         </div>
         <div>
-          <div style={{ fontSize: 14, fontWeight: 600 }}>Beds in use by clinic</div>
+          <div style={{ fontSize: 14, fontWeight: 600 }}>Beds in use by facility</div>
           <div className="fine" style={{ margin: '2px 0 10px' }}>Tick at 85%. Donors must stay below it</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {v.chartBeds.map((r) => (
@@ -105,7 +107,7 @@ function Charts({ v }) {
         </div>
       </div>
       <div style={{ marginTop: 20 }}>
-        <div style={{ fontSize: 14, fontWeight: 600 }}>Rampur days of supply through the surge</div>
+        <div style={{ fontSize: 14, fontWeight: 600 }}>{v.names.target} days of supply through the surge</div>
         <svg width="100%" viewBox="0 0 796 150" style={{ display: 'block', marginTop: 6 }} role="img" aria-label={s.aria}>
           <line x1="30" y1="112" x2="766" y2="112" style={{ stroke: 'var(--rule2)' }} strokeWidth="1" />
           <line x1="30" y1={s.y3} x2="766" y2={s.y3} style={{ stroke: 'var(--warn)' }} strokeWidth="1" strokeDasharray="4 4" />
@@ -122,13 +124,14 @@ function Charts({ v }) {
   );
 }
 
-export default function Clinics({ v, view, setView, showB, setShowB }) {
+export default function Clinics({ v, view, setView, showB, setShowB, source }) {
   const toggleB = () => setShowB(!showB);
   return (
     <div className="panel">
       <div className="panel-head">
-        <div className="t"><h2 className="h2">Clinics</h2><span className="muted" style={{ fontSize: 13 }}>District A, 8 clinics</span></div>
-        <div className="seg" role="group" aria-label="Clinic view">
+        <div className="t"><h2 className="h2">Facilities</h2><span className="muted" style={{ fontSize: 13 }}>{v.place.district}, {v.place.sameDistrict} facilities</span><DataLabel source={v.source} /></div>
+        <DataSourceControl {...source} />
+        <div className="seg" role="group" aria-label="Facility view">
           {VIEWS.map((o) => <button type="button" className="wide" key={o.key} aria-pressed={view === o.key} onClick={() => setView(o.key)}>{o.label}</button>)}
         </div>
       </div>
@@ -136,14 +139,14 @@ export default function Clinics({ v, view, setView, showB, setShowB }) {
         {view === 'tiles' && (
           <div>
             <div className="tiles">{v.rowsA.map((c) => <Tile key={c.name} c={c} />)}</div>
-            <DistrictB rows={v.rowsB} open={showB} onToggle={toggleB} />
+            <DistrictB rows={v.rowsB} open={showB} onToggle={toggleB} district={v.place.district} />
           </div>
         )}
         {view === 'table' && (
           <div>
-            <div className="trow head"><div>Clinic</div><div>Supply</div><div>Stock, ticks at 1 and 3 days</div><div>Beds</div><div>Doctor</div></div>
+            <div className="trow head"><div>Facility</div><div>Supply</div><div>Stock, ticks at 1 and 3 days</div><div>Beds</div><div>Doctor</div></div>
             {v.rowsA.map((c) => <TableRow key={c.name} c={c} withStatus />)}
-            <DistrictB rows={v.rowsB} open={showB} onToggle={toggleB} table />
+            <DistrictB rows={v.rowsB} open={showB} onToggle={toggleB} table district={v.place.district} />
           </div>
         )}
         {view === 'charts' && <Charts v={v} />}

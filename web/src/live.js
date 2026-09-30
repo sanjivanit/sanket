@@ -1,8 +1,7 @@
 // Merges API answers into the scripted view. The scripted model computes the on-screen numbers; the API is the
 // source of truth for the donor, vial count, waybill text, dispatch ID and the written reasons.
 import { vials } from './model.js';
-
-const short = (name) => String(name || '').replace('PHC ', '');
+import { shortName as short } from './datasets.js';
 
 export function noteFor(status, source, model) {
   if (status === 'loading') return { text: 'Asking Gemini', tone: 'muted' };
@@ -29,6 +28,7 @@ export function applyLive(v, live, approved) {
       ...v.wb,
       vials: vials(r.vials),
       number: approved ? r.dispatchId : v.wb.number,
+      batch: r.batchNumber || v.wb.batch,
       english: wbApi.english || v.wb.english,
       showLocal: !!(local && wbApi.local),
       langCode: wbApi.languageCode || v.wb.langCode,
@@ -37,7 +37,7 @@ export function applyLive(v, live, approved) {
       chips,
     };
     const donor = short(r.donor && r.donor.name);
-    out.route = { donor, vials: vials(r.vials), sub: `${r.donor.distanceKm} km, about ${r.donor.etaMinutes} min`, donorDiffers: donor !== 'Shivpuri' };
+    out.route = { donor, vials: vials(r.vials), sub: `${r.donor.distanceKm} km, about ${r.donor.etaMinutes} min`, donorDiffers: donor !== v.names.donor };
     out.reasoning = { english: (r.reasoning && r.reasoning.english) || '', guardrail: r.guardrail || null };
     out.rejectedTags = (r.rejected || []).map((x) => ({ text: `${short(x.name)}: ${x.reason}`, color: /doctor/.test(x.reason) ? 'var(--doc-t)' : 'var(--crit-t)' }));
     out.logLines = v.logLines.map((l) => (/Gemini picked/.test(l.text)

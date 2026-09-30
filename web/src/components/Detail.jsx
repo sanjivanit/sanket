@@ -21,7 +21,7 @@ function Forecast({ v }) {
       <svg width="100%" viewBox="0 0 512 200" role="img" aria-label={c.aria}>
         <line x1="36" y1="160" x2="476" y2="160" style={{ stroke: 'var(--rule2)' }} strokeWidth="1" />
         <line x1="36" y1={c.baseY} x2="476" y2={c.baseY} style={{ stroke: 'var(--rule3)' }} strokeWidth="1" strokeDasharray="2 4" />
-        <text x="40" y={c.baseLabelY} style={{ fill: 'var(--muted)' }} fontSize="12">Normal: 20</text>
+        <text x="40" y={c.baseLabelY} style={{ fill: 'var(--muted)' }} fontSize="12">Normal: {v.baseFoot}</text>
         <line x1={c.warnX} y1="14" x2={c.warnX} y2="160" style={{ stroke: 'var(--warn)', opacity: c.warnOp }} strokeWidth="1" strokeDasharray="4 3" />
         <text x={c.warnLabelX} y="24" style={{ fill: 'var(--warn-t)', opacity: c.warnOp }} fontSize="12" textAnchor="end">Early warning</text>
         <polyline points={c.hist} fill="none" style={{ stroke: 'var(--text)' }} strokeWidth="2" />
@@ -50,7 +50,7 @@ export function Waybill({ v }) {
         <div style={{ flexGrow: 1, minWidth: 0 }}>
           <div className="wb-chips">
             <span className="chip solid">{w.vials}</span>
-            <span className="chip solid">Batch ASV-26-B</span>
+            <span className="chip solid">Batch {w.batch}</span>
             <span className="chip solid" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><Snowflake size={12} weight="bold" color="var(--acc)" aria-hidden="true" />2 to 8 °C</span>
             <span className="chip solid">{w.number}</span>
           </div>
@@ -82,7 +82,7 @@ export function Waybill({ v }) {
   );
 }
 
-function Impact({ v }) {
+function Impact({ v, onTelemetry }) {
   return (
     <div style={{ paddingTop: 16 }}>
       <div style={{ fontSize: 14, fontWeight: 600 }}>What Sanket changes</div>
@@ -98,14 +98,14 @@ function Impact({ v }) {
       <div className="fine" style={{ marginTop: 10 }}>* Assumption, source needed.</div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 12, marginTop: 22 }}>
         <span style={{ fontSize: 14, fontWeight: 600 }}>Shared across states</span>
-        <span className="fine">Clinic records never leave a state. Simulated in this demo.</span>
+        <span className="fine">Designed for states to share only a threshold. Two invented states, simulated in this demo.</span>
       </div>
-      <svg width="100%" viewBox="0 0 480 112" style={{ display: 'block', marginTop: 8 }} role="img" aria-label="Maharashtra shares a warning threshold of 12 percent and Tamil Nadu 18 percent. The national average is 13.9 percent. Maharashtra now uses 12.9 percent.">
+      <svg width="100%" viewBox="0 0 480 112" style={{ display: 'block', marginTop: 8 }} role="img" aria-label="Simulated example. State A shares a warning threshold of 12 percent and State B 18 percent. The average is 13.9 percent. State A now uses 12.9 percent.">
         <rect x="0.5" y="6.5" width="150" height="44" rx="8" style={{ fill: 'var(--panel3)', stroke: 'var(--rule2)' }} />
-        <text x="12" y="24" style={{ fill: 'var(--muted)' }} fontSize="12">Maharashtra</text>
+        <text x="12" y="24" style={{ fill: 'var(--muted)' }} fontSize="12">State A</text>
         <text x="12" y="42" style={{ fill: 'var(--text)' }} fontSize="14" fontWeight="700">12.0%</text>
         <rect x="0.5" y="62.5" width="150" height="44" rx="8" style={{ fill: 'var(--panel3)', stroke: 'var(--rule2)' }} />
-        <text x="12" y="80" style={{ fill: 'var(--muted)' }} fontSize="12">Tamil Nadu</text>
+        <text x="12" y="80" style={{ fill: 'var(--muted)' }} fontSize="12">State B</text>
         <text x="12" y="98" style={{ fill: 'var(--text)' }} fontSize="14" fontWeight="700">18.0%</text>
         <line x1="150" y1="28" x2="211" y2="45" style={{ stroke: 'var(--rule3)' }} strokeWidth="2" strokeLinecap="round" />
         <polygon points="218,46 209.3,47.8 211.3,40.1" style={{ fill: 'var(--rule3)' }} />
@@ -117,14 +117,18 @@ function Impact({ v }) {
         <line x1="286" y1="56" x2="332" y2="56" style={{ stroke: 'var(--acc)' }} strokeWidth="2" strokeLinecap="round" />
         <polygon points="340,56 332,52 332,60" style={{ fill: 'var(--acc)' }} />
         <rect x="340.5" y="34.5" width="139" height="44" rx="8" style={{ fill: 'var(--acc-bg)', stroke: 'var(--acc)' }} />
-        <text x="352" y="52" style={{ fill: 'var(--muted)' }} fontSize="12">Maharashtra uses</text>
+        <text x="352" y="52" style={{ fill: 'var(--muted)' }} fontSize="12">State A uses</text>
         <text x="352" y="70" style={{ fill: 'var(--acc-t)' }} fontSize="14" fontWeight="700">12.9%</text>
       </svg>
+      <div style={{ marginTop: 14 }}>
+        <button type="button" className="btn-line" onClick={onTelemetry}>Export anonymised telemetry</button>
+        <span className="fine" style={{ marginLeft: 10 }}>Preview only. Nothing is sent.</span>
+      </div>
     </div>
   );
 }
 
-export default function Detail({ v, tab, setTab }) {
+export default function Detail({ v, tab, setTab, onTelemetry }) {
   return (
     <div className="detail">
       <div className="tabs">
@@ -133,7 +137,7 @@ export default function Detail({ v, tab, setTab }) {
       {tab === 'forecast' && <Forecast v={v} />}
       {tab === 'waybill' && <Waybill v={v} />}
       {tab === 'log' && <div className="log">{v.logLines.map((l, i) => <div key={i} className={l.latest ? 'latest' : undefined}>{l.text}</div>)}</div>}
-      {tab === 'impact' && <Impact v={v} />}
+      {tab === 'impact' && <Impact v={v} onTelemetry={onTelemetry} />}
     </div>
   );
 }

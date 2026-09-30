@@ -41,7 +41,7 @@ If Gemini fails or takes over 8 seconds, a template waybill is returned and the 
 | `prompts/` | **Prompt configs**: one system prompt per Gemini job |
 | `schemas/` | JSON schemas that force Gemini's structured output |
 | `config/` | `rules.json` (thresholds) and `languages.json` (waybill templates and review status) |
-| `data/` | Sample clinics for Maharashtra and Tamil Nadu, surge scenarios, federated inputs |
+| `data/` | Simulated facilities for Mayurbhanj, Odisha (the default), a CSV template in `data/templates/`, older Maharashtra and Tamil Nadu fixtures used by tests, surge scenarios, federated inputs |
 | `test/` | 16 API tests (rules, guardrails, fallback, federated maths) and 17 web tests (the dashboard model against the design, and live API answers) |
 | `web/` | The React web app (Vite): dashboard, splash and setup onboarding, and the calls to the API |
 | `design/` | The approved design prototype (`Main.dc.html`), kept as a read-only reference |

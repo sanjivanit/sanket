@@ -11,6 +11,17 @@
    ],
    "rangeWord": "to"
   },
+  "or": {
+   "name": "Odia",
+   "verified": false,
+   "reviewer": null,
+   "instruction": "{donor} ରୁ {recipient} କୁ {vials} ଆଣ୍ଟି-ସ୍ନେକ ଭେନମ୍ (ASV) ପହଞ୍ଚାନ୍ତୁ। {temp} °C ତାପମାତ୍ରା ରଖନ୍ତୁ।",
+   "vialWord": [
+    "ଶିଶି",
+    "ଶିଶି"
+   ],
+   "rangeWord": "ରୁ"
+  },
   "mr": {
    "name": "Marathi",
    "verified": false,

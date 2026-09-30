@@ -8,6 +8,8 @@ import '@fontsource/ibm-plex-mono/latin-400.css';
 import '@fontsource/noto-sans-devanagari/devanagari-400.css';
 import '@fontsource/noto-sans-devanagari/devanagari-600.css';
 import '@fontsource/noto-sans-tamil/tamil-400.css';
+import '@fontsource/noto-sans-oriya/oriya-400.css';
+import '@fontsource/noto-sans-oriya/oriya-600.css';
 import './styles.css';
 import App from './App.jsx';
 

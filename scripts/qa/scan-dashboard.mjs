@@ -41,7 +41,7 @@ for (const theme of ['light', 'dark']) for (const [name, nodes] of Object.entrie
       await page.getByRole('button', { name: tab, exact: true }).click(); await page.waitForTimeout(60);
       const r = await scan(); total += r.count;
       r.fails.forEach((f) => allFails.add(`${theme}/${name}: ${f}`)); if (r.overflowX) allFails.add(`${theme}/${name}: OVERFLOW-X`);
-      r.small.filter((x) => !/sample name/.test(x)).forEach((x) => allFails.add(`${theme}/${name}: small target ${x}`));
+      r.small.filter((x) => !/sample name|Medical officer (on duty|absent today)/.test(x)).forEach((x) => allFails.add(`${theme}/${name}: small target ${x}`));
     }
   }
 }

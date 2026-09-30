@@ -48,4 +48,10 @@ export function SupplyBar({ pct, color }) {
   );
 }
 
+// Says where the numbers on screen come from. Stock, beds and staffing are never shown without it.
+export function DataLabel({ source }) {
+  const imported = source && source.mode === 'csv';
+  return <span className={'data-label' + (imported ? ' imported' : '')}>{imported ? 'Imported data: ' + source.fileName : 'Simulated data'}</span>;
+}
+
 export const Tick = () => <Check size={12} weight="bold" color="var(--acc-on)" aria-hidden="true" />;

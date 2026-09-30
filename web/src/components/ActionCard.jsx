@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import { Tick } from './shared.jsx';
+import { Tick, DataLabel } from './shared.jsx';
 
 export function ActionCard({ v, why, setWhy, onApprove, onReject, onDeliver }) {
   const a = v.alert;
@@ -22,19 +22,19 @@ export function ActionCard({ v, why, setWhy, onApprove, onReject, onDeliver }) {
       {v.showPlan && (
         <div className="plan" style={{ borderTopColor: a.bd }}>
           <div className="plan-head">
-            <div className="title">{v.planTitle}</div>
+            <div className="title">{v.planTitle} <DataLabel source={v.source} /></div>
             {v.live.note && <span className={'src ' + v.live.note.tone} role="status">{v.live.note.text}</span>}
           </div>
           <div className="route">
             <span className="dot" style={{ background: 'var(--ok)' }} />
-            <span className="nm">{v.route ? v.route.donor : 'Shivpuri'}</span>
+            <span className="nm">{v.route ? v.route.donor : v.names.donor}</span>
             <div className="ln" />
             <span className="vl">{v.route && v.routeVials !== 'Standby' ? v.route.vials : v.routeVials}</span>
             <div className="ln" />
-            <span className="nm">Rampur</span>
+            <span className="nm">{v.names.target}</span>
             <span className="dot" style={{ background: v.map.arc.color }} />
           </div>
-          <div className="route-sub">{v.route ? v.route.sub : '18.4 km, about 28 min'}</div>
+          <div className="route-sub">{v.route ? v.route.sub : `${v.callout.dist === '-' ? '' : v.callout.dist + ', '}about ${v.callout.eta === '-' ? '' : v.callout.eta}`}</div>
 
           <div style={{ marginTop: 14 }}>
             <div className="vials" style={{ marginTop: 0 }}>
@@ -46,7 +46,7 @@ export function ActionCard({ v, why, setWhy, onApprove, onReject, onDeliver }) {
           <div className="act-row">
             {v.showApprove && (
               <>
-                <button type="button" className="btn-primary" onClick={onApprove} disabled={v.approveOff}>Approve as DMO, District A</button>
+                <button type="button" className="btn-primary" onClick={onApprove} disabled={v.approveOff}>Approve as DMO, {v.place.district}</button>
                 <button type="button" className="btn-line roomy" onClick={onReject}>Reject</button>
               </>
             )}
@@ -54,7 +54,7 @@ export function ActionCard({ v, why, setWhy, onApprove, onReject, onDeliver }) {
             <span className="act-note">{v.actionNote}</span>
           </div>
 
-          {v.showBedNote && <div className="bed-note">▲ Rampur beds are 88% full. Plan to refer overflow patients.</div>}
+          {v.showBedNote && v.targetBedsPct >= 80 && <div className="bed-note">▲ {v.names.target} beds are {v.targetBedsPct}% full. Plan to refer overflow patients.</div>}
 
           <button type="button" className="link-btn" style={{ marginTop: 4 }} onClick={() => setWhy(!why)} aria-expanded={why}>
             {why ? 'Hide details' : 'Details: what changes, and why this donor'}
@@ -62,7 +62,7 @@ export function ActionCard({ v, why, setWhy, onApprove, onReject, onDeliver }) {
           {why && (
             <div>
               {v.reasoning && v.reasoning.english && (
-                <p className="why-text">{v.reasoning.english}{v.reasoning.guardrail ? ' ' + v.reasoning.guardrail : ''}{v.route && v.route.donorDiffers ? ' The map above shows Shivpuri, the nearest donor.' : ''}</p>
+                <p className="why-text">{v.reasoning.english}{v.reasoning.guardrail ? ' ' + v.reasoning.guardrail : ''}{v.route && v.route.donorDiffers ? ' The map above shows ' + v.names.donor + ', the nearest donor.' : ''}</p>
               )}
               {v.showBA && (
                 <div className="ba">

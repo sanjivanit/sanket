@@ -40,8 +40,8 @@
 .opt .radio { display: block; flex: 0 0 auto; width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--rule3); }
 .opt[aria-checked="true"] .radio { border-color: var(--acc); background: var(--acc); box-shadow: inset 0 0 0 4px var(--panel); }
 .opt .txt { flex: 1 1 0; min-width: 0; }
-.opt .t { display: block; font-size: 15px; font-weight: 600; font-family: 'Public Sans', 'Noto Sans Devanagari', 'Noto Sans Tamil', sans-serif; }
-.opt[lang="mr"] .t, .opt[lang="hi"] .t, .opt[lang="ta"] .t { font-family: 'Noto Sans Devanagari', 'Noto Sans Tamil', 'Public Sans', sans-serif; font-size: 16px; }
+.opt .t { display: block; font-size: 15px; font-weight: 600; font-family: 'Public Sans', 'Noto Sans Devanagari', 'Noto Sans Tamil', 'Noto Sans Oriya', sans-serif; }
+.opt[lang="mr"] .t, .opt[lang="hi"] .t, .opt[lang="ta"] .t, .opt[lang="or"] .t { font-family: 'Noto Sans Devanagari', 'Noto Sans Tamil', 'Noto Sans Oriya', 'Public Sans', sans-serif; font-size: 16px; }
 .opt .d { display: block; font-size: 13px; line-height: 1.4; color: var(--muted); margin-top: 1px; }
 
 

@@ -5,6 +5,7 @@ import { fetchDispatch } from '../api.js';
 import { applyLive } from '../live.js';
 
 export const LANGS = [
+  { key: 'or', label: 'ଓଡ଼ିଆ', name: 'Odia, used in Odisha' },
   { key: 'en', label: 'English', name: 'English' },
   { key: 'mr', label: 'मराठी', name: 'Marathi, used in Maharashtra' },
   { key: 'hi', label: 'हिन्दी', name: 'Hindi, used across many states' },
@@ -41,7 +42,7 @@ export function WaybillPreview({ lang }) {
   const v = useMemo(() => applyLive(base, { dispatch: res.lang === lang ? res : { status: 'loading' } }, false), [base, res, lang]);
   return (
     <div className="wb-live">
-      <div className="cap"><span className="group-label" style={{ marginBottom: 0 }}>Waybill preview</span>{v.live.note ? <span className={'src ' + v.live.note.tone}>{v.live.note.text}</span> : <span className="fine">Sample data</span>}</div>
+      <div className="cap"><span className="group-label" style={{ marginBottom: 0 }}>Waybill preview</span>{v.live.note ? <span className={'src ' + v.live.note.tone}>{v.live.note.text}</span> : <span className="fine">Simulated data</span>}</div>
       <div aria-live="polite" aria-atomic="true">
         <div key={lang} className="fade"><Waybill v={v} /></div>
       </div>

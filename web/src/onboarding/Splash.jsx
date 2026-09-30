@@ -19,7 +19,7 @@ export default function Splash({ onHome, onStart, theme, setTheme }) {
         </h1>
         <p className="line">Warns your district before a clinic runs out of anti-snake venom, then recommends a safe transfer for you to approve.</p>
         <button type="button" className="ob-btn primary big" onClick={onStart}>Get started</button>
-        <p className="fine">Sample data. Not for clinical use.</p>
+        <p className="fine">Simulated data. Not for clinical use.</p>
       </main>
     </div>
   );

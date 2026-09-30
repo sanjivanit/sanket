@@ -4,6 +4,10 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { buildView, INITIAL, actions } from '../web/src/model.js';
 import { applyLive } from '../web/src/live.js';
+import { MH, MBJ } from '../web/src/datasets.js';
+import { loadDataset, facilitiesFromCsv, COLUMNS } from '../web/src/dataSource.js';
+import { buildTelemetry, TELEMETRY_KEYS, isoWeek } from '../web/src/telemetry.js';
+import * as E from '../server/engine.js';
 
 // Run the design prototype's own state logic (design/Main.dc.html) with a stub base class, so the port is
 // checked against the source of truth rather than against numbers copied by hand.
@@ -28,7 +32,7 @@ const STATES = {
 
 for (const [name, st] of Object.entries(STATES)) {
   test(`model matches the design: ${name}`, () => {
-    const o = design(st), v = buildView(st, 'mr');
+    const o = design(st), v = buildView(st, 'mr', MH);
     const pick = (obj, keys) => keys.map((k) => swap(obj[k])).join('|');
     assert.equal(pick(v.alert, ['big', 'unit', 'head', 'sub', 'fg', 'bg', 'ecg']), pick(o.alert, ['big', 'unit', 'head', 'sub', 'fg', 'bg', 'ecg']));
     assert.equal(v.topBar, o.topBar);
@@ -57,7 +61,7 @@ for (const [name, st] of Object.entries(STATES)) {
 }
 
 test('the scripted timeline and the API engine agree on vials: 0, 0, 1, 5, 16', () => {
-  assert.deepEqual([0, 1, 2, 3, 4].map((step) => buildView({ ...INITIAL, step }).need), [0, 0, 1, 5, 16]);
+  assert.deepEqual([0, 1, 2, 3, 4].map((step) => buildView({ ...INITIAL, step }, 'mr', MH).need), [0, 0, 1, 5, 16]);
 });
 
 test('actions: the demo timeline nodes map to the right state', () => {
@@ -75,7 +79,7 @@ const reply = (over = {}) => ({
   rejected: [{ name: 'PHC Bhor', reason: 'doctor absent' }, { name: 'PHC Junnar', reason: 'too far' }],
   ...over,
 });
-const base = buildView(STATES.critical, 'mr');
+const base = buildView(STATES.critical, 'mr', MH);
 
 test('live: a Gemini answer replaces the template and keeps the safety chips', () => {
   const v = applyLive(base, { dispatch: { status: 'ready', data: reply() } }, false);
@@ -130,4 +134,131 @@ test('live: a brief that does not fire shows nothing, one that fires shows its s
   const b = applyLive(base, { brief: { status: 'ready', data: { fires: true, source: 'gemini', brief: { headline: 'Early warning', explanation: 'x', suggestedAction: 'Watch' } } } }, false).live.brief;
   assert.equal(b.source, 'gemini');
   assert.equal(b.headline, 'Early warning');
+});
+
+// ---- Mayurbhanj, the default data set ----
+const TODAY = new Date('2026-09-30T00:00:00Z');
+const MULTS = [1, 1.2, 1.7, 2.6, 5.5];
+
+test('mayurbhanj: the web model and the API engine agree on vials for every demo day', () => {
+  MULTS.forEach((m, step) => {
+    const clinics = MBJ.json.clinics.map((c) => (c.id === MBJ.targetId ? { ...c, footfallToday: c.baselineFootfall * m } : c));
+    const want = E.findTransfer(clinics, MBJ.targetId, TODAY).need;
+    assert.equal(buildView({ ...INITIAL, step }, 'or', MBJ).need, want, 'day ' + step);
+  });
+  assert.equal(MBJ.need4, 14);
+});
+
+test('mayurbhanj: the donor on screen is the one the engine picks, with the same distance', () => {
+  const clinics = MBJ.json.clinics.map((c) => (c.id === MBJ.targetId ? { ...c, footfallToday: c.baselineFootfall * 5.5 } : c));
+  const top = E.findTransfer(clinics, MBJ.targetId, TODAY).eligible[0];
+  assert.equal(MBJ.donor.name, top.name);
+  assert.equal(MBJ.donor.dist, top.distanceKm);
+  assert.equal(MBJ.etaMin, top.etaMinutes);
+  const v = buildView(STATES.critical, 'or', MBJ);
+  assert.equal(v.callout.dist, '16.4 km');
+  assert.equal(v.callout.donors, '3');
+  assert.equal(v.names.donor, 'Betnoti');
+});
+
+test('mayurbhanj: no doctor names, six facilities, no next-district group', () => {
+  const v = buildView(STATES.calm, 'or', MBJ);
+  assert.equal(v.rowsA.length, 6);
+  assert.equal(v.rowsB.length, 0);
+  assert.equal(v.stat.doctors.total, 6);
+  assert.equal(v.stat.doctors.on, 5);
+  for (const r of v.rowsA) assert.match(r.docTip, /^Medical officer (on duty|absent today)$/);
+  assert.equal(v.rowsA.find((r) => r.name === 'SDH Udala').doc, false);
+  assert.match(v.wb.number, /^Number on approval$/);
+  assert.equal(buildView(STATES['in transit'], 'or', MBJ).wb.number, 'SK-2026-OD-0001');
+});
+
+test('mayurbhanj: Odia waybill comes from the template and names the donor and recipient', () => {
+  const v = buildView({ ...STATES.critical, qty: 14 }, 'or', MBJ);
+  assert.ok(v.wb.showLocal);
+  assert.match(v.wb.local, /Betnoti/);
+  assert.match(v.wb.local, /Badasahi/);
+  assert.match(v.wb.local, /14 ଶିଶି/);
+  assert.ok(v.wb.chips.some((c) => c.text === 'Not yet reviewed by a native speaker'));
+  assert.equal(v.wb.batch, 'ASV-26-B');
+});
+
+test('mayurbhanj: the demo timeline nodes use the data set need, not a fixed number', () => {
+  assert.equal(actions.goto(5, MBJ.need4).qty, 14);
+  assert.equal(actions.goto(6, MBJ.need4).qty, 14);
+});
+
+test('data label: simulated by default, imported with the file name after a CSV import', () => {
+  assert.deepEqual(buildView(STATES.calm, 'or').source, { mode: 'simulated' });
+  const csv = 'facility_name,block,latitude,longitude,asv_stock,baseline_burn_per_day,beds_total,beds_occupied,doctor_on_duty\nPHC One,B1,21.9,86.7,5,2,10,5,yes\nCHC Two,B1,21.95,86.75,40,3,12,4,yes\n';
+  const r = loadDataset({ mode: 'csv', text: csv, fileName: 'my-facilities.csv' });
+  assert.ok(r.ok, JSON.stringify(r.errors));
+  const v = buildView(STATES.calm, 'or', r.dataset);
+  assert.deepEqual(v.source, { mode: 'csv', fileName: 'my-facilities.csv' });
+  assert.equal(v.names.target, 'One');
+  assert.equal(v.rowsA.length, 2);
+  assert.equal(v.rowsA[0].supplyText, '5 vials', 'the imported numbers replace the simulated ones');
+  assert.ok(r.notes.some((n) => /expiry is not in this file/.test(n)));
+});
+
+test('data source: simulated mode is the default and needs no file', () => {
+  const r = loadDataset();
+  assert.ok(r.ok);
+  assert.equal(r.dataset, MBJ);
+});
+
+test('csv import: the template parses, and bad files are refused with the row and column named', () => {
+  const template = readFileSync(new URL('../data/templates/facilities.csv', import.meta.url), 'utf8');
+  assert.ok(facilitiesFromCsv(template).ok, 'the shipped template must import');
+  assert.deepEqual(template.split('\n')[0].split(',').slice(0, COLUMNS.length), COLUMNS);
+  const head = COLUMNS.join(',');
+  const bad = facilitiesFromCsv(head + '\nA,b,21,86,5,2,10,11,maybe\nB,b,95,86,-1,2,10,5,yes\n');
+  assert.equal(bad.ok, false);
+  const text = bad.errors.join(' | ');
+  assert.match(text, /Row 2, beds_occupied: 11 is more than beds_total 10/);
+  assert.match(text, /Row 2, doctor_on_duty/);
+  assert.match(text, /Row 3, latitude/);
+  assert.match(text, /Row 3, asv_stock/);
+  assert.match(facilitiesFromCsv('facility_name,block\nA,b').errors[0], /Missing columns/);
+  assert.match(facilitiesFromCsv(head + '\nA,b,21,86,5,2,10,5,yes').errors[0], /at least two facilities/);
+  assert.equal(facilitiesFromCsv('').ok, false);
+});
+
+test('csv import: quoted names with commas are kept whole', () => {
+  const r = facilitiesFromCsv(COLUMNS.join(',') + '\n"PHC One, East",b,21,86,5,2,10,5,yes\nCHC Two,b,21.1,86.1,40,3,12,4,no\n');
+  assert.ok(r.ok);
+  assert.equal(r.json.clinics[0].name, 'PHC One, East');
+  assert.equal(r.json.clinics[1].doctorOnDuty, false);
+});
+
+// ---- Telemetry ----
+test('telemetry: only the agreed keys, no names, no doctors, no exact coordinates', () => {
+  const v = buildView(STATES.critical, 'or', MBJ);
+  const t = buildTelemetry(v, MBJ, new Date('2026-09-30T00:00:00Z'));
+  assert.deepEqual(Object.keys(t).sort(), TELEMETRY_KEYS.slice().sort());
+  const text = JSON.stringify(t);
+  for (const c of MBJ.json.clinics) assert.ok(!text.includes(c.name) && !text.includes(c.name.replace(/^\w+ /, '')), 'no facility name: ' + c.name);
+  assert.ok(!/Dr\.|doctor/i.test(text));
+  t.districtLatLng.forEach((x) => assert.ok(Math.abs(x * 10 - Math.round(x * 10)) < 1e-9, x + ' has more than one decimal'));
+  for (const c of MBJ.json.clinics) {
+    assert.ok(!text.includes(String(c.lat)) && !text.includes(String(c.lng)), 'no exact coordinate');
+  }
+  assert.equal(t.icd11Code, 'XM4KN1');
+  assert.equal(t.icd11Title, 'Snake venom');
+  assert.equal(t.surgeClass, 'critical');
+  assert.equal(t.dataSource, 'simulated');
+  assert.equal(t.weekOfYear, 40);
+  assert.ok(['0', '1-5', '6+'].includes(t.affectedFacilitiesBucket));
+});
+
+test('telemetry: an imported data set is labelled imported and still carries no file name', () => {
+  const r = loadDataset({ mode: 'csv', text: COLUMNS.join(',') + '\nPHC One,b,21.9,86.7,5,2,10,5,yes\nCHC Two,b,21.95,86.75,40,3,12,4,yes\n', fileName: 'secret-name.csv' });
+  const t = buildTelemetry(buildView(STATES.calm, 'or', r.dataset), r.dataset);
+  assert.equal(t.dataSource, 'imported');
+  assert.ok(!JSON.stringify(t).includes('secret-name'));
+});
+
+test('telemetry: ISO week numbers', () => {
+  assert.equal(isoWeek(new Date('2026-01-01T00:00:00Z')), 1);
+  assert.equal(isoWeek(new Date('2026-12-31T00:00:00Z')), 53);
 });

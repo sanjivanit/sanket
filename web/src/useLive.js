@@ -6,10 +6,10 @@ const OFFLINE_RETRY_MS = 20000;
 
 // Fetches the dispatch and the early-warning brief for the current day of the surge, and remembers each answer
 // so replaying a day does not call the API again (it is rate limited).
-export function useLive(sim, lang) {
+export function useLive(sim, lang, ds) {
   const [store, setStore] = useState({});
-  const needsDispatch = buildView({ step: sim.step, phase: 'watch', qty: 0, rejected: false }, lang).need > 0;
-  const dKey = `d|${sim.step}|${lang}`, bKey = `b|${sim.step}`;
+  const needsDispatch = buildView({ step: sim.step, phase: 'watch', qty: 0, rejected: false }, lang, ds).need > 0;
+  const dKey = `d|${ds.uid}|${sim.step}|${lang}`, bKey = `b|${ds.uid}|${sim.step}`;
 
   const load = (key, call, want) => {
     const cur = store[key];
@@ -20,8 +20,8 @@ export function useLive(sim, lang) {
       .catch(() => setStore((s) => ({ ...s, [key]: { status: 'offline', at: Date.now() } })));
   };
 
-  useEffect(() => { load(dKey, () => fetchDispatch(sim.step, lang), needsDispatch); }, [dKey, needsDispatch]); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => { load(bKey, () => fetchBrief(sim.step), sim.step >= 1); }, [bKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { load(dKey, () => fetchDispatch(sim.step, lang, ds), needsDispatch); }, [dKey, needsDispatch]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { load(bKey, () => fetchBrief(sim.step, ds), sim.step >= 1); }, [bKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return { dispatch: needsDispatch ? store[dKey] : undefined, brief: sim.step >= 1 ? store[bKey] : undefined };
 }

@@ -1,14 +1,15 @@
 import { Fragment } from 'react';
 import { Sun, Moon } from '@phosphor-icons/react';
 import { BrandButton } from '../onboarding/Gate.jsx';
+import { DataLabel } from './shared.jsx';
 
-export function Header({ theme, setTheme, role, onHome }) {
+export function Header({ theme, setTheme, role, onHome, place }) {
   return (
     <header className="hdr">
       <BrandButton onHome={onHome}>
         <span style={{ textAlign: 'left' }}>
-          <span className="brand-name">Sanket</span>
-          <span className="brand-sub">National Health Resource Command</span>
+          <span className="brand-name">Sanket: early warning for essential medicines</span>
+          <span className="brand-sub">{place.district} pilot</span>
         </span>
       </BrandButton>
       <nav className="nav" aria-label="Screens">
@@ -18,7 +19,7 @@ export function Header({ theme, setTheme, role, onHome }) {
       <div className="grow" />
       <span className="role-chip"><span className="k">Role</span>{role}</span>
       <select className="select" aria-label="State" disabled title="Fixed in this demo">
-        <option>Maharashtra</option>
+        <option>{place.state}</option>
       </select>
       <select className="select" aria-label="Scenario" disabled title="Fixed in this demo">
         <option>One-clinic surge</option>
@@ -68,7 +69,7 @@ export function StatsStrip({ v }) {
   return (
     <div className="stats">
       <div className="stat">
-        <div className="k">Clinics</div>
+        <div className="k">Facilities <DataLabel source={v.source} /></div>
         <div className="row" style={{ alignItems: 'baseline' }}>
           <span className="big">{s.main}</span>
           <span className="sub" style={{ color: s.subColor }}>{s.sub}</span>
@@ -77,21 +78,21 @@ export function StatsStrip({ v }) {
       <div className="stat">
         <div className="k">Beds in use</div>
         <div className="row">
-          <span className="big">57 of 98</span>
-          <div className="minibar"><div style={{ width: '58%', background: 'var(--faint)' }} /></div>
+          <span className="big">{s.beds.occ} of {s.beds.total}</span>
+          <div className="minibar"><div style={{ width: s.beds.pct + '%', background: 'var(--faint)' }} /></div>
         </div>
       </div>
       <div className="stat">
-        <div className="k">Doctors on duty</div>
+        <div className="k">Medical officers on duty</div>
         <div className="row">
-          <span className="big">9 of 11</span>
-          <div className="dots" role="img" aria-label="9 of 11 doctors on duty. 2 clinics have no doctor on duty.">
-            {Array.from({ length: 11 }, (_, i) => <span key={i} style={{ background: i < 9 ? 'var(--ok)' : 'var(--doc)' }} />)}
+          <span className="big">{s.doctors.on} of {s.doctors.total}</span>
+          <div className="dots" role="img" aria-label={`${s.doctors.on} of ${s.doctors.total} facilities have a medical officer on duty. ${s.doctors.total - s.doctors.on} have none.`}>
+            {Array.from({ length: s.doctors.total }, (_, i) => <span key={i} style={{ background: i < s.doctors.on ? 'var(--ok)' : 'var(--doc)' }} />)}
           </div>
         </div>
       </div>
       <div className="stat">
-        <div className="k">District A supply reserve</div>
+        <div className="k">{v.place.district} supply reserve</div>
         <div className="row">
           <span className="big">{s.reserveText}</span>
           <div className="minibar"><div className="ease" style={{ width: s.reservePct + '%', background: 'var(--ok)' }} /></div>

@@ -1,4 +1,6 @@
-// Distance map centred on Rampur. Sample locations, distances to scale.
+import { DataLabel } from './shared.jsx';
+
+// Distance map centred on the surge target. Distances are to scale; positions are approximate.
 export default function ReachMap({ v }) {
   const { map, callout } = v;
   const { line, arc } = map;
@@ -6,7 +8,7 @@ export default function ReachMap({ v }) {
   return (
     <div>
       <div className="map-head">
-        <h2 className="h2">Who can help Rampur</h2>
+        <h2 className="h2">Who can help {v.names.target} <DataLabel source={v.source} /></h2>
         <div className="legend">
           <span><i className="dot" style={{ background: 'var(--ok)' }} />Stable</span>
           <span><i className="dot" style={{ background: 'var(--crit)' }} />Critical</span>
@@ -42,7 +44,7 @@ export default function ReachMap({ v }) {
 
         <div className={arc.pulse ? 'abs pulse' : 'abs'} style={{ left: 399, top: 164, width: 28, height: 28, borderRadius: '50%', border: '2px solid ' + arc.color, opacity: arc.pulse ? 1 : 0 }} />
         <div className="abs" style={{ left: 402, top: 167, width: 22, height: 22, borderRadius: '50%', background: arc.color, border: '2px solid var(--panel)', boxShadow: '0 0 0 8px ' + arc.halo }} />
-        <div className="rampur-label" style={{ color: arc.text }}>Rampur<div>{arc.sub}</div></div>
+        <div className="rampur-label" style={{ color: arc.text }}>{v.names.target}<div>{arc.sub}</div></div>
 
         <div className="map-stats left">
           <div><div className="n" style={{ color: 'var(--acc-t)' }}>{callout.need}</div><div className="l">{callout.needLabel}</div></div>
@@ -63,7 +65,7 @@ export default function ReachMap({ v }) {
                 boxShadow: '0 0 0 2px var(--panel)' + (n.hot ? ', 0 0 0 4px var(--acc)' : '') + ', 0 0 0 ' + (n.hot ? 9 : 7) + 'px ' + halo,
               }} />
               <div className="abs" style={{
-                left: n.right ? n.x + n.rad + 10 : n.x - n.rad - 10, top: n.y - 9,
+                left: n.right ? n.x + n.rad + 10 : n.x - n.rad - 10, top: n.y - 9 + (n.dy || 0),
                 fontSize: 12, lineHeight: '18px', whiteSpace: 'nowrap', fontWeight: n.nodoc || n.hot ? 600 : 400,
                 color: n.nodoc ? 'var(--doc-t)' : n.hot ? 'var(--acc-t)' : 'var(--text2)',
                 transform: n.right ? undefined : 'translateX(-100%)',
@@ -72,7 +74,7 @@ export default function ReachMap({ v }) {
           );
         })}
       </div>
-      <div className="fine" style={{ marginTop: 6 }}>Sample locations, distances to scale. The ring around Rampur shows time left, out of 72 hours.</div>
+      <div className="fine" style={{ marginTop: 6 }}>Approximate locations, distances to scale. The ring around {v.names.target} shows time left, out of 72 hours.</div>
     </div>
   );
 }
