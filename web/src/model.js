@@ -160,11 +160,24 @@ export function buildView({ step, phase, qty, rejected }, lang = 'or', ds = DEFA
   ];
 
   // map
-  const cx = 413, cy = 178, k = 1.95;
+  // Map layout. The Maharashtra fixture keeps the design's fixed scale (1.95 px per km, target in the centre).
+  // Every other data set is fitted: the scale is chosen so the facilities fill about 70% of the map height, and they
+  // are centred in the map. The 35 km and 80 km rings are then off the map, so a scale bar replaces them.
+  const MAP_W = 826, MAP_H = 348, FILL = 0.7;
+  const rel = ds.donors.concat(ds.groupB).map((p) => ({
+    p, east: (p.lng - T.lng) * KM_DEG * Math.cos(T.lat * Math.PI / 180), north: (p.lat - T.lat) * KM_DEG,
+  }));
+  let cx = 413, cy = 178, k = 1.95;
+  if (ds.fit) {
+    const E = rel.map((r) => r.east).concat(0), N = rel.map((r) => r.north).concat(0);
+    const minE = Math.min(...E), maxE = Math.max(...E), minN = Math.min(...N), maxN = Math.max(...N);
+    k = Math.min(FILL * MAP_H / Math.max(maxN - minN, 1), 0.5 * MAP_W / Math.max(maxE - minE, 1));
+    cx = Math.round(MAP_W / 2 - (minE + maxE) / 2 * k);
+    cy = Math.round(MAP_H / 2 + (minN + maxN) / 2 * k);
+  }
   let donorPt = { x: 0, y: 0 };
-  const mapNodes = ds.donors.concat(ds.groupB).map((p) => {
-    const east = (p.lng - T.lng) * KM_DEG * Math.cos(T.lat * Math.PI / 180) * k;
-    const north = (p.lat - T.lat) * KM_DEG * k;
+  const mapNodes = rel.map(({ p, east: eKm, north: nKm }) => {
+    const east = eKm * k, north = nKm * k;
     const x = cx + east, y = cy - north;
     const isDonor = !!p.isDonor, nodoc = !p.doc;
     if (isDonor) donorPt = { x, y };
@@ -173,23 +186,32 @@ export function buildView({ step, phase, qty, rejected }, lang = 'or', ds = DEFA
     // The donor keeps pinging from the first surge day, through the transfer, and stops once it is delivered.
     return { label: p.short, x, y, rad, right: east >= 0, nodoc, hot, ping: hot && !delivered };
   });
-  // Nudge labels up or down so they do not sit on each other, on a facility dot, or on the centre label.
-  const boxes = [{ x0: 373, x1: 453, y0: 112, y1: 148 }, { x0: 340, x1: 486, y0: 88, y1: 108 }, { x0: 340, x1: 486, y0: 2, y1: 22 }].concat(mapNodes.map((n) => ({ x0: n.x - n.rad - 2, x1: n.x + n.rad + 2, y0: n.y - n.rad - 2, y1: n.y + n.rad + 2 })));
+  // Nudge labels up or down so they do not sit on each other, on a facility dot, on the centre label, on the ring
+  // texts or on the two number columns. A nudged label gets a leader line back to its dot.
+  const fixed = [{ x0: cx - 40, x1: cx + 40, y0: cy - 66, y1: cy - 30 }]
+    .concat(ds.fit ? [{ x0: 20, x1: 200, y0: 20, y1: 200 }, { x0: MAP_W - 200, x1: MAP_W - 20, y0: 20, y1: 200 }, { x0: 20, x1: 140, y0: MAP_H - 34, y1: MAP_H - 8 }]
+      : [{ x0: 340, x1: 486, y0: 88, y1: 108 }, { x0: 340, x1: 486, y0: 2, y1: 22 }]);
+  const boxes = fixed.concat(mapNodes.map((n) => ({ x0: n.x - n.rad - 2, x1: n.x + n.rad + 2, y0: n.y - n.rad - 2, y1: n.y + n.rad + 2 })));
   const hit = (a, b) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
-  mapNodes.forEach((n) => {
+  mapNodes.forEach((n, i) => {
     const w = n.label.length * 7 + 4, x0 = n.right ? n.x + n.rad + 10 : n.x - n.rad - 10 - w;
-    const own = boxes[mapNodes.indexOf(n) + 3];
-    for (const d of [0, 16, -16, 32, -32, 48, -48]) {
+    const own = boxes[i + fixed.length];
+    for (const d of [0, 16, -16, 32, -32, 48, -48, 64, -64]) {
       const box = { x0, x1: x0 + w, y0: n.y - 9 + d, y1: n.y + 9 + d };
-      if (box.y0 < 2 || box.y1 > 346) continue;
+      if (box.y0 < 2 || box.y1 > MAP_H - 2) continue;
       if (boxes.some((b) => b !== own && hit(box, b))) continue;
-      n.dy = d; boxes.push(box); return;
+      n.dy = d; boxes.push(box);
+      if (d) n.leader = { x1: n.x, y1: n.y, x2: n.right ? x0 - 3 : x0 + w + 3, y2: n.y + d };
+      return;
     }
     n.dy = 0;
   });
   const dx = cx - donorPt.x, dy = cy - donorPt.y, len = Math.hypot(dx, dy) || 1;
   const qx = (donorPt.x + cx) / 2 - dy / len * 14, qy = (donorPt.y + cy) / 2 + dx / len * 14;
-  const arcPath = 'M' + donorPt.x.toFixed(1) + ',' + donorPt.y.toFixed(1) + ' Q' + qx.toFixed(1) + ',' + qy.toFixed(1) + ' 413,178';
+  const arcPath = 'M' + donorPt.x.toFixed(1) + ',' + donorPt.y.toFixed(1) + ' Q' + qx.toFixed(1) + ',' + qy.toFixed(1) + ' ' + cx + ',' + cy;
+  // Scale bar for the fitted map: 5 km, or 10 km if 5 km would be too short to read.
+  const barKm = 5 * k >= 40 ? 5 : 10;
+  const scaleBar = ds.fit ? { x1: 24, x2: 24 + barKm * k, y: MAP_H - 22, label: barKm + ' km' } : null;
   const line = {
     d: arcPath,
     standbyOp: (step > 0 && phase === 'watch') ? 1 : 0,
@@ -206,6 +228,7 @@ export function buildView({ step, phase, qty, rejected }, lang = 'or', ds = DEFA
     text: scText,
     dash: (frac * C).toFixed(1) + ' ' + C.toFixed(1),
     pulse: status !== 'ok' && !delivered,
+    steady: delivered,
     sub: status === 'crit' ? hoursLeft + ' h left' : status === 'warn' ? (dsr < 3 ? days(dsr) + ' left' : 'Watch') : 'Stable',
   };
   const mapSub = delivered ? TN + ' restocked from ' + DNAME + '. Keep watching: supply is ' + dsr.toFixed(1) + ' days.'
@@ -370,7 +393,7 @@ export function buildView({ step, phase, qty, rejected }, lang = 'or', ds = DEFA
     tlNodes,
     stat: { main: (ds.all.length - nonOk) + ' stable', total: ds.all.length, beds, doctors, sub: status === 'crit' ? '1 critical' : status === 'warn' ? '1 early warning' : '', subColor: scText, reserveText: Math.round(reserve * 100) + '%', reservePct: Math.round(reserve * 100) },
     rowsA, rowsB, beforeAfter, others: ds.others,
-    map: { nodes: mapNodes, line, arc, sub: mapSub, aria: mapAria },
+    map: { nodes: mapNodes, line, arc, sub: mapSub, aria: mapAria, center: { x: cx, y: cy }, rings: !ds.fit, scaleBar },
     callout: {
       need: step === 0 ? '-' : String(qtyShown),
       needLabel: step === 0 ? 'no vials needed' : delivered ? 'vials delivered' : phase === 'transit' ? 'vials in transit' : (qtyShown === 1 ? 'vial needed' : 'vials needed'),

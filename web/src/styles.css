@@ -191,7 +191,8 @@ h1, h2, h3, p { margin: 0; }
 .flow { stroke-dasharray: 7 4; animation: flow 1.2s linear infinite; }
 .pulse { animation: pulse 1.8s ease-out infinite; }
 @media (prefers-reduced-motion: reduce) {
-  .flow, .pulse, .vial-moving { animation: none; display: none; }
+  .flow, .pulse { animation: none; }
+  .vial-moving { display: none; }
   .ease, .arc-anim, .ring-fill { transition: none; }
 }
 

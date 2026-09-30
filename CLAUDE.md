@@ -97,6 +97,7 @@ The dashboard has purposeful motion, all in the "Motion" block at the end of `we
 - Animate only `transform`, `opacity`, `clip-path` and SVG stroke. Curves are the tokens `--ease-out`, `--ease-in-out` and `--ease-drawer`. Never `transition: all`, never `ease-in`, never `scale(0)`.
 - Every animation has a purpose: first load builds top to bottom, numbers count to their new value, rings and bars settle, the donor rings keep pinging until the transfer is delivered, vials fill in, the QR reveals on approval, the telemetry panel slides in and out.
 - `prefers-reduced-motion` keeps the fades and drops the movement and the loops. New motion ships with its reduced-motion rule.
+- Map rules: the target pulses only in the early-warning and critical states; once delivered it is a steady ring with no motion; the flowing route and the moving vials exist only while the transfer is in transit; the donor ping stops at delivery. Under reduced motion the pulse and the flow stop (the ring and the line stay visible) and the vials are hidden. The fitted map (every data set except the Maharashtra fixture) scales the facilities to about 70% of the map height, shows a scale bar instead of the 35 and 80 km rings, and adds leader lines to labels that had to be nudged.
 - Nothing the person reads or acts on moves for style, and nothing animates on a keyboard shortcut.
 - `scripts/qa/scan-dashboard.mjs` waits for animations to finish before it measures contrast. Keep that wait.
 

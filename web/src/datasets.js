@@ -26,7 +26,7 @@ const view = (c, extra) => ({
 // json: a data file. order: optional donor tile order (ids), used by the design-parity fixture. chips: optional { clinicId: { chip, chipColor } } for legacy sample sets.
 // source: { mode: 'simulated' } or { mode: 'csv', fileName }.
 let uid = 0;
-export function datasetFrom(json, { chips = {}, order = null, source = { mode: 'simulated' } } = {}) {
+export function datasetFrom(json, { chips = {}, order = null, fit = true, source = { mode: 'simulated' } } = {}) {
   const t = json.clinics.find((c) => c.id === json.targetId);
   const target = view(t, { isTarget: true });
   const sameDistrict = json.clinics.filter((c) => c.districtId === t.districtId && c.id !== t.id);
@@ -57,7 +57,7 @@ export function datasetFrom(json, { chips = {}, order = null, source = { mode: '
 
   const all = [target, ...donors, ...groupB];
   return {
-    uid: ++uid, approx: json.clinics.some((c) => /approx/.test(c.coordinates || '')), json, source, stateCode: json.stateCode, state: json.state || json.stateCode,
+    uid: ++uid, fit, approx: json.clinics.some((c) => /approx/.test(c.coordinates || '')), json, source, stateCode: json.stateCode, state: json.state || json.stateCode,
     district: json.district || 'District A', targetId: t.id,
     target, donors, groupB, donor: primary, others: tags, need4, all,
     etaMin: Math.round(primary.dist / RULES.avgSpeedKmh * 60),
@@ -67,6 +67,7 @@ export function datasetFrom(json, { chips = {}, order = null, source = { mode: '
 // Legacy sample set (Maharashtra). Kept only so the port can be checked against the design prototype.
 export const MH = datasetFrom({ ...MH_JSON, state: 'Maharashtra', district: 'District A' }, {
   chips: { 'MH-03': { chip: 'Expires in 77 days', chipColor: 'var(--warn-t)' } },
+  fit: false,
   order: ['MH-02', 'MH-04', 'MH-03', 'MH-07', 'MH-05', 'MH-08', 'MH-06', 'MH-11', 'MH-09', 'MH-10'],
 });
 export const MBJ = datasetFrom(MBJ_JSON);

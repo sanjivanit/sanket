@@ -4,7 +4,8 @@ import { CountUp } from '../motion.js';
 // Distance map centred on the surge target. Distances are to scale; positions are approximate.
 export default function ReachMap({ v }) {
   const { map, callout } = v;
-  const { line, arc } = map;
+  const { line, arc, center } = map;
+  const { x: cx, y: cy } = center;
   const vialDots = [0, 0.5, 1];
   return (
     <div>
@@ -24,28 +25,47 @@ export default function ReachMap({ v }) {
       <div className="map-sub">{map.sub}</div>
       <div className="map">
         <svg className="layer" width="826" height="348" viewBox="0 0 826 348" role="img" aria-label={map.aria}>
-          <circle cx="413" cy="178" r="156" style={{ fill: 'var(--tier2)', stroke: 'var(--rule3)' }} strokeWidth="1" strokeDasharray="3 5" />
-          <circle cx="413" cy="178" r="68" style={{ fill: 'var(--acc-bg)', stroke: 'var(--rule3)' }} strokeWidth="1" />
-          <text x="413" y="16" textAnchor="middle" style={{ fill: 'var(--muted)' }} fontSize="12">80 km, next district</text>
-          <text x="413" y="102" textAnchor="middle" style={{ fill: 'var(--muted)' }} fontSize="12">35 km, same district</text>
+          {map.rings && (
+            <>
+              <circle cx="413" cy="178" r="156" style={{ fill: 'var(--tier2)', stroke: 'var(--rule3)' }} strokeWidth="1" strokeDasharray="3 5" />
+              <circle cx="413" cy="178" r="68" style={{ fill: 'var(--acc-bg)', stroke: 'var(--rule3)' }} strokeWidth="1" />
+              <text x="413" y="16" textAnchor="middle" style={{ fill: 'var(--muted)' }} fontSize="12">80 km, next district</text>
+              <text x="413" y="102" textAnchor="middle" style={{ fill: 'var(--muted)' }} fontSize="12">35 km, same district</text>
+            </>
+          )}
+          {map.scaleBar && (
+            <g>
+              <line x1={map.scaleBar.x1} y1={map.scaleBar.y} x2={map.scaleBar.x2} y2={map.scaleBar.y} style={{ stroke: 'var(--muted)' }} strokeWidth="2" strokeLinecap="round" />
+              <line x1={map.scaleBar.x1} y1={map.scaleBar.y - 4} x2={map.scaleBar.x1} y2={map.scaleBar.y + 4} style={{ stroke: 'var(--muted)' }} strokeWidth="2" strokeLinecap="round" />
+              <line x1={map.scaleBar.x2} y1={map.scaleBar.y - 4} x2={map.scaleBar.x2} y2={map.scaleBar.y + 4} style={{ stroke: 'var(--muted)' }} strokeWidth="2" strokeLinecap="round" />
+              <text x={map.scaleBar.x1} y={map.scaleBar.y + 20} style={{ fill: 'var(--muted)' }} fontSize="12">{map.scaleBar.label}</text>
+            </g>
+          )}
+          {map.nodes.filter((n) => n.leader).map((n) => (
+            <line key={n.label} x1={n.leader.x1} y1={n.leader.y1} x2={n.leader.x2} y2={n.leader.y2} style={{ stroke: 'var(--rule3)' }} strokeWidth="1" />
+          ))}
           <path className={line.standbyOp ? 'route-fade route-march' : 'route-fade'} d={line.d} fill="none" style={{ stroke: 'var(--acc)', opacity: line.standbyOp }} strokeWidth="2" strokeDasharray="3 5" strokeLinecap="round" />
-          <path className="flow" d={line.d} fill="none" style={{ stroke: 'var(--acc)', opacity: line.transitOp }} strokeWidth="3" strokeLinecap="round" />
+          {/* The flowing line and the moving vials exist only while the transfer is in transit. */}
+          {line.transitOp === 1 && <path className="flow" d={line.d} fill="none" style={{ stroke: 'var(--acc)' }} strokeWidth="3" strokeLinecap="round" />}
           <path className="route-fade" d={line.d} fill="none" style={{ stroke: 'var(--acc)', opacity: line.doneOp }} strokeWidth="3" strokeLinecap="round" />
-          <g style={{ opacity: line.transitOp }}>
-            {vialDots.map((begin) => (
-              <circle key={begin} className="vial-moving" r="4.5" opacity="0" style={{ fill: 'var(--acc)' }}>
-                <animateMotion dur="1.5s" begin={begin + 's'} repeatCount="indefinite" path={line.d} />
-                <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="1.5s" begin={begin + 's'} repeatCount="indefinite" />
-              </circle>
-            ))}
-          </g>
-          <circle cx="413" cy="178" r="23" fill="none" style={{ stroke: 'var(--track)' }} strokeWidth="4" />
-          <circle className="arc-anim" cx="413" cy="178" r="23" fill="none" style={{ stroke: arc.color }} strokeWidth="4" strokeLinecap="round" strokeDasharray={arc.dash} transform="rotate(-90 413 178)" />
+          {line.transitOp === 1 && (
+            <g>
+              {vialDots.map((begin) => (
+                <circle key={begin} className="vial-moving" r="4.5" opacity="0" style={{ fill: 'var(--acc)' }}>
+                  <animateMotion dur="1.5s" begin={begin + 's'} repeatCount="indefinite" path={line.d} />
+                  <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="1.5s" begin={begin + 's'} repeatCount="indefinite" />
+                </circle>
+              ))}
+            </g>
+          )}
+          <circle cx={cx} cy={cy} r="23" fill="none" style={{ stroke: 'var(--track)' }} strokeWidth="4" />
+          <circle className="arc-anim" cx={cx} cy={cy} r="23" fill="none" style={{ stroke: arc.color }} strokeWidth="4" strokeLinecap="round" strokeDasharray={arc.dash} transform={`rotate(-90 ${cx} ${cy})`} />
         </svg>
 
-        <div className={arc.pulse ? 'abs pulse' : 'abs'} style={{ left: 399, top: 164, width: 28, height: 28, borderRadius: '50%', border: '2px solid ' + arc.color, opacity: arc.pulse ? 1 : 0 }} />
-        <div className="abs" style={{ left: 402, top: 167, width: 22, height: 22, borderRadius: '50%', background: arc.color, border: '2px solid var(--panel)', boxShadow: '0 0 0 8px ' + arc.halo }} />
-        <div className="rampur-label" style={{ color: arc.text }}>{v.names.target}<div>{arc.sub}</div></div>
+        {/* Pulses only while the state is early warning or critical. Once delivered it is a steady ring, no motion. */}
+        <div className={arc.pulse ? 'abs pulse' : 'abs'} style={{ left: cx - 14, top: cy - 14, width: 28, height: 28, borderRadius: '50%', border: '2px solid ' + arc.color, opacity: arc.pulse || arc.steady ? 1 : 0 }} />
+        <div className="abs" style={{ left: cx - 11, top: cy - 11, width: 22, height: 22, borderRadius: '50%', background: arc.color, border: '2px solid var(--panel)', boxShadow: '0 0 0 8px ' + arc.halo }} />
+        <div className="rampur-label" style={{ color: arc.text, left: cx - 40, top: cy - 66 }}>{v.names.target}<div>{arc.sub}</div></div>
 
         <div className="map-stats left">
           <div><div className="n" style={{ color: 'var(--acc-t)' }}><CountUp value={callout.need} /></div><div className="l">{callout.needLabel}</div></div>
@@ -76,7 +96,7 @@ export default function ReachMap({ v }) {
           );
         })}
       </div>
-      <div className="fine" style={{ marginTop: 6 }}>Approximate locations, distances to scale. The ring around {v.names.target} shows time left, out of 72 hours.</div>
+      <div className="fine" style={{ marginTop: 6 }}>Approximate locations, distances to scale.{map.rings ? '' : ' Search range: 35 km in the same district, then 80 km in the next.'} The ring around {v.names.target} shows time left, out of 72 hours.</div>
     </div>
   );
 }

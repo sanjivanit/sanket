@@ -189,6 +189,36 @@ test('mayurbhanj: Odia waybill comes from the template and names the donor and r
   assert.equal(v.wb.batch, 'ASV-26-E');
 });
 
+test('map: Mayurbhanj is fitted to about 70% of the map height, centred, with no rings and a scale bar', () => {
+  const v = buildView(STATES.critical, 'or', MBJ);
+  const ys = v.map.nodes.map((n) => n.y).concat(v.map.center.y);
+  const span = (Math.max(...ys) - Math.min(...ys)) / 348;
+  assert.ok(span > 0.66 && span < 0.74, 'height span ' + span.toFixed(2));
+  assert.equal(v.map.rings, false);
+  assert.ok(v.map.scaleBar && /km$/.test(v.map.scaleBar.label));
+  for (const n of v.map.nodes) assert.ok(n.x > 0 && n.x < 826 && n.y > 0 && n.y < 348, n.label + ' is inside the map');
+});
+
+test('map: the Maharashtra fixture keeps the design scale, centre and rings', () => {
+  const v = buildView(STATES.critical, 'mr', MH);
+  assert.deepEqual(v.map.center, { x: 413, y: 178 });
+  assert.equal(v.map.rings, true);
+  assert.equal(v.map.scaleBar, null);
+});
+
+test('map motion: pulse only in early warning and critical, steady ring once delivered, vials only in transit', () => {
+  for (const [name, st] of Object.entries(STATES)) {
+    const v = buildView(st, 'or', MBJ);
+    assert.equal(v.map.arc.pulse, v.status !== 'ok' && st.phase !== 'delivered', name + ': pulse');
+    assert.equal(v.map.arc.steady, st.phase === 'delivered', name + ': steady ring');
+    assert.equal(v.map.line.transitOp, st.phase === 'transit' ? 1 : 0, name + ': moving vials');
+    assert.ok(!(v.map.arc.pulse && v.map.arc.steady), name + ': never both');
+    v.map.nodes.forEach((n) => assert.ok(!n.ping || st.phase !== 'delivered', name + ': no ping once delivered'));
+  }
+  assert.equal(buildView(STATES.calm, 'or', MBJ).map.arc.pulse, false);
+  assert.equal(buildView(STATES.delivered, 'or', MBJ).map.arc.pulse, false);
+});
+
 test('language: Odia is the default, and an unknown code falls back to Odia', () => {
   assert.equal(buildView(STATES.critical).wb.langCode, 'or');
   assert.equal(buildView(STATES.critical, 'xx', MBJ).wb.langCode, 'or');
