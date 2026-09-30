@@ -3,6 +3,7 @@ import http from 'node:http';
 import { readFileSync } from 'node:fs';
 import * as E from './engine.js';
 import { callGemini as realCall } from './gemini.js';
+import { serveStatic } from './static.js';
 import { buildInstructions, fallbackReasoning, fallbackBrief, LANGS } from './templates.js';
 
 const root = new URL('../', import.meta.url);
@@ -164,6 +165,7 @@ export function createApp({ callGemini = realCall, env = process.env, now = () =
       const path = new URL(req.url, 'http://x').pathname;
       if (req.method === 'OPTIONS') return send(204, {});
       if (path === '/api/health') return send(200, { ok: true, model, fallbackModel, geminiKeyConfigured: !!apiKey });
+      if (!path.startsWith('/api/') && (await serveStatic(req, res, path))) return;
       const handler = routes[path];
       if (!handler || req.method !== 'POST') return send(404, { error: 'not found' });
       if (limited(req.socket.remoteAddress || 'x')) return send(429, { error: 'too many requests' });

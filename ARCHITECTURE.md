@@ -1,14 +1,14 @@
 # Architecture overview
 
-Sanket runs on Google Cloud. Firebase Hosting serves the web app. A Cloud Run service holds the safety rules and calls the Gemini API. The API key is kept in Secret Manager.
+Sanket runs on Google Cloud. One Cloud Run service (`sanket-api`) serves the React web app and the API. The API holds the safety rules and calls the Gemini API. The Gemini key is kept in Secret Manager.
 
 ```mermaid
 flowchart LR
-  DMO["DMO in a browser"] -->|HTTPS| FH["Firebase Hosting<br/>React app"]
-  FH -->|"/api/** rewrite"| CR["Cloud Run: sanket-api<br/>engine, guardrails, fallback"]
+  DMO["DMO in a browser"] -->|HTTPS| CR["Cloud Run: sanket-api<br/>serves the React app (dist/)<br/>and /api/**: engine, guardrails, fallback"]
   SM["Secret Manager<br/>GEMINI_API_KEY"] -->|env secret| CR
   CR -->|"generateContent<br/>JSON schema"| GM["Gemini API"]
   CR -->|structured logs| CL["Cloud Logging"]
+  CR -.->|roadmap| FH["Firebase Hosting<br/>CDN in front"]
   CR -.->|roadmap| FS[("Firestore<br/>clinic state and event log")]
   CR -.->|roadmap| BQ[("BigQuery ML<br/>demand forecast")]
 ```
@@ -19,17 +19,18 @@ Solid lines are built and in this repo. Dotted lines are the roadmap and are **n
 
 | Service | Role in Sanket | Status |
 |---|---|---|
-| Firebase Hosting | Serves the React app and forwards `/api/**` to Cloud Run, so the browser never sees the API key or a second origin | Built (`firebase.json`) |
-| Cloud Run | Runs `sanket-api`: engine rules, Gemini calls, guardrails, fallback, rate limit | Built (`Dockerfile`, `server/`) |
+| Cloud Run | Runs `sanket-api`: serves the web app, runs the engine rules, calls Gemini, applies guardrails, fallback and a rate limit. The web app and `/api/**` share one address, so the browser never sees the API key or a second origin | Built (`Dockerfile`, `server/`, `web/`) |
+| Cloud Build and Artifact Registry | Build the container from source: the Dockerfile builds the web app, then packages it with the API | Built (used by `gcloud run deploy --source`) |
 | Secret Manager | Holds `GEMINI_API_KEY`, mounted as an environment variable | Built (deploy command in README) |
 | Gemini API | Explains and writes: donor reasoning, local-language text, early-warning brief, message check-in | Built (`server/gemini.js`, `prompts/`, `schemas/`) |
 | Cloud Logging | Reads structured JSON logs (`severity`, `event`) for fallbacks and guardrail overrides | Built (automatic on Cloud Run) |
+| Firebase Hosting | Would put a CDN in front of Cloud Run. `firebase.json` is ready | Optional, not deployed |
 | Firestore | Would store live clinic state and the audit log | Roadmap |
 | BigQuery ML (AI.FORECAST with TimesFM) or Vertex AI | Would replace the straight-line forecast with a trained model | Roadmap |
 
 ## Request walk-through: recommending a transfer
 
-1. The browser sends `POST /api/dispatch` with clinic data. Firebase Hosting forwards it to Cloud Run.
+1. The browser sends `POST /api/dispatch` with clinic data to the same Cloud Run service that served the page.
 2. `engine.js` calculates days of supply, vials needed and every donor's eligibility. Tier 1 is the same district within 35 km. Tier 2 is another district within 80 km.
 3. Only donors that passed every rule are sent to Gemini, with `prompts/dispatch.system.md` and `schemas/dispatch.schema.json`. Gemini picks one and explains why.
 4. Code checks the answer. If the donor is not on the eligible list, code uses the nearest eligible donor and logs a guardrail override. Gemini never sets the vial count, dispatch ID or restock token.

@@ -45,7 +45,7 @@ If Gemini fails or takes over 8 seconds, a template waybill is returned and the 
 | `test/` | 16 API tests (rules, guardrails, fallback, federated maths) and 17 web tests (the dashboard model against the design, and live API answers) |
 | `web/` | The React web app (Vite): dashboard, 3-screen onboarding, and the calls to the API |
 | `design/` | The approved design prototype (`Main.dc.html`), kept as a read-only reference |
-| `firebase.json`, `Dockerfile` | Firebase Hosting and Cloud Run deployment |
+| `Dockerfile`, `firebase.json` | Cloud Run deployment (builds the web app and API together). `firebase.json` is for optional Hosting |
 | `docs/` | PRD, design, engineering, plan, progress, checklist, user journey, pitch deck text |
 | `CLAUDE.md` | Instructions for Claude Code |
 
@@ -76,7 +76,7 @@ Expected: `status: recommended`, `vials: 16`, donor `PHC Shivpuri`, ETA 28 minut
 
 ## Deploy on Google Cloud
 
-Firebase Hosting serves the web app. It forwards `/api/**` to a Cloud Run service. The Gemini key sits in Secret Manager.
+One Cloud Run service serves the web app and the API. The Gemini key sits in Secret Manager. Firebase Hosting is optional and not needed.
 
 ```bash
 gcloud config set project YOUR_PROJECT_ID
@@ -86,27 +86,25 @@ gcloud services enable run.googleapis.com secretmanager.googleapis.com cloudbuil
 printf %s "YOUR_GEMINI_KEY" | gcloud secrets create gemini-api-key --data-file=-
 
 # 2. Deploy the API (from the repo root, where the Dockerfile is)
-gcloud run deploy sanket-api --source . --region asia-south1 --allow-unauthenticated \
+gcloud run deploy sanket-api --source . --region us-central1 --allow-unauthenticated \
   --set-secrets GEMINI_API_KEY=gemini-api-key:latest --set-env-vars GEMINI_MODEL=gemini-3.5-flash-lite,GEMINI_FALLBACK_MODEL=gemini-3.1-flash-lite
 # If it says the service account cannot read the secret:
 # gcloud secrets add-iam-policy-binding gemini-api-key \
 #   --member="serviceAccount:PROJECT_NUMBER-compute@developer.gserviceaccount.com" --role="roles/secretmanager.secretAccessor"
 
-# 3. Deploy the web app
-npm run build                              # creates dist/
-cp .firebaserc.example .firebaserc         # put your project ID in it
-npx firebase-tools deploy --only hosting
+# The web app is built inside the Docker image, so there is no separate web deploy.
+# Open the Service URL that step 2 prints. Check it at /api/health.
 ```
 
-Then open `https://YOUR_PROJECT_ID.web.app` and check `/api/health`. Cloud Run and Secret Manager need billing enabled on the project. Check whether your hackathon credits cover it.
+Then open the Service URL and check `/api/health`. Cloud Run and Secret Manager need billing enabled on the project. Check whether your hackathon credits cover it.
 
 Model: the API tries `GEMINI_MODEL` (default `gemini-3.5-flash-lite`) first and `GEMINI_FALLBACK_MODEL` (default `gemini-3.1-flash-lite`) second, 8 seconds each, and returns the template waybill if both fail. On 30 Sep 2026 `gemini-3.5-flash` returned 503 "high demand" on a test call, which is why the defaults are the lite models. Google's docs (checked 30 Sep 2026) list `gemini-2.5-flash` for retirement from 16 Oct 2026 and limit new users' access to 2.5 models, and recommend newer models for new projects. Confirm the exact model ID in Google AI Studio and set `GEMINI_MODEL` or `GEMINI_FALLBACK_MODEL` if you prefer others.
 
-Region: the commands use `asia-south1` (Mumbai), which Cloud Run supports. Firebase Hosting can only forward to some Cloud Run regions. If the Hosting deploy rejects the region, redeploy Cloud Run in `us-central1` and change the region in `firebase.json`. Firebase Hosting also cuts a request off after 60 seconds, which is why Gemini calls time out at 8 seconds.
+Region: the commands use `us-central1`. Any Cloud Run region works, because the web app and API share one service. Optional: Firebase Hosting can sit in front of Cloud Run (`firebase.json` is ready, and its region must match the Cloud Run region).
 
 ## Frontend
 
-Sanket is a desktop web app, designed at 1440 px wide. The design is in `design/Main.dc.html` and the API shapes are in `docs/API_CONTRACT.md`. The React app in `web/` is built from that design and calls `/api/dispatch` and `/api/warning-brief`. In development run the API (`npm start`) and the web app (`npm run dev:web`) together: Vite proxies `/api` to port 8080. `npm run build` writes `dist/` for Firebase Hosting. If the API cannot be reached, or Gemini fails, the app shows the template waybill and the words "Offline fallback used". A first visit opens a 3-screen onboarding. Status is tracked in `docs/PROGRESS.md`.
+Sanket is a desktop web app, designed at 1440 px wide. The design is in `design/Main.dc.html` and the API shapes are in `docs/API_CONTRACT.md`. The React app in `web/` is built from that design and calls `/api/dispatch` and `/api/warning-brief`. In development run the API (`npm start`) and the web app (`npm run dev:web`) together: Vite proxies `/api` to port 8080. The Dockerfile builds the web app and the API serves it from `dist/`. If the API cannot be reached, or Gemini fails, the app shows the template waybill and the words "Offline fallback used". A first visit opens a 3-screen onboarding. Status is tracked in `docs/PROGRESS.md`.
 
 ## Honest limits
 
