@@ -32,8 +32,10 @@ npm test          # 16 API tests, no API key needed
 npm run test:web  # 17 web model tests, no API key needed
 npm start         # API on http://localhost:8080 (needs GEMINI_API_KEY for live Gemini)
 npm run dev:web   # web app on http://localhost:5173, /api proxied to the API on 8080
-npm run build     # web app to dist/, served by Firebase Hosting
+npm run build     # web app to dist/, served by Cloud Run
 ```
+
+Browser checks (contrast, targets, keyboard, accessibility tree, design diff) are in `scripts/qa/`. See its README.
 
 No dependencies to install for the API. The web app needs `npm install` at the repo root. Node 20 or newer.
 

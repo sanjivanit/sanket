@@ -1,0 +1,17 @@
+import { chromium } from 'playwright-core';
+const browser = await chromium.launch();
+const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } }); const page = await ctx.newPage();
+await page.goto('http://localhost:5199/'); await page.evaluate(() => localStorage.clear()); await page.goto('http://localhost:5199/'); await page.reload();
+const dump = async (label, sel = 'body') => { console.log(`\n===== ${label}`); console.log(await page.locator(sel).ariaSnapshot()); };
+await page.getByRole('heading', { name: /Tap your district/ }).waitFor();
+await dump('SCREEN 1 (dialog only)', '.ob');
+await page.getByRole('radio', { name: /^District A/ }).click(); await page.getByRole('radio', { name: /District Medical Officer/ }).click();
+await page.getByRole('button', { name: 'Continue as demo DMO' }).click(); await page.getByRole('heading', { name: /Choose the waybill language/ }).waitFor(); await page.waitForTimeout(5000);
+await dump('SCREEN 2', '.ob');
+await page.getByRole('button', { name: 'Continue' }).click(); await page.getByRole('checkbox').click();
+await dump('SCREEN 3', '.ob');
+await page.getByRole('button', { name: 'Skip setup' }).click();
+await page.getByRole('button', { name: 'Dismiss tip' }).click();
+await page.getByRole('button', { name: /^Day 4/ }).click(); await page.waitForTimeout(6000);
+await dump('DASHBOARD, day 4 (banner, nav, main)', 'body');
+await browser.close();

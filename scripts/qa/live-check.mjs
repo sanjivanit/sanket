@@ -1,0 +1,38 @@
+import { chromium } from 'playwright-core';
+import * as _os from 'node:os';
+import * as _path from 'node:path';
+import * as _fs from 'node:fs';
+const REPO = _path.resolve(import.meta.dirname, '../..');
+// Output folder for screenshots and diffs. Override with QA_OUT=/some/dir
+const OUT = process.env.QA_OUT || _path.join(_os.tmpdir(), 'sanket-qa');
+for (const d of ['shots', 'ob']) _fs.mkdirSync(_path.join(OUT, d), { recursive: true });
+
+const SP = OUT;
+const mode = process.argv[2] || 'live';
+const browser = await chromium.launch(); const errors = [];
+const ctx = await browser.newContext({ viewport: { width: 1440, height: 1330 } }); const page = await ctx.newPage();
+page.on('pageerror', (e) => errors.push(String(e)));
+page.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource|ECONNREFUSED|500|502|504/.test(m.text())) errors.push(m.text()); });
+await page.goto('http://localhost:5199/#dashboard'); await page.evaluate(() => { localStorage.clear(); localStorage.setItem('sanket-theme', 'light'); }); await page.goto('http://localhost:5199/#dashboard'); await page.reload();
+await page.getByRole('button', { name: 'Dismiss tip' }).click();
+await page.getByRole('button', { name: /^Day 1/ }).click(); await page.waitForTimeout(4000);
+await page.getByRole('button', { name: /^Day 4/ }).click(); await page.waitForTimeout(mode === 'live' ? 9000 : 3000);
+const text = async (sel) => (await page.locator(sel).first().textContent().catch(() => null));
+console.log(mode, '| plan note:', await text('.plan .src'));
+await page.getByRole('button', { name: /^Details/ }).click();
+console.log(mode, '| reasoning:', (await text('.why-text')) || '(none)');
+console.log(mode, '| tags:', (await page.locator('.others .tag').allTextContents()).join(' / '));
+await page.getByRole('button', { name: 'Waybill', exact: true }).click(); await page.waitForTimeout(300);
+console.log(mode, '| waybill chips:', (await page.locator('.wb-chips').last().locator('.tag').allTextContents()).join(' / '));
+console.log(mode, '| waybill local:', (await text('.wb .local')));
+await page.screenshot({ path: `${SP}/shots/live-${mode}-day4-waybill.png` });
+await page.getByRole('button', { name: 'Log', exact: true }).click();
+console.log(mode, '| log:', (await page.locator('.log div').allTextContents()).filter((l) => /Gemini|API/.test(l)).join(' | '));
+await page.getByRole('button', { name: 'Forecast', exact: true }).click();
+await page.getByRole('button', { name: /^Day 1/ }).click(); await page.waitForTimeout(mode === 'live' ? 5000 : 1500);
+console.log(mode, '| day 1 brief:', (await text('.brief')) || '(none)');
+await page.screenshot({ path: `${SP}/shots/live-${mode}-day1-brief.png` });
+await page.getByRole('button', { name: /^Day 4/ }).click(); await page.getByRole('button', { name: /^Approve as DMO/ }).click(); await page.waitForTimeout(300);
+await page.getByRole('button', { name: 'Waybill', exact: true }).click();
+console.log(mode, '| after approve, waybill number:', (await page.locator('.wb .chip.solid').allTextContents()).join(' / '));
+await browser.close(); console.log(mode, '| errors:', errors.length ? errors : 'none');
