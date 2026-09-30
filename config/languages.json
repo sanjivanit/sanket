@@ -1,0 +1,48 @@
+{
+ "note": "Templates keep the drug name, vial count and temperature in CODE. Gemini never writes them. Set verified to true ONLY after a native speaker reviews the template.",
+ "languages": {
+  "en": {
+   "name": "English",
+   "verified": true,
+   "instruction": "Take {vials} of anti-snake venom (ASV) from {donor} to {recipient}. Keep at {temp} °C.",
+   "vialWord": [
+    "vial",
+    "vials"
+   ],
+   "rangeWord": "to"
+  },
+  "mr": {
+   "name": "Marathi",
+   "verified": false,
+   "reviewer": null,
+   "instruction": "{donor} येथून {recipient} येथे {vials} अँटी-स्नेक व्हेनम (ASV) पोहोचवा. {temp} °C तापमान राखा.",
+   "vialWord": [
+    "कुपी",
+    "कुपी"
+   ],
+   "rangeWord": "ते"
+  },
+  "hi": {
+   "name": "Hindi",
+   "verified": false,
+   "reviewer": null,
+   "instruction": "{donor} से {recipient} तक {vials} एंटी-स्नेक वेनम (ASV) पहुँचाएँ। तापमान {temp} °C रखें।",
+   "vialWord": [
+    "शीशी",
+    "शीशी"
+   ],
+   "rangeWord": "से"
+  },
+  "ta": {
+   "name": "Tamil",
+   "verified": false,
+   "reviewer": null,
+   "instruction": "{donor} இலிருந்து {recipient} க்கு {vials} பாம்புக்கடி எதிர்ப்பு மருந்து (ASV) கொண்டு செல்லவும். {temp} °C வெப்பநிலையில் வைக்கவும்.",
+   "vialWord": [
+    "குப்பி",
+    "குப்பிகள்"
+   ],
+   "rangeWord": "முதல்"
+  }
+ }
+}

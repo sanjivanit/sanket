@@ -1,0 +1,12 @@
+{
+ "tier1Km": 35,
+ "tier2Km": 80,
+ "bedOccupancyLimit": 0.85,
+ "donorKeepDays": 3,
+ "targetDays": 2,
+ "warnHours": 72,
+ "avgSpeedKmh": 40,
+ "blendLocalWeight": 0.5,
+ "forecastWindowDays": 5,
+ "forecastHorizonDays": 10
+}

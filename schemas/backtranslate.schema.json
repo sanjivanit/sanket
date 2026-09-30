@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "properties": {
+    "english": { "type": "string" },
+    "unclear": { "type": "boolean" }
+  },
+  "required": ["english", "unclear"]
+}

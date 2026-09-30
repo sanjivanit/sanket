@@ -1,0 +1,11 @@
+{
+  "name": "sanket",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node server/index.js",
+    "test": "node --test test/server.test.js"
+  }
+}

@@ -1,0 +1,27 @@
+{
+ "oneClinic": {
+  "targetMultiplier": 5.5,
+  "othersMultiplier": 1.0
+ },
+ "districtWide": {
+  "targetMultiplier": 5.5,
+  "othersMultiplier": 3.5,
+  "othersInTargetDistrictOnly": true
+ },
+ "steps": {
+  "target": [
+   1,
+   1.2,
+   1.7,
+   2.6,
+   5.5
+  ],
+  "others": [
+   1,
+   1.1,
+   1.5,
+   2.2,
+   3.5
+  ]
+ }
+}

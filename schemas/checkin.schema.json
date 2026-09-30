@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "properties": {
+    "clinicName": { "type": "string", "nullable": true },
+    "stockVials": { "type": "integer", "nullable": true },
+    "doctorOnDuty": { "type": "boolean", "nullable": true },
+    "occupiedBeds": { "type": "integer", "nullable": true },
+    "totalBeds": { "type": "integer", "nullable": true },
+    "opdFootfallToday": { "type": "integer", "nullable": true },
+    "detectedLanguage": { "type": "string" },
+    "confidence": { "type": "number" }
+  },
+  "required": ["detectedLanguage", "confidence"]
+}

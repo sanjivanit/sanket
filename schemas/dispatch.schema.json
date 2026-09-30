@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "selectedDonorId": { "type": "string" },
+    "reasoningEnglish": { "type": "string" },
+    "reasoningLocal": { "type": "string" }
+  },
+  "required": ["selectedDonorId", "reasoningEnglish", "reasoningLocal"]
+}

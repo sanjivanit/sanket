@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "headline": { "type": "string" },
+    "explanation": { "type": "string" },
+    "suggestedAction": { "type": "string" }
+  },
+  "required": ["headline", "explanation", "suggestedAction"]
+}
