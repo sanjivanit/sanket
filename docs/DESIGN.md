@@ -1,6 +1,6 @@
 # DESIGN.md: Sanket
 
-Status: locked for the submission build. Decisions on 30 Sep 2026: onboarding is a splash and one setup screen, with an optional tour on the dashboard (section 13), and Sanket is a desktop web app fixed at 1440 px wide (no responsive layout for now). Section 10 lists what remains as debt.
+Status: locked for the submission build. Decisions on 30 Sep 2026: onboarding is a splash and a three-step setup, with an optional tour on the dashboard (section 13), and Sanket is a desktop web app fixed at 1440 px wide (no responsive layout for now). Section 10 lists what remains as debt.
 Live prototype: https://claude.ai/artifact/BXZcM8UJMTFXFGioHwNgDz
 All clinic, stock, bed and doctor data on screen is sample data. Not for clinical use.
 
@@ -35,7 +35,7 @@ Everything else is support. If a feature does not help one of those four things,
 | Anthropic Frontend Design (base layer) | Yes | Read before designing. Applied throughout |
 | Design canvas artifact type | Yes | The prototype is a Design artifact, so it is editable and shareable |
 | Taste Skill | Not in the design chat | Not installed in the chat that built the prototype. Its parameters were applied by hand. It is installed in your Claude Code, so use it there (see section 11) |
-| UI/UX Pro Max | Onboarding only | Style driver for the 2 onboarding screens, the splash and the setup screen (decision 30 Sep 2026). Only one style driver per screen: Taste drives the dashboard, UI/UX Pro Max drives onboarding |
+| UI/UX Pro Max | Onboarding only | Style driver for the onboarding screens, the splash and the three setup steps (decision 30 Sep 2026). Only one style driver per screen: Taste drives the dashboard, UI/UX Pro Max drives onboarding |
 | Interface Design | Not in the design chat | Installed in your Claude Code. Its job is to persist these tokens across sessions. This file is that record |
 | Emil Kowalski Design | No | Skipped on purpose. This is an internal tool, not a delight-driven consumer product |
 | Designer Skills (63-skill suite) | No | It is for UX research work, not for building screens |
@@ -139,7 +139,7 @@ Reading path: the eye lands on the large red number in the action card and on th
 
 | # | Screen | Status |
 |---|---|---|
-| 1 to 2 | Onboarding: a splash, then one setup screen (district, role, language with a live waybill, safety acknowledgement). An optional 30-second tour sits on the dashboard | Built. The dashboard cannot be opened until setup is done. Design record in section 13 |
+| 1 to 3 | Onboarding: a splash, then a three-step setup (1: district and role; 2: language with a live waybill; 3: safety acknowledgement). An optional 30-second tour sits on the dashboard | Built. The dashboard cannot be opened until setup is done. Design record in section 13 |
 | 7 | State node dashboard | Built and clickable end to end |
 | 8 | National view | Planned. The National tab is a placeholder |
 | 9 | Anonymized export | Planned, optional |
@@ -164,7 +164,7 @@ Dashboard states, all built: calm, early warning (days 1 to 3), critical (day 4)
 
 ## 7. Onboarding
 
-Decision 30 Sep 2026: onboarding is 2 screens (splash and setup) plus an optional tour, recorded in section 13. The six-step flow below, and the 3-screen version that replaced it earlier the same day, are superseded and is kept only as a record of what `design/Main.dc.html` contains.
+Decision 30 Sep 2026: onboarding is a splash and a three-step setup plus an optional tour, recorded in section 13. The six-step flow below, and the 3-screen version that replaced it earlier the same day, are superseded and is kept only as a record of what `design/Main.dc.html` contains.
 
 Old flow: six steps, left rail with progress, one card on the right. The last step opens the dashboard calm, with a tip to press Advance day. The language chosen in step 3 sets the waybill language. "Replay setup" restarts it. Sign-in is simulated.
 
@@ -203,7 +203,7 @@ Open:
 
 ## 10. Design debt and the morning brief
 
-1. **Onboarding: done as 2 screens and an optional tour (section 13).** Not yet reviewed by a person and not run through GStack.
+1. **Onboarding: done as a splash, a three-step setup and an optional tour (section 13).** Not yet reviewed by a person and not run through GStack.
 2. Merge or hide the stats strip so only two bands of chrome remain above the content.
 3. Standardise corner radii and chip styles.
 4. Reword unclear labels: "Standby plan", "Inject crisis surge".
@@ -214,7 +214,7 @@ Open:
 ## 11. How to use your Claude Code skills on this
 
 1. Frontend Design is the base layer for every UI change.
-2. Use Taste as the one style driver on the dashboard with DESIGN_VARIANCE 3, MOTION_INTENSITY 2, VISUAL_DENSITY 6. The 2 onboarding screens use UI/UX Pro Max as their driver instead. Never enable both on the same screen.
+2. Use Taste as the one style driver on the dashboard with DESIGN_VARIANCE 3, MOTION_INTENSITY 2, VISUAL_DENSITY 6. The onboarding screens use UI/UX Pro Max as their driver instead. Never enable both on the same screen.
 3. Keep Interface Design on so these tokens persist. If a token changes, change section 3 of this file first.
 4. Do not add Emil Kowalski or Designer Skills.
 5. Run GStack on the onboarding and get approval before building more.
@@ -238,12 +238,15 @@ Status: **built, checked by script, not yet reviewed by a person.** It replaces 
 | Style driver | UI/UX Pro Max, on these 2 screens only. Taste was not used here. Same dials as before: variance 3, motion 2, density 5. Its search script was not re-run for this revision, because the style (minimalism and Swiss) and the rules used were already chosen and recorded in the 30 Sep version |
 | Fixed, not open to the skill | Brand, the semantic colours in section 3, Public Sans, the radius scale (12 panel, 8 control, 4 chip), the 1440 px desktop rule |
 
-### The two screens and the tour
+### The screens and the tour
 
 | Piece | Layout | Behaviour |
 |---|---|---|
 | Splash | Centred on the page ground: the logo mark, "Sanket" with "संकेत", one line ("Warns your district before a clinic runs out of anti-snake venom, then recommends a safe transfer for you to approve."), one primary button "Get started", and "Sample data. Not for clinical use." A theme button is top right | Nothing moves. The title takes focus on load |
-| Setup | One card, 1120 px wide, two columns. Left: district, role, language. Right: the live waybill preview, the four safety rules, the acknowledgement checkbox. Footer: Back and "Open dashboard" | District A is preselected and labelled "Current". District B is shown as Roadmap and cannot be chosen, as before. Role is a single choice with District Medical Officer preselected, plus Facility in-charge and State programme officer. **The role is a label only.** It appears in the dashboard header and changes nothing else, and the screen says so. The language list is a 2 by 2 grid. The preview asks the real API for the chosen language and shows the Gemini waybill, its back-translation, its source ("Written by Gemini, model" or "Offline fallback used") and the "Not yet reviewed by a native speaker" chip for Marathi, Hindi and Tamil. "Open dashboard" stays disabled until the box is ticked, and a status line says why |
+| Setup, step 1 of 3: "Your district and role" | Two columns: district on the left, role on the right | District A is preselected and labelled "Current". District B is shown as Roadmap and cannot be chosen, as before. Role is a single choice with District Medical Officer preselected, plus Facility in-charge and State programme officer. **The role is a label only.** It appears in the dashboard header and changes nothing else, and the screen says so. Back returns to the splash |
+| Setup, step 2 of 3: "Waybill language" | Two columns: the four languages, each in its own script, on the left; the live waybill preview on the right | The preview asks the real API for the chosen language and shows the Gemini waybill, its back-translation, its source ("Written by Gemini, model" or "Offline fallback used") and the "Not yet reviewed by a native speaker" chip for Marathi, Hindi and Tamil. Back returns to step 1 |
+| Setup, step 3 of 3: "One safety rule" | The four safety rules, a line saying they run in plain code, and the acknowledgement checkbox | "Open dashboard" stays disabled until the box is ticked, and a status line says why. Back returns to step 2 |
+| All three setup steps | One card, identical on every step: 960 px wide, with a body of fixed height (372 px) and a footer with Back and one primary button. Each step shows "Step n of 3" as plain text above its title | The card never changes size, so nothing jumps when you move between steps. The title takes focus on each step. The cost is empty space at the bottom of steps 1 and 3, because step 2, with the waybill preview, sets the height |
 | Tour | A "Take a 30-second tour" button in the demo strip, beside "Inject crisis surge". It starts the same coach bar and spotlight as before: 7 moments over 30 seconds, driven by the dashboard's own model, with Pause and "End the tour" | Optional and never shown on its own. The dashboard is `inert` while it runs. It ends with "Back to dashboard", resets the demo to its calm state and puts focus at the top of the dashboard |
 
 ### Decisions
@@ -252,11 +255,15 @@ Status: **built, checked by script, not yet reviewed by a person.** It replaces 
 |---|---|
 | The dashboard is a separate component that is mounted only when setup is done | "Not reachable" then holds in the page itself, not only in the URL. A `#dashboard` hash is dropped, also when it changes while the page is open |
 | The setup flag is one `localStorage` key, `sanket-setup`, holding `{district, role, language}` | Setup survives a reload. A value that does not parse, or names a role or language that does not exist, counts as not set up. If storage is blocked, the code keeps setup in memory for the session and asks again next time (by design, not tested) |
-| The logo is a button on the splash, the setup screen and the dashboard header. It clears the flag and returns to the splash | The rule asked for it. Its accessible name starts with the visible word ("Sanket. Clear setup and return to the start screen") |
-| Back on the setup screen returns to the splash and keeps the choices | The logo also leaves setup, but it discards them, so a plain Back is needed for someone who only wants to look again |
+| The logo is a button on the splash, all three setup steps and the dashboard header. It clears the flag and returns to the splash | The rule asked for it. Its accessible name starts with the visible word ("Sanket. Clear setup and return to the start screen") |
+| Back returns one step (step 3 to 2, 2 to 1, 1 to the splash) and keeps the choices | The logo also leaves setup, but it discards them, so a plain Back is needed for someone who only wants to look again |
 | "Skip setup", the district map, the step indicator, the guided run inside setup and "Replay setup" were removed | Skipping conflicts with the gate. The map chose between one real district and one that cannot be chosen. The logo replaces Replay |
 | Role rows carry no description | The role changes nothing, so a line such as "approve transfers" would promise access that does not exist (`CLAUDE.md`, rule 9) |
 | The language was persisted with the flag | Before, a reload returned to the default language. Setup now keeps it |
+
+### Setup went from one card to two steps to three on 30 Sep 2026
+
+The first version put district, role, language, the waybill preview, the rules and the checkbox on one card, and it was too heavy. A two-step split was still heavy on step 1 and left the two cards different sizes. The three-step split gives each step one job, and every step uses the same card size.
 
 ### Verified on 30 Sep 2026
 
@@ -264,16 +271,16 @@ Run against the dev server with the API stopped, so every waybill preview used t
 
 | Check | Result |
 |---|---|
-| Contrast, both themes: splash, setup in all 4 languages, the tour at 4 moments | 516 text nodes, 0 failures (4.5:1 text, 3:1 large text) |
+| Contrast, both themes: splash, the three steps (step 2 in all 4 languages), the tour at 4 moments | 426 text nodes, 0 failures (4.5:1 text, 3:1 large text) |
 | Contrast, dashboard with the role label and tour button, 5 states, 3 views, 4 tabs, both themes | 19,056 text nodes, 0 failures, no small targets, no horizontal overflow |
 | Touch targets | Every button and radio on the new screens is at least 44 px |
-| Fit | The setup card ends at 847 px in a 1440 by 900 window, so it does not scroll |
+| Fit | The card measures 960 by 622 px on all three steps, and stays that size when the language changes. It ends well inside a 1440 by 900 window. No step's content is taller than its body (the scan checks this in all four languages) |
 | The gate | With no flag, `#dashboard` shows the splash, the hash is removed and there is no dashboard in the page. A flag of `1`, or a flag with an unknown role, shows the splash. After setup a reload stays on the dashboard |
-| The logo | On the dashboard it clears the flag and shows the splash. On the setup screen it returns to the splash. On the splash it leaves the splash in place |
-| Keyboard | The splash and setup titles take focus on load. Language and role can be chosen with Space. Enter on "Open dashboard" opens the dashboard and puts focus at its heading. The primary button has a visible focus ring. The tour bar takes focus when it opens and focus returns to the dashboard heading when it ends |
+| The logo | On the dashboard it clears the flag and shows the splash. On any setup step it returns to the splash. On the splash it leaves the splash in place |
+| Keyboard | The splash title and all three step titles take focus on load. Language and role can be chosen with Space. Enter on "Continue" moves to the next step. Enter on "Open dashboard" opens the dashboard and puts focus at its heading. The primary button has a visible focus ring. The tour bar takes focus when it opens and focus returns to the dashboard heading when it ends |
 | Role label | Shows in the header after setup |
-| Reduced motion | 0 running animations on the setup screen |
-| Accessibility tree | Read for the splash, the setup screen and the dashboard. The logo, radiogroups, checkbox and disabled button all have names and states |
+| Reduced motion | 0 running animations on the language step |
+| Accessibility tree | Read for the splash, the three setup steps and the dashboard. The logo, radiogroups, checkbox and disabled button all have names and states |
 | Tests | `npm test` 16 of 16, `npm run test:web` 17 of 17. Neither covers the interface, which is why the scripts in `scripts/qa/` were rewritten for this flow |
 
 Not done: **a real screen-reader run (VoiceOver, NVDA)**, a check with the live API on the new setup screen (the earlier screen 2 was checked live and this one shares its code, but it was not re-run), native-speaker review of the three languages (`docs/LANGUAGE_REVIEW.md`), and GStack. A window narrower than 1440 px is out of scope by decision.
@@ -292,5 +299,5 @@ Not done: **a real screen-reader run (VoiceOver, NVDA)**, a check with the live 
 Tells that remain:
 
 - A centred logo, name, one line and one button is the most familiar splash there is. It is clear and short, and it is not distinctive.
-- The setup screen is dense for one screen: three choices, a live preview, four rules and a checkbox. It fits the window, and it is the price of having one screen.
+- Steps 1 and 3 have empty space under their content, so that all three cards stay the same size. Step 2, with the live preview, sets the height.
 - A person has not looked at either screen yet.

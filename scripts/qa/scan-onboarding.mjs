@@ -19,25 +19,34 @@ const scanSrc = () => {
     if (ratio < need) fails.add(`${ratio.toFixed(2)}<${need} "${t.slice(0, 36)}" ${size}px`);
   }
   const small = []; scope.querySelectorAll('button, [role=radio], [role=checkbox]').forEach((b) => { const r = b.getBoundingClientRect(); if (r.width && (r.height < 43.5 || r.width < 43.5)) small.push(`${(b.getAttribute('aria-label') || b.textContent || '').trim().slice(0, 28)} ${Math.round(r.width)}x${Math.round(r.height)}`); });
-  return { count, fails: [...fails], small, overflowX: document.documentElement.scrollWidth > innerWidth, cardFits: (() => { const c = document.querySelector('.setup'); return c ? c.getBoundingClientRect().bottom <= innerHeight : true; })() };
+  return { count, fails: [...fails], small, overflowX: document.documentElement.scrollWidth > innerWidth, cardFits: (() => { const c = document.querySelector('.setup'); if (!c) return true; const b = document.querySelector('.step-body'); return c.getBoundingClientRect().bottom <= innerHeight && b.scrollHeight <= b.clientHeight + 1; })() };
 };
 const browser = await chromium.launch(); const problems = []; let total = 0;
 for (const theme of ['light', 'dark']) {
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } }); const page = await ctx.newPage(); await page.clock.install();
   await page.goto('http://localhost:5199/'); await page.evaluate((t) => { localStorage.clear(); localStorage.setItem('sanket-theme', t); }, theme);
   await page.goto('http://localhost:5199/#dashboard'); await page.reload();   // the hash must not open the dashboard
-  const scan = async (label) => { await page.waitForTimeout(350); const r = await page.evaluate(scanSrc); total += r.count; r.fails.forEach((f) => problems.push(`${theme}/${label}: contrast ${f}`)); r.small.forEach((s) => problems.push(`${theme}/${label}: target under 44 px ${s}`)); if (r.overflowX) problems.push(`${theme}/${label}: horizontal overflow`); if (!r.cardFits) problems.push(`${theme}/${label}: setup card taller than the window`); };
+  const scan = async (label) => { await page.waitForTimeout(350); const r = await page.evaluate(scanSrc); total += r.count; r.fails.forEach((f) => problems.push(`${theme}/${label}: contrast ${f}`)); r.small.forEach((s) => problems.push(`${theme}/${label}: target under 44 px ${s}`)); if (r.overflowX) problems.push(`${theme}/${label}: horizontal overflow`); if (!r.cardFits) problems.push(`${theme}/${label}: setup card taller than the window, or a step's content taller than its body`); };
   await page.getByRole('button', { name: 'Get started' }).waitFor(); await scan('splash');
   if (await page.locator('.board').count()) problems.push(`${theme}: dashboard is in the page before setup`);
   if (await page.evaluate(() => location.hash)) problems.push(`${theme}: #dashboard was left in the URL`);
   if (!(await page.evaluate(() => document.activeElement && document.activeElement.id === 'splash-title'))) problems.push(`${theme}: splash title not focused`);
   await page.getByRole('button', { name: 'Get started' }).focus(); await page.keyboard.press('Enter');
-  await page.getByRole('heading', { name: 'Set up your dashboard' }).waitFor();
-  if (!(await page.evaluate(() => document.activeElement && document.activeElement.id === 'setup-title'))) problems.push(`${theme}: setup title not focused`);
-  for (const l of [/^English/, /^मराठी/, /^हिन्दी/, /^தமிழ்/]) { await page.getByRole('radio', { name: l }).focus(); await page.keyboard.press('Space'); await scan('setup-' + l.source); }
+  const cardBox = async () => JSON.stringify(await page.locator('.setup').boundingBox());
+  await page.getByRole('heading', { name: 'Your district and role' }).waitFor(); await scan('step1');
+  if (!(await page.evaluate(() => document.activeElement && document.activeElement.id === 'setup-title'))) problems.push(`${theme}: step 1 title not focused`);
+  const box1 = await cardBox();
   await page.getByRole('radio', { name: 'State programme officer' }).focus(); await page.keyboard.press('Space');
+  await page.getByRole('button', { name: 'Continue' }).focus(); await page.keyboard.press('Enter');
+  await page.getByRole('heading', { name: 'Waybill language' }).waitFor();
+  if (!(await page.evaluate(() => document.activeElement && document.activeElement.id === 'setup-title'))) problems.push(`${theme}: step 2 title not focused`);
+  for (const l of [/^English/, /^मराठी/, /^हिन्दी/, /^தமிழ்/]) { await page.getByRole('radio', { name: l }).focus(); await page.keyboard.press('Space'); await scan('step2-' + l.source); if ((await cardBox()) !== box1) problems.push(`${theme}: card size differs on step 2 (${l.source})`); }
+  await page.getByRole('button', { name: 'Continue' }).focus(); await page.keyboard.press('Enter');
+  await page.getByRole('heading', { name: 'One safety rule' }).waitFor(); await scan('step3');
+  if (!(await page.evaluate(() => document.activeElement && document.activeElement.id === 'setup-title'))) problems.push(`${theme}: step 3 title not focused`);
+  if ((await cardBox()) !== box1) problems.push(`${theme}: card size differs on step 3`);
   if (!(await page.getByRole('button', { name: 'Open dashboard' }).isDisabled())) problems.push(`${theme}: Open dashboard enabled before acknowledgement`);
-  await page.getByRole('checkbox').focus(); await page.keyboard.press('Space'); await scan('setup-ack');
+  await page.getByRole('checkbox').focus(); await page.keyboard.press('Space'); await scan('step3-ack');
   const ring = await page.evaluate(() => { const b = document.querySelector('.ob-btn.primary'); b.focus(); const cs = getComputedStyle(b); return cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) >= 2; }); if (!ring) problems.push(`${theme}: primary button has no visible focus ring`);
   await page.keyboard.press('Enter'); await page.locator('.role-chip').waitFor();
   if (!(await page.locator('.role-chip').innerText()).includes('State programme officer')) problems.push(`${theme}: role label missing from header`);
@@ -49,7 +58,7 @@ for (const theme of ['light', 'dark']) {
   await ctx.close();
   // reduced motion: no running animations on the setup screen
   const c2 = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' }); const p2 = await c2.newPage();
-  await p2.goto('http://localhost:5199/'); await p2.getByRole('button', { name: 'Get started' }).click(); await p2.getByRole('radio', { name: /^தமிழ்/ }).click();
+  await p2.goto('http://localhost:5199/'); await p2.getByRole('button', { name: 'Get started' }).click(); await p2.getByRole('button', { name: 'Continue' }).click(); await p2.getByRole('radio', { name: /^தமிழ்/ }).click();
   const anims = await p2.evaluate(() => document.getAnimations().filter((a) => a.playState === 'running').length); if (anims) problems.push(`${theme}: ${anims} animations running with reduced motion`);
   await c2.close();
 }

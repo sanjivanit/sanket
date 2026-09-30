@@ -7,7 +7,7 @@ import { ActionCard, Stepper } from './components/ActionCard.jsx';
 import Detail from './components/Detail.jsx';
 import './onboarding/onboarding.css';
 import Splash from './onboarding/Splash.jsx';
-import Setup, { ROLES } from './onboarding/Setup.jsx';
+import { Place, Language, Safety, ROLES } from './onboarding/Setup.jsx';
 import { LANGS } from './onboarding/LanguageWaybill.jsx';
 import Tour from './onboarding/Tour.jsx';
 import Spotlight from './onboarding/Spotlight.jsx';
@@ -124,7 +124,9 @@ export default function App() {
   };
 
   if (saved) return <Dashboard theme={theme} setTheme={setTheme} role={saved.role} lang={saved.lang} onHome={goHome} />;
-  return screen === 'splash'
-    ? <Splash onHome={goHome} onStart={() => setScreen('setup')} theme={theme} setTheme={setTheme} />
-    : <Setup role={role} setRole={setRole} lang={lang} setLang={setLang} ack={ack} setAck={setAck} onHome={goHome} onBack={() => setScreen('splash')} onDone={finish} theme={theme} setTheme={setTheme} />;
+  const gate = { onHome: goHome, theme, setTheme };
+  if (screen === 'splash') return <Splash onHome={goHome} onStart={() => setScreen('place')} theme={theme} setTheme={setTheme} />;
+  if (screen === 'place') return <Place role={role} setRole={setRole} onNext={() => setScreen('language')} onBack={() => setScreen('splash')} gate={gate} />;
+  if (screen === 'language') return <Language lang={lang} setLang={setLang} onNext={() => setScreen('safety')} onBack={() => setScreen('place')} gate={gate} />;
+  return <Safety ack={ack} setAck={setAck} onDone={finish} onBack={() => setScreen('language')} gate={gate} />;
 }

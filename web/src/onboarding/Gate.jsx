@@ -18,3 +18,16 @@ export function ThemeButton({ theme, setTheme }) {
     </button>
   );
 }
+
+// The top bar of the setup steps: the logo button and the theme button.
+export function GateTop({ onHome, theme, setTheme }) {
+  return (
+    <div className="gate-top">
+      <BrandButton onHome={onHome} size={36} glyph={26}>
+        <span className="name">Sanket</span>
+        <span className="local" lang="hi">संकेत</span>
+      </BrandButton>
+      <ThemeButton theme={theme} setTheme={setTheme} />
+    </div>
+  );
+}

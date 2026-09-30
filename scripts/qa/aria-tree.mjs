@@ -5,8 +5,12 @@ await page.goto('http://localhost:5199/'); await page.evaluate(() => localStorag
 const dump = async (label, sel = 'body') => { console.log(`\n===== ${label}`); console.log(await page.locator(sel).ariaSnapshot()); };
 await page.getByRole('button', { name: 'Get started' }).waitFor();
 await dump('SPLASH', 'body');
-await page.getByRole('button', { name: 'Get started' }).click(); await page.getByRole('heading', { name: 'Set up your dashboard' }).waitFor(); await page.waitForTimeout(5000);
-await dump('SETUP', 'body');
+await page.getByRole('button', { name: 'Get started' }).click(); await page.getByRole('heading', { name: 'Your district and role' }).waitFor();
+await dump('SETUP, step 1', 'body');
+await page.getByRole('button', { name: 'Continue' }).click(); await page.getByRole('heading', { name: 'Waybill language' }).waitFor(); await page.waitForTimeout(5000);
+await dump('SETUP, step 2', 'body');
+await page.getByRole('button', { name: 'Continue' }).click(); await page.getByRole('heading', { name: 'One safety rule' }).waitFor();
+await dump('SETUP, step 3', 'body');
 await page.getByRole('checkbox').click(); await page.getByRole('button', { name: 'Open dashboard' }).click();
 await page.getByRole('button', { name: 'Dismiss tip' }).click();
 await page.getByRole('button', { name: /^Day 4/ }).click(); await page.waitForTimeout(6000);

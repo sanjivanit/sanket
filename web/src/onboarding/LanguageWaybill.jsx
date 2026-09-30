@@ -6,16 +6,16 @@ import { applyLive } from '../live.js';
 
 export const LANGS = [
   { key: 'en', label: 'English', name: 'English' },
-  { key: 'mr', label: 'मराठी', name: 'Marathi' },
-  { key: 'hi', label: 'हिन्दी', name: 'Hindi' },
-  { key: 'ta', label: 'தமிழ்', name: 'Tamil' },
+  { key: 'mr', label: 'मराठी', name: 'Marathi, used in Maharashtra' },
+  { key: 'hi', label: 'हिन्दी', name: 'Hindi, used across many states' },
+  { key: 'ta', label: 'தமிழ்', name: 'Tamil, used in Tamil Nadu' },
 ];
 
 export function LanguageOptions({ lang, setLang }) {
   return (
-    <>
-      <div className="group-label" id="ob-lang-label" style={{ marginTop: 18 }}>Waybill language</div>
-      <div className="opts grid2" role="radiogroup" aria-labelledby="ob-lang-label">
+    <div>
+      <div className="group-label" id="ob-lang-label">Waybill language</div>
+      <div className="opts" role="radiogroup" aria-labelledby="ob-lang-label">
         {LANGS.map((l) => (
           <button key={l.key} type="button" role="radio" className="opt" aria-checked={lang === l.key} onClick={() => setLang(l.key)} lang={l.key}>
             <span className="radio" />
@@ -23,7 +23,7 @@ export function LanguageOptions({ lang, setLang }) {
           </button>
         ))}
       </div>
-    </>
+    </div>
   );
 }
 
