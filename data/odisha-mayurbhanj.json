@@ -1,5 +1,5 @@
 {
- "note": "SIMULATED DATA for the Mayurbhanj pilot demo. Stock, beds, staffing, batches and footfall are invented. Facility names were checked against public sources where noted. Coordinates are approximate: each facility sits at the stated distance from PHC Badasahi along its real compass bearing, so the real positions differ. Real registry positions are in docs/REAL_DATA.md.",
+ "note": "SIMULATED DATA for the Mayurbhanj pilot demo. Stock, beds, staffing, batches and footfall are invented. Facility names and blocks were checked against the Odisha health department list (2020) where noted. Positions are approximate, taken from OpenStreetMap, so distances are straight-line and approximate. See docs/REAL_DATA.md.",
  "stateCode": "OD",
  "state": "Odisha",
  "district": "Mayurbhanj",
@@ -8,13 +8,13 @@
  "clinics": [
   {
    "id": "OD-01",
-   "name": "PHC Badasahi",
+   "name": "CHC Badasahi",
    "stateCode": "OD",
    "districtId": "MBJ",
    "block": "Badasahi",
    "lat": 21.7263,
    "lng": 86.7399,
-   "coordinates": "approximate",
+   "coordinates": "OpenStreetMap position, approx.",
    "stock": 8,
    "baselineBurn": 2,
    "bedsTotal": 10,
@@ -25,9 +25,9 @@
    "batchNumber": "ASV-26-A",
    "expiryDate": "2027-05-31",
    "sources": {
-    "name": "not verified: the official Odisha list (2020) and OpenStreetMap show CHC Badasahi, no PHC",
+    "name": "verified: official Odisha list (2020) and OpenStreetMap node 7048704978 list CHC Badasahi",
     "block": "Badasahi block (official list)",
-    "position": "placed at the OpenStreetMap position of CHC Badasahi (node 7048704978) as the nearest registry entry"
+    "position": "OpenStreetMap node 7048704978"
    }
   },
   {
@@ -36,9 +36,9 @@
    "stateCode": "OD",
    "districtId": "MBJ",
    "block": "Betnoti",
-   "lat": 21.7498,
-   "lng": 86.8966,
-   "coordinates": "approximate",
+   "lat": 21.7429,
+   "lng": 86.8504,
+   "coordinates": "OpenStreetMap position, approx.",
    "stock": 48,
    "baselineBurn": 3,
    "bedsTotal": 16,
@@ -51,7 +51,7 @@
    "sources": {
     "name": "verified: official Odisha list (2020) and OpenStreetMap node 7087495315",
     "block": "Betnoti block (official list)",
-    "position": "placed at the stated distance along the real bearing, not the surveyed position"
+    "position": "OpenStreetMap node 7087495315"
    }
   },
   {
@@ -59,10 +59,10 @@
    "name": "CHC Khunta",
    "stateCode": "OD",
    "districtId": "MBJ",
-   "block": "Khunta",
-   "lat": 21.7001,
-   "lng": 86.521,
-   "coordinates": "approximate",
+   "block": "Gopabandhunagar",
+   "lat": 21.7125,
+   "lng": 86.6245,
+   "coordinates": "OpenStreetMap position, approx.",
    "stock": 32,
    "baselineBurn": 2,
    "bedsTotal": 8,
@@ -74,8 +74,8 @@
    "expiryDate": "2027-01-31",
    "sources": {
     "name": "verified: official Odisha list (2020) and OpenStreetMap node 7074150972",
-    "block": "unclear: the official list places CHC Khunta under Gopabandhunagar block; Khunta is also a block name",
-    "position": "placed at the stated distance along the real bearing, not the surveyed position"
+    "block": "Gopabandhunagar block, as the official list (2020) places CHC Khunta. Khunta is also the name of a block, so this is worth a second look",
+    "position": "OpenStreetMap node 7074150972"
    }
   },
   {
@@ -84,9 +84,9 @@
    "stateCode": "OD",
    "districtId": "MBJ",
    "block": "Udala",
-   "lat": 21.5466,
-   "lng": 86.5299,
-   "coordinates": "approximate",
+   "lat": 21.5767,
+   "lng": 86.565,
+   "coordinates": "OpenStreetMap position, approx.",
    "stock": 14,
    "baselineBurn": 4,
    "bedsTotal": 24,
@@ -99,18 +99,18 @@
    "sources": {
     "name": "verified: official Odisha list (2020) and OpenStreetMap node 7087305303 (also mapped as Kaptipada Sub-divisional Hospital)",
     "block": "Udala (official list, Udala NAC)",
-    "position": "placed at the stated distance along the real bearing, not the surveyed position"
+    "position": "OpenStreetMap node 7087305303"
    }
   },
   {
    "id": "OD-05",
-   "name": "PHC Baripada Rural",
+   "name": "PHC Krushanchandrapur",
    "stateCode": "OD",
    "districtId": "MBJ",
    "block": "Baripada",
-   "lat": 21.8923,
-   "lng": 86.89,
-   "coordinates": "approximate",
+   "lat": 21.8353,
+   "lng": 86.8116,
+   "coordinates": "OpenStreetMap position, approx.",
    "stock": 10,
    "baselineBurn": 2,
    "bedsTotal": 10,
@@ -121,9 +121,9 @@
    "batchNumber": "ASV-26-D",
    "expiryDate": "2027-04-30",
    "sources": {
-    "name": "not verified: no facility with this name in the official list or OpenStreetMap",
-    "block": "Baripada block (assumed from the name, not verified)",
-    "position": "direction chosen so the map is readable, distance as stated; not from any source"
+    "name": "verified: PHC Krushanchandrapur is in the official Odisha list (2020), Baripada block. The list has no \"Baripada Sadar\" block",
+    "block": "Baripada block (official list)",
+    "position": "approximate: OpenStreetMap node 7208345750, \"Government Hospital, Krushna Chandpur\", assumed to be the same facility"
    }
   },
   {
@@ -132,9 +132,9 @@
    "stateCode": "OD",
    "districtId": "MBJ",
    "block": "Khunta",
-   "lat": 21.9092,
-   "lng": 86.5132,
-   "coordinates": "approximate",
+   "lat": 21.7909,
+   "lng": 86.6599,
+   "coordinates": "OpenStreetMap position, approx.",
    "stock": 26,
    "baselineBurn": 2,
    "bedsTotal": 12,
@@ -147,7 +147,7 @@
    "sources": {
     "name": "verified: official Odisha list (2020) and OpenStreetMap node 7081842675",
     "block": "Khunta block (official list)",
-    "position": "placed at the stated distance along the real bearing, not the surveyed position"
+    "position": "OpenStreetMap node 7081842675"
    }
   }
  ]

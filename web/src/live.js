@@ -37,9 +37,9 @@ export function applyLive(v, live, approved) {
       chips,
     };
     const donor = short(r.donor && r.donor.name);
-    out.route = { donor, vials: vials(r.vials), sub: `${r.donor.distanceKm} km, about ${r.donor.etaMinutes} min`, donorDiffers: donor !== v.names.donor };
+    out.route = { donor, vials: vials(r.vials), sub: `${v.approx ? 'approx. ' : ''}${r.donor.distanceKm} km, about ${r.donor.etaMinutes} min`, donorDiffers: donor !== v.names.donor };
     out.reasoning = { english: (r.reasoning && r.reasoning.english) || '', guardrail: r.guardrail || null };
-    out.rejectedTags = (r.rejected || []).map((x) => ({ text: `${short(x.name)}: ${x.reason}`, color: /doctor/.test(x.reason) ? 'var(--doc-t)' : 'var(--crit-t)' }));
+    out.rejectedTags = (r.rejected || []).map((x) => ({ text: `${short(x.name)}: ${x.reason === 'doctor absent' ? 'no medical officer' : x.reason}`, color: /doctor/.test(x.reason) ? 'var(--doc-t)' : 'var(--crit-t)' }));
     out.logLines = v.logLines.map((l) => (/Gemini picked/.test(l.text)
       ? { ...l, text: l.text.replace(/Gemini picked.*/, r.source === 'gemini' ? `Gemini (${r.model}) picked ${donor}, code check passed` : 'Gemini unavailable. Offline fallback used') }
       : l));

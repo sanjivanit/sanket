@@ -90,7 +90,7 @@ test('live: a Gemini answer replaces the template and keeps the safety chips', (
   assert.ok(chips.includes('Not yet reviewed by a native speaker'));
   assert.ok(chips.includes('English back-translation matches'));
   assert.ok(chips.includes('Drug, vials, temperature set by code'));
-  assert.deepEqual(v.rejectedTags.map((t) => t.text), ['Bhor: doctor absent', 'Junnar: too far']);
+  assert.deepEqual(v.rejectedTags.map((t) => t.text), ['Bhor: no medical officer', 'Junnar: too far']);
   assert.equal(v.route.sub, '18.4 km, about 28 min');
   assert.ok(v.logLines.some((l) => /Gemini \(gemini-3.5-flash-lite\) picked Shivpuri/.test(l.text)));
 });
@@ -156,9 +156,12 @@ test('mayurbhanj: the donor on screen is the one the engine picks, with the same
   assert.equal(MBJ.donor.dist, top.distanceKm);
   assert.equal(MBJ.etaMin, top.etaMinutes);
   const v = buildView(STATES.critical, 'or', MBJ);
-  assert.equal(v.callout.dist, '16.4 km');
+  assert.equal(v.callout.dist, '10.9 km');
   assert.equal(v.callout.donors, '3');
-  assert.equal(v.names.donor, 'Betnoti');
+  assert.equal(v.names.donor, 'Dukura');
+  assert.equal(v.approx, true, 'distances from approximate positions are labelled approx.');
+  assert.equal(v.rowsA.find((r) => r.name === 'CHC Betnoti').meta, 'approx. 11.6 km');
+  assert.equal(buildView(STATES.critical, 'mr', MH).approx, false);
 });
 
 test('mayurbhanj: no doctor names, six facilities, no next-district group', () => {
@@ -168,19 +171,22 @@ test('mayurbhanj: no doctor names, six facilities, no next-district group', () =
   assert.equal(v.stat.doctors.total, 6);
   assert.equal(v.stat.doctors.on, 5);
   for (const r of v.rowsA) assert.match(r.docTip, /^Medical officer (on duty|absent today)$/);
+  assert.ok(MBJ.others.some((t) => t.text === 'Udala: no medical officer'));
+  assert.ok(!JSON.stringify(v).includes('No doctor'));
   assert.equal(v.rowsA.find((r) => r.name === 'SDH Udala').doc, false);
   assert.match(v.wb.number, /^Number on approval$/);
   assert.equal(buildView(STATES['in transit'], 'or', MBJ).wb.number, 'SK-2026-OD-0001');
 });
 
 test('mayurbhanj: Odia waybill comes from the template and names the donor and recipient', () => {
+  assert.equal(MBJ.donor.name, 'CHC Dukura');
   const v = buildView({ ...STATES.critical, qty: 14 }, 'or', MBJ);
   assert.ok(v.wb.showLocal);
-  assert.match(v.wb.local, /Betnoti/);
+  assert.match(v.wb.local, /Dukura/);
   assert.match(v.wb.local, /Badasahi/);
   assert.match(v.wb.local, /14 ଶିଶି/);
   assert.ok(v.wb.chips.some((c) => c.text === 'Not yet reviewed by a native speaker'));
-  assert.equal(v.wb.batch, 'ASV-26-B');
+  assert.equal(v.wb.batch, 'ASV-26-E');
 });
 
 test('mayurbhanj: the demo timeline nodes use the data set need, not a fixed number', () => {
@@ -245,6 +251,7 @@ test('telemetry: only the agreed keys, no names, no doctors, no exact coordinate
   }
   assert.equal(t.icd11Code, 'XM4KN1');
   assert.equal(t.icd11Title, 'Snake venom');
+  assert.equal(t.icd11Status, 'ICD-11 code, to be confirmed by a clinical coder');
   assert.equal(t.surgeClass, 'critical');
   assert.equal(t.dataSource, 'simulated');
   assert.equal(t.weekOfYear, 40);

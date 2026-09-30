@@ -28,12 +28,12 @@ export function BedSquares({ squares, width }) {
   );
 }
 
-// Doctor status. Never colour alone: a text label and a filled dot, and a violet pill when there is no doctor.
+// Doctor status. Never colour alone: a text label and a filled dot, and a violet pill when there is no medical officer.
 export function DocPill({ c }) {
   return (
     <button type="button" className={'doc-pill' + (c.doc ? '' : ' no')} aria-label={c.docTip}>
       <span className="doc-dot" style={{ background: c.doc ? 'var(--ok)' : 'var(--doc)', borderColor: c.doc ? 'var(--ok)' : 'var(--doc)' }} />
-      <span style={{ color: c.doc ? 'var(--text)' : 'var(--doc-t)', fontWeight: c.doc ? 400 : 600 }}>{c.doc ? 'On duty' : 'No doctor'}</span>
+      <span style={{ color: c.doc ? 'var(--text)' : 'var(--doc-t)', fontWeight: c.doc ? 400 : 600 }}>{c.doc ? 'On duty' : 'No medical officer'}</span>
       <span className={'tipbox' + (c.tipAbove ? ' above' : '')} role="tooltip">{c.docTip}</span>
     </button>
   );

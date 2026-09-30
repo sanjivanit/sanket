@@ -186,28 +186,35 @@ test('api: check-in falls back to a friendly message when Gemini fails', async (
 });
 
 // Mayurbhanj, Odisha: the default data set.
-test('mayurbhanj: six facilities, labelled simulated, no named doctors, coordinates marked approximate', () => {
+test('mayurbhanj: six facilities, labelled simulated, no named doctors, positions marked approx.', () => {
   assert.equal(MBJ.clinics.length, 6);
   assert.match(MBJ.note, /SIMULATED DATA/);
   assert.equal(MBJ.stateCode, 'OD');
   for (const c of MBJ.clinics) {
     assert.ok(!('doctorName' in c), `${c.name} must not carry a doctor name`);
-    assert.equal(c.coordinates, 'approximate', `${c.name} coordinates are placed, not surveyed`);
+    assert.match(c.coordinates, /approx/, `${c.name} position is approximate`);
     assert.ok(c.sources && c.sources.name && c.sources.position, `${c.name} records where its name and position came from`);
   }
   assert.ok(!/\bDr\.?\s/.test(JSON.stringify(MBJ)), 'no doctor names anywhere in the file');
+  const by = Object.fromEntries(MBJ.clinics.map((c) => [c.id, c]));
+  assert.equal(by['OD-01'].name, 'CHC Badasahi');
+  assert.equal(by['OD-03'].block, 'Gopabandhunagar', 'the official block for CHC Khunta');
+  assert.equal(by['OD-05'].name, 'PHC Krushanchandrapur');
+  assert.equal(by['OD-05'].block, 'Baripada');
 });
 
-test('engine: Mayurbhanj surge needs 14 vials, Betnoti donates, Udala and Baripada Rural are rejected for the right reason', () => {
+test('engine: Mayurbhanj surge needs 14 vials, Dukura donates, Udala and Krushanchandrapur are rejected for the right reason', () => {
   const clinics = E.applyScenario(MBJ.clinics, SC.oneClinic, 'OD-01');
   const t = E.findTransfer(clinics, 'OD-01', TODAY);
   assert.equal(t.need, 14);
   assert.equal(t.tier, 1);
-  assert.deepEqual(t.eligible.map((d) => [d.name, d.distanceKm]), [['CHC Betnoti', 16.4], ['CHC Khunta', 22.8], ['CHC Dukura', 31]]);
+  assert.deepEqual(t.eligible.map((d) => [d.name, d.distanceKm]), [['CHC Dukura', 10.9], ['CHC Betnoti', 11.6], ['CHC Khunta', 12]]);
   const why = Object.fromEntries(t.rejected.map((r) => [r.name, r.reason]));
   assert.equal(why['SDH Udala'], 'doctor absent');
-  assert.equal(why['PHC Baripada Rural'], 'beds at or above 85%');
+  assert.equal(why['PHC Krushanchandrapur'], 'beds at or above 85%');
   assert.ok(t.eligible.every((d) => d.keepsDaysAfter >= 3), 'a donor keeps at least 3 days');
+  assert.equal(t.eligible[0].etaMinutes, 16);
+  assert.equal(t.eligible[0].keepsDaysAfter, 6);
 });
 
 test('engine: at the start of the surge Mayurbhanj needs no transfer', () => {
@@ -216,11 +223,11 @@ test('engine: at the start of the surge Mayurbhanj needs no transfer', () => {
 
 test('api: Mayurbhanj dispatch in Odia uses an unreviewed template and an OD dispatch ID', async () => {
   const clinics = E.applyScenario(MBJ.clinics, SC.oneClinic, 'OD-01');
-  await withServer(geminiPicks('OD-02'), async (post) => {
+  await withServer(geminiPicks('OD-06'), async (post) => {
     const r = await post('/api/dispatch', { stateCode: 'OD', clinics, recipientId: 'OD-01', language: 'or', counter: 1 });
     assert.equal(r.status, 'recommended');
     assert.equal(r.vials, 14);
-    assert.equal(r.donor.name, 'CHC Betnoti');
+    assert.equal(r.donor.name, 'CHC Dukura');
     assert.match(r.dispatchId, /^SK-\d{4}-OD-0001$/);
     assert.equal(r.waybill.languageCode, 'or');
     assert.equal(r.waybill.languageName, 'Odia');

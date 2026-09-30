@@ -5,6 +5,7 @@ COPY package.json package-lock.json ./
 RUN npm ci
 COPY web ./web
 COPY data ./data
+COPY config ./config
 RUN npm run build
 
 FROM node:22-slim

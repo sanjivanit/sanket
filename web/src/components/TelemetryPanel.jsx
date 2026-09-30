@@ -31,7 +31,7 @@ export default function TelemetryPanel({ v, ds, onClose }) {
         <ul className="drawer-checks">
           {CHECKS.map((c) => <li key={c}><Check size={14} weight="bold" color="var(--ok-t)" aria-hidden="true" /><span>{c}</span></li>)}
         </ul>
-        <div className="fine" style={{ lineHeight: 1.5 }}>Snake venom is coded with the ICD-11 extension code XM4KN1. ICD-11 has no single snakebite envenoming category, so a clinical coder should confirm the code before real use.</div>
+        <div className="fine" style={{ lineHeight: 1.5 }}>Snake venom, ICD-11 code XM4KN1, to be confirmed by a clinical coder. ICD-11 has no single snakebite envenoming category.</div>
         <div className="drawer-foot">
           <button type="button" className="btn-line" onClick={copy}>{copied ? 'Copied' : 'Copy JSON'}</button>
           <button type="button" className="btn-primary" onClick={onClose} ref={closeRef}>Close</button>

@@ -19,6 +19,6 @@ There is no API key field anywhere in the app.
 
 ## Data contract for each clinic
 
-`id, name, stateCode, districtId, lat, lng, stock, baselineBurn, bedsTotal, bedsOcc, doctorOnDuty, baselineFootfall, footfallToday, batchNumber, expiryDate`. See `data/odisha-mayurbhanj.json` (the default). `doctorName` is no longer part of the contract: the server never used it and no screen shows it (the older `data/maharashtra.json` still has it). The web app sends only these fields, so extra fields in a data file (`block`, `coordinates`, `sources`) stay in the browser. In the Mayurbhanj file `lat` and `lng` are approximate, see `docs/REAL_DATA.md`.
+`id, name, stateCode, districtId, lat, lng, stock, baselineBurn, bedsTotal, bedsOcc, doctorOnDuty, baselineFootfall, footfallToday, batchNumber, expiryDate`. See `data/odisha-mayurbhanj.json` (the default). `doctorName` is no longer part of the contract: the server never used it and no screen shows it (the older `data/maharashtra.json` still has it). The web app sends only these fields, so extra fields in a data file (`block`, `coordinates`, `sources`) stay in the browser. In the Mayurbhanj file `lat` and `lng` are approximate OpenStreetMap positions, so distances are approximate and the web app labels them "approx.". See `docs/REAL_DATA.md`.
 
 `stateCode` can be any short code. Dispatch IDs are `SK-<year>-<stateCode>-<counter>`, for example `SK-2026-OD-0001`. `language` also accepts `or` (Odia), which is unreviewed like the other local languages.

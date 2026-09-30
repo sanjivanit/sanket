@@ -72,7 +72,7 @@ Semantic meaning is fixed. Do not reuse a status colour for decoration.
 | `--warn` (text `--warn-t`) | `#B45309` (`#92400E`) | `#F59E0B` (`#FBBF24`) | Early warning, beds nearly full, expiring |
 | `--crit` (text `--crit-t`) | `#DC2626` (`#B91C1C`) | `#EF4444` (`#F87171`) | Critical |
 | `--acc` (text `--acc-t`) | `#0E7490` | `#22D3EE` (`#67E8F9`) | Actions, transfers, the proposed donor |
-| `--doc` (text `--doc-t`) | `#6D28D9` (`#5B21B6`) | `#A78BFA` (`#C4B5FD`) | No doctor on duty. Used for nothing else |
+| `--doc` (text `--doc-t`) | `#6D28D9` (`#5B21B6`) | `#A78BFA` (`#C4B5FD`) | No medical officer on duty. Used for nothing else |
 | `--ok-btn` (text `--ok-btn-on`) | `#166534` (`#FFFFFF`) | `#22C55E` (`#04220F`) | Fill and label of the green "Mark delivered" button only. Added 30 Sep 2026: white on `--ok` measured 3.3:1 in light and 2.3:1 in dark |
 
 Verified contrast: normal text at least 4.5:1 and large text at least 3:1 in both themes on 30 Sep 2026 (scripted scan of every text node: 0 failures). The warning bar colour `#B45309` replaced `#D97706`, which measured 2.9:1 against the page ground.

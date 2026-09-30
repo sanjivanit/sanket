@@ -5,9 +5,9 @@
 // "snakebite envenoming" category there. The agent is coded with the extension code XM4KN1 "Snake venom"
 // (the WHO title). Whether a coder would also add a harm or external-cause code is a question for a clinical
 // coder, not for this app. See docs/REAL_DATA.md.
-export const ICD11 = { code: 'XM4KN1', title: 'Snake venom', kind: 'ICD-11 MMS extension code, agent' };
+export const ICD11 = { code: 'XM4KN1', title: 'Snake venom', status: 'ICD-11 code, to be confirmed by a clinical coder', kind: 'ICD-11 MMS extension code, agent' };
 
-export const TELEMETRY_KEYS = ['icd11Code', 'icd11Title', 'surgeVelocityVisitsPerDay', 'surgeClass', 'affectedFacilitiesBucket', 'districtLatLng', 'weekOfYear', 'sharedThreshold', 'dataSource'];
+export const TELEMETRY_KEYS = ['icd11Code', 'icd11Title', 'icd11Status', 'surgeVelocityVisitsPerDay', 'surgeClass', 'affectedFacilitiesBucket', 'districtLatLng', 'weekOfYear', 'sharedThreshold', 'dataSource'];
 
 export const isoWeek = (d) => {
   const t = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
@@ -28,6 +28,7 @@ export function buildTelemetry(v, ds, today = new Date()) {
   return {
     icd11Code: ICD11.code,
     icd11Title: ICD11.title,
+    icd11Status: ICD11.status,
     surgeVelocityVisitsPerDay: one(h[h.length - 1] - h[h.length - 2]),
     surgeClass: v.status === 'crit' ? 'critical' : v.status === 'warn' ? 'early_warning' : 'normal',
     affectedFacilitiesBucket: bucket(affected),

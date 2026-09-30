@@ -10,7 +10,7 @@ The app is called **Sanket** (संकेत), which means "signal". Use the na
 
 Sanket warns a District Medical Officer (DMO) before a Primary Health Centre (PHC) in India runs out of a life-saving medicine, then recommends a safe clinic-to-clinic transfer for the DMO to approve. The demo uses anti-snake venom (ASV) in monsoon season. Built for Code for Communities 2.0, track: Resilience.
 
-All facility, stock, bed and staffing data is **simulated**. Show the "Simulated data" label wherever those numbers appear ("Imported data: <file>" after a CSV import). Never present it as real. Never show a named doctor: use "Medical officer on duty" or "absent". Do not add badges that claim compliance or status (no "BRICS Resilience Node: Active", no "DPDP 2023 Federated"). Use "Designed for" wording for what is planned. The default data set is Mayurbhanj, Odisha (`data/odisha-mayurbhanj.json`). The Maharashtra and Tamil Nadu files are older fixtures kept for the design-parity and engine tests.
+All facility, stock, bed and staffing data is **simulated**. Show the "Simulated data" label wherever those numbers appear ("Imported data: <file>" after a CSV import). Never present it as real. Never show a named doctor: use "Medical officer on duty" or "absent". Do not add badges that claim compliance or status (no "BRICS Resilience Node: Active", no "DPDP 2023 Federated"). Use "Designed for" wording for what is planned. The default data set is Mayurbhanj, Odisha (`data/odisha-mayurbhanj.json`). Its positions are approximate OpenStreetMap positions, so every distance on screen carries "approx.". The telemetry disease code is always labelled "ICD-11 code, to be confirmed by a clinical coder". The Maharashtra and Tamil Nadu files are older fixtures kept for the design-parity and engine tests.
 
 ## Files to read
 
@@ -88,7 +88,7 @@ Follow `DESIGN.md`. In Claude Code, use this order:
 6. For any new or redesigned screen: build one proof screen first, run **GStack** on it for an AI-slop and quality score, and get approval before building more.
 7. Check every change in light and dark, and for contrast (4.5:1 text, 3:1 large text and graphics), touch targets (44 px) and reduced motion.
 
-Semantic colours are fixed: green stable, amber early warning, red critical, teal action and transfer, violet no doctor on duty. Never reuse violet for anything else. Never use colour alone to show status.
+Semantic colours are fixed: green stable, amber early warning, red critical, teal action and transfer, violet no medical officer on duty. Never reuse violet for anything else. Never use colour alone to show status.
 
 ## Working on the engine and API
 

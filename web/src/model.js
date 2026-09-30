@@ -116,7 +116,8 @@ export function buildView({ step, phase, qty, rejected }, lang = 'or', ds = DEFA
     const chip = isShiv ? shivChip : (c.chip || '');
     const chipColor = isShiv ? 'var(--acc-t)' : (c.chipColor || 'var(--muted)');
     const rowBg = c.isTarget ? scBg : (isShiv && shivChip ? 'var(--acc-bg)' : 'transparent');
-    const meta = c.isTarget ? footNow + ' visits today' : c.groupB ? Math.round(c.dist) + ' km' : c.dist.toFixed(1) + ' km';
+    const ap = ds.approx ? 'approx. ' : '';
+    const meta = c.isTarget ? footNow + ' visits today' : c.groupB ? ap + Math.round(c.dist) + ' km' : ap + c.dist.toFixed(1) + ' km';
     return {
       name: c.name, short: c.short, meta,
       tileMeta: c.groupB ? 'Next district, ' + meta : meta,
@@ -211,7 +212,7 @@ export function buildView({ step, phase, qty, rejected }, lang = 'or', ds = DEFA
     : step === 0 ? 'All clinics stable. Press Advance day to start the surge.'
     : need === 0 ? 'Standby donor ready. Nothing to send yet.'
     : eligibleCount + ' clinics in range can cover ' + vials(need) + '. The next district is not needed.';
-  const mapAria = 'Reach map. ' + T.name + ' is at the centre with a ring at 35 kilometres for same-district donors and a ring at 80 kilometres for the next district. ' + DNAME + ', ' + DN.dist.toFixed(1) + ' kilometres away, is the nearest donor.';
+  const mapAria = 'Reach map. ' + T.name + ' is at the centre with a ring at 35 kilometres for same-district donors and a ring at 80 kilometres for the next district. ' + DNAME + ', ' + DN.dist.toFixed(1) + ' kilometres away' + (ds.approx ? ', approximately' : '') + ', is the nearest donor.';
 
   // forecast chart
   const f = fit(hist);
@@ -361,7 +362,7 @@ export function buildView({ step, phase, qty, rejected }, lang = 'or', ds = DEFA
     status, need, qtyShown, hoursLeft, dsr, eligibleCount, delivered,
     names: { target: TN, targetFull: T.name, donor: DNAME, donorFull: DN.name },
     place: { district: ds.district, state: ds.state, facilities: ds.all.length, sameDistrict: ds.donors.length + 1 },
-    source: ds.source, day4Need: ds.need4, targetBedsPct: Math.round(T.bedsOcc / T.bedsTotal * 100),
+    source: ds.source, approx: ds.approx, day4Need: ds.need4, targetBedsPct: Math.round(T.bedsOcc / T.bedsTotal * 100),
     footNow, baseFoot: BASE, history: hist, growth,
     topBar: phase === 'transit' ? 'var(--acc)' : sc,
     dayLabel: step === 0 ? 'Before the surge' : 'Surge day ' + step + ' of 4',

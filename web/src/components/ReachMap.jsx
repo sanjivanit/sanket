@@ -12,7 +12,7 @@ export default function ReachMap({ v }) {
         <div className="legend">
           <span><i className="dot" style={{ background: 'var(--ok)' }} />Stable</span>
           <span><i className="dot" style={{ background: 'var(--crit)' }} />Critical</span>
-          <span><i className="dot" style={{ background: 'var(--doc)' }} />No doctor on duty</span>
+          <span><i className="dot" style={{ background: 'var(--doc)' }} />No medical officer on duty</span>
           <span><i style={{ display: 'block', width: 20, height: 3, background: 'var(--acc)' }} />Transfer</span>
           <span>
             <svg width="20" height="12" viewBox="0 0 20 12" aria-hidden="true"><circle cx="5" cy="6" r="3" style={{ fill: 'var(--faint)' }} /><circle cx="14" cy="6" r="5" style={{ fill: 'var(--faint)' }} /></svg>
@@ -51,7 +51,7 @@ export default function ReachMap({ v }) {
           <div><div className="n">{callout.donors}</div><div className="l">donors in range</div></div>
         </div>
         <div className="map-stats right">
-          <div><div className="n">{callout.dist}</div><div className="l">nearest donor</div></div>
+          <div><div className="n">{callout.dist}</div><div className="l">nearest donor{v.approx ? ', approx.' : ''}</div></div>
           <div><div className="n">{callout.eta}</div><div className="l">travel time</div></div>
         </div>
 

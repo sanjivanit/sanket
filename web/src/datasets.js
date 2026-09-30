@@ -40,7 +40,7 @@ export function datasetFrom(json, { chips = {}, order = null, source = { mode: '
   const need4 = Math.max(0, Math.ceil(RULES.targetDays * t.baselineBurn * DAY4 - t.stock));
   const cover = (d) => Math.floor(d.stock - RULES.donorKeepDays * d.burn);
   const rule = (d, need) => (d.dist > RULES.tier1Km ? 'too far'
-    : !d.doc ? 'no doctor'
+    : !d.doc ? 'no medical officer'
     : d.bedsOcc / d.bedsTotal >= RULES.bedOccupancyLimit ? 'beds full'
     : cover(d) < need ? 'low stock' : null);
   const eligible = donors.filter((d) => !rule(d, need4)).sort((a, b) => a.dist - b.dist);
@@ -52,12 +52,12 @@ export function datasetFrom(json, { chips = {}, order = null, source = { mode: '
   const tags = donors.filter((d) => d !== primary).map((d) => {
     const why = rule(d, need4);
     if (!why) return { text: `✓ ${d.short} backup`, color: 'var(--ok-t)' };
-    return { text: why === 'no doctor' ? `${d.short}: no doctor` : `✕ ${d.short}: ${why}`, color: why === 'no doctor' ? 'var(--doc-t)' : 'var(--crit-t)' };
+    return { text: why === 'no medical officer' ? `${d.short}: no medical officer` : `✕ ${d.short}: ${why}`, color: why === 'no medical officer' ? 'var(--doc-t)' : 'var(--crit-t)' };
   }).sort((a, b) => (a.text[0] === '✓' ? 0 : 1) - (b.text[0] === '✓' ? 0 : 1));
 
   const all = [target, ...donors, ...groupB];
   return {
-    uid: ++uid, json, source, stateCode: json.stateCode, state: json.state || json.stateCode,
+    uid: ++uid, approx: json.clinics.some((c) => /approx/.test(c.coordinates || '')), json, source, stateCode: json.stateCode, state: json.state || json.stateCode,
     district: json.district || 'District A', targetId: t.id,
     target, donors, groupB, donor: primary, others: tags, need4, all,
     etaMin: Math.round(primary.dist / RULES.avgSpeedKmh * 60),

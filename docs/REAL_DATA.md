@@ -13,32 +13,39 @@ Facility names were checked against public sources. Positions are approximate. T
 Sources used on 30 Sep 2026:
 
 - **Official list**: Odisha Health and Family Welfare Department, "List of major health institutions", Mayurbhanj (`health.odisha.gov.in/sites/default/files/2020-03/mayurbhanj.pdf`, 2020). Gives the facility type and block.
-- **OpenStreetMap** (queried through Nominatim and Overpass). Gives a mapped position for some facilities.
+- **OpenStreetMap** (queried through Nominatim and Overpass). Gives a mapped position.
 - The ABDM Health Facility Registry and NHM Odisha were **not** checked. The Registry was not tried, and no NHM Odisha facility list came up in a web search. Checking the Registry is the first step to make the names fully verified.
 
-| Facility in the data | Name | Block | Position |
+| Facility in the data | Name | Block in the data | Position (OpenStreetMap, approx.) |
 |---|---|---|---|
-| PHC Badasahi | **Not verified.** The official list and OpenStreetMap show **CHC Badasahi** (Badasahi block). No PHC with this name was found | Badasahi block (official list) | Approximate. Anchored at the OpenStreetMap position of CHC Badasahi (node 7048704978) |
-| CHC Betnoti | Verified (official list, OpenStreetMap node 7087495315) | Betnoti block | Approximate. Real position in the next table |
-| CHC Khunta | Verified (official list, OpenStreetMap node 7074150972) | **Unclear.** The official list places CHC Khunta under Gopabandhunagar block, and Khunta is also a block name | Approximate |
-| SDH Udala | Verified (official list, OpenStreetMap node 7087305303; also mapped as Kaptipada Sub-divisional Hospital) | Udala | Approximate |
-| PHC Baripada Rural | **Not verified.** No facility with this name in the official list or OpenStreetMap | Baripada (assumed from the name) | Approximate. The direction was chosen so the map is readable |
-| CHC Dukura | Verified (official list, OpenStreetMap node 7081842675) | Khunta block | Approximate |
+| CHC Badasahi | Verified (official list; OpenStreetMap node 7048704978) | Badasahi (official list) | 21.7263, 86.7399 |
+| CHC Betnoti | Verified (official list; node 7087495315) | Betnoti (official list) | 21.7429, 86.8504 |
+| CHC Khunta | Verified (official list; node 7074150972) | **Gopabandhunagar**, as the official list places it. Khunta is also a block name, so this is worth a second look | 21.7125, 86.6245 |
+| SDH Udala | Verified (official list; node 7087305303, also mapped as Kaptipada Sub-divisional Hospital) | Udala (official list, Udala NAC) | 21.5767, 86.5650 |
+| PHC Krushanchandrapur | Verified in the official list. It replaces "PHC Baripada Rural", which was not in any source | Baripada (official list) | 21.8353, 86.8116. **Approximate:** OpenStreetMap node 7208345750 is "Government Hospital, Krushna Chandpur", assumed to be the same facility |
+| CHC Dukura | Verified (official list; node 7081842675) | Khunta (official list) | 21.7909, 86.6599 |
 
-### Why the coordinates are approximate
+Notes:
 
-The demo brief fixes the distance from PHC Badasahi to each facility (16.4, 22.8, 29.5, 24.1 and 31.0 km). The real positions do not give those distances. The engine measures distance in a straight line from coordinates, so each facility is placed at the stated distance along its real compass bearing from Badasahi (except Baripada Rural, see above). The map is to scale for those distances and is not a survey.
+- The official list has **no "Baripada Sadar" block**. It says "Baripada" and names two facilities there: PHC Krushanchandrapur and PHC (New) Batana. Batana has no OpenStreetMap position, so Krushanchandrapur was used.
+- CHC Badasahi was called "PHC Badasahi" until 30 Sep 2026. The official list and OpenStreetMap show a CHC, so the name was corrected.
+- Only names, types and blocks come from sources. **Stock, beds, staffing and burn rates for all six are simulated.** A CHC-sized facility would normally have more beds than the 10 given for CHC Badasahi. That number is invented.
 
-Real straight-line distances from the CHC Badasahi position, from OpenStreetMap:
+### Positions and distances
 
-| Facility | OpenStreetMap position | Real distance | Stated in the data |
-|---|---|---|---|
-| CHC Betnoti | 21.7429, 86.8504 | 11.6 km | 16.4 km |
-| CHC Khunta | 21.7125, 86.6245 | 12.0 km | 22.8 km |
-| SDH Udala | 21.5767, 86.5650 | 24.6 km | 29.5 km |
-| CHC Dukura | 21.7909, 86.6599 | 10.9 km | 31.0 km |
+Positions are the OpenStreetMap positions in the table above. The engine measures distance in a straight line from them, so distances are approximate: they ignore roads and the OpenStreetMap positions are volunteer-mapped. Every distance on screen carries "approx.".
 
-**Decision for you:** with real positions the nearest donor would be CHC Dukura at 10.9 km, not CHC Betnoti, and the demo story changes. To switch, replace `lat` and `lng` in the JSON with the real values above, remove `"coordinates": "approximate"`, and update the tests that assert 16.4, 22.8, 29.5, 24.1 and 31.0.
+Distances from CHC Badasahi (engine, 30 Sep 2026):
+
+| Facility | Straight-line distance | Notes |
+|---|---|---|
+| CHC Dukura | 10.9 km, about 16 min | Nearest safe donor |
+| CHC Betnoti | 11.6 km | Backup donor |
+| CHC Khunta | 12.0 km | Backup donor |
+| PHC Krushanchandrapur | 14.2 km | Rejected: beds at 90% (simulated) |
+| SDH Udala | 24.6 km | Rejected: no medical officer (simulated) |
+
+Before 30 Sep 2026 (first version of the branch) the data used distances of 16.4, 22.8, 29.5, 24.1 and 31.0 km, which did not match the real positions, and CHC Betnoti was the nearest donor.
 
 ## What can be real today, and what needs a partner
 
@@ -91,6 +98,8 @@ Both modes give the same shape, so the model, map and API calls do not change. T
 
 ## Telemetry code
 
-The anonymised telemetry (`web/src/telemetry.js`) names the condition with **ICD-11 extension code XM4KN1, "Snake venom"**. It was looked up in the WHO ICD-11 MMS tabulation file (release dated 2026 Sep 29 UTC, downloaded from `icd.who.int/dev11/Downloads`). ICD-11 has no single "snakebite envenoming" category in that file. A search result that suggested `XM4MC9` was checked and **does not exist** in the WHO file, so it was not used. The injury chapter has `NE61` (harmful effects of noxious substances, chiefly nonmedicinal as to source) and the external-cause category `PA78` (unintentionally stung or envenomated by animal). Whether a coder would use those with XM4KN1 is not decided here.
+Label used everywhere: **"Snake venom, ICD-11 code, to be confirmed by a clinical coder."** The telemetry payload carries `icd11Code` `XM4KN1`, `icd11Title` "Snake venom" and `icd11Status` with that label.
 
-The payload holds only: the code and title, surge velocity (visits a day), surge class, a bucket for the number of affected facilities, the district position to one decimal place, the week of the year, the shared threshold and whether the data is simulated or imported. It holds no facility names, no staff, no patient data and no exact coordinates. `test/web-model.test.js` checks that.
+`XM4KN1` was looked up in the WHO ICD-11 MMS tabulation file (release dated 2026 Sep 29 UTC, downloaded from `icd.who.int/dev11/Downloads`). It is an **extension code for the agent**, titled "Snake venom". ICD-11 has no single "snakebite envenoming" category in that file. A search result that suggested `XM4MC9` was checked and **does not exist** in the WHO file, so it was not used. The injury chapter has `NE61` (harmful effects of noxious substances, chiefly nonmedicinal as to source) and the external-cause category `PA78` (unintentionally stung or envenomated by animal). Whether a coder would use those with XM4KN1 is not decided here.
+
+The payload (`web/src/telemetry.js`) holds only: the code, title and status, surge velocity (visits a day), surge class, a bucket for the number of affected facilities, the district position to one decimal place, the week of the year, the shared threshold and whether the data is simulated or imported. It holds no facility names, no staff, no patient data and no exact coordinates. `test/web-model.test.js` checks that.

@@ -34,7 +34,7 @@ export function ActionCard({ v, why, setWhy, onApprove, onReject, onDeliver }) {
             <span className="nm">{v.names.target}</span>
             <span className="dot" style={{ background: v.map.arc.color }} />
           </div>
-          <div className="route-sub">{v.route ? v.route.sub : `${v.callout.dist === '-' ? '' : v.callout.dist + ', '}about ${v.callout.eta === '-' ? '' : v.callout.eta}`}</div>
+          <div className="route-sub">{v.route ? v.route.sub : `${v.callout.dist === '-' ? '' : (v.approx ? 'approx. ' : '') + v.callout.dist + ', '}about ${v.callout.eta === '-' ? '' : v.callout.eta}`}</div>
 
           <div style={{ marginTop: 14 }}>
             <div className="vials" style={{ marginTop: 0 }}>

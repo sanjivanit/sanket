@@ -12,7 +12,7 @@ export const ROLES = [
 const RULES = [
   'A donor always keeps at least 3 days of its own supply.',
   'Same district first, within 35 km. Then the next district, within 80 km, with two approvals.',
-  'Never a donor with no doctor on duty, beds 85% full, or an expired batch.',
+  'Never a donor with no medical officer on duty, beds 85% full, or an expired batch.',
   'Nothing is sent until you approve.',
 ];
 

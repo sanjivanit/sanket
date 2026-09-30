@@ -14,8 +14,8 @@ The reviewer does not need to read code. The sentences below are what appears on
 
 | Case | Sentence on the waybill |
 |---|---|
-| 14 vials | CHC Betnoti ରୁ PHC Badasahi କୁ 14 ଶିଶି ଆଣ୍ଟି-ସ୍ନେକ ଭେନମ୍ (ASV) ପହଞ୍ଚାନ୍ତୁ। 2 ରୁ 8 °C ତାପମାତ୍ରା ରଖନ୍ତୁ। |
-| 1 vial | CHC Betnoti ରୁ PHC Badasahi କୁ 1 ଶିଶି ଆଣ୍ଟି-ସ୍ନେକ ଭେନମ୍ (ASV) ପହଞ୍ଚାନ୍ତୁ। 2 ରୁ 8 °C ତାପମାତ୍ରା ରଖନ୍ତୁ। |
+| 14 vials | CHC Dukura ରୁ CHC Badasahi କୁ 14 ଶିଶି ଆଣ୍ଟି-ସ୍ନେକ ଭେନମ୍ (ASV) ପହଞ୍ଚାନ୍ତୁ। 2 ରୁ 8 °C ତାପମାତ୍ରା ରଖନ୍ତୁ। |
+| 1 vial | CHC Dukura ରୁ CHC Badasahi କୁ 1 ଶିଶି ଆଣ୍ଟି-ସ୍ନେକ ଭେନମ୍ (ASV) ପହଞ୍ଚାନ୍ତୁ। 2 ରୁ 8 °C ତାପମାତ୍ରା ରଖନ୍ତୁ। |
 
 Word parts: vial `ଶିଶି` (same singular and plural), range word `ରୁ`. The template was written by an AI model and has not been read by anyone who speaks Odia. Check especially the postpositions `ରୁ` (from) and `କୁ` (to), whether `ଶିଶି` is the word a nurse would use for a vial, and the transliteration of "anti-snake venom".
 
