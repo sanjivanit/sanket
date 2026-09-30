@@ -23,7 +23,7 @@ Each step lists who does it. "You" means only you can (accounts, billing, record
 | # | Step | Who | Time | Done when |
 |---|---|---|---|---|
 | 0 | Find the exact cut-off time on the portal | You | 2 min | You know the deadline |
-| 1 | Create the public GitHub repo and push `sanket-repo`. Add the Lovable app to the same repo | You | 15 min | Link opens for anyone |
+| 1 | Push this repo to GitHub (it is public). The web app goes in `web/` | You | 15 min | Link opens for anyone |
 | 2 | Confirm billing or credits on the Google Cloud project | You | 10 min | Cloud Run and Secret Manager can be enabled |
 | 3 | Confirm the Gemini model ID in Google AI Studio and create the API key | You | 5 min | Key works |
 | 4 | Deploy: Secret Manager, Cloud Run, then Firebase Hosting (README) | You, with my help on errors | 30 to 60 min | `/api/health` returns ok on the live link |

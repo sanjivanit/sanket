@@ -42,8 +42,9 @@ If Gemini fails or takes over 8 seconds, a template waybill is returned and the 
 | `schemas/` | JSON schemas that force Gemini's structured output |
 | `config/` | `rules.json` (thresholds) and `languages.json` (waybill templates and review status) |
 | `data/` | Sample clinics for Maharashtra and Tamil Nadu, surge scenarios, federated inputs |
-| `test/` | 14 tests for the rules, guardrails, fallback and federated maths |
-| `web/` and repo root | The React app built in Lovable (see "Frontend" below) |
+| `test/` | 16 tests for the rules, guardrails, fallback and federated maths |
+| `web/` | The React web app (Vite). Being built from `design/`, see "Frontend" below |
+| `design/` | The approved design prototype (`Main.dc.html`), kept as a read-only reference |
 | `firebase.json`, `Dockerfile` | Firebase Hosting and Cloud Run deployment |
 | `docs/` | PRD, design, engineering, plan, progress, checklist, user journey, pitch deck text |
 | `CLAUDE.md` | Instructions for Claude Code |
@@ -53,7 +54,7 @@ If Gemini fails or takes over 8 seconds, a template waybill is returned and the 
 Needs Node 20 or newer. No dependencies to install for the API.
 
 ```bash
-npm test                                   # 14 tests, no key needed
+npm test                                   # 16 tests, no key needed
 cp .env.example .env                       # add GEMINI_API_KEY from Google AI Studio
 export $(grep -v '^#' .env | xargs)
 npm start                                  # API on http://localhost:8080
@@ -104,7 +105,7 @@ Region: the commands use `asia-south1` (Mumbai), which Cloud Run supports. Fireb
 
 ## Frontend
 
-The React app was built in Lovable from `docs/LOVABLE_BACKEND_SWAP.md`. Sync Lovable to a GitHub repo, then add the folders above to that repo. Add these scripts to its `package.json`: `"start:api": "node server/index.js"` and `"test:api": "node --test test/server.test.js"`.
+Sanket is a desktop web app, designed at 1440 px wide. The design is in `design/Main.dc.html` and the API shapes are in `docs/API_CONTRACT.md`. The React app in `web/` is built from that design, and `npm run build` writes it to `dist/` for Firebase Hosting. Status is tracked in `docs/PROGRESS.md`.
 
 ## Honest limits
 

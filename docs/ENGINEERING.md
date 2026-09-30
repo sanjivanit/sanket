@@ -37,7 +37,7 @@ The design rule that matters most: **code decides, Gemini writes, a person appro
 | State store | In-memory, from the client | Firestore | Fastest to build and test; nothing persists |
 | Auth | Simulated in the prototype; Firebase Authentication with Google sign-in in the design | Custom auth | Fastest for a hackathon; not real security yet |
 | Federated learning | Averaging of one threshold in one service | A real per-state network | Shows the design honestly; there is no actual network between nodes |
-| Frontend build | Lovable to GitHub to `npm run build` to Firebase Hosting | Hand-written React | Fastest route to a working UI; less control over structure |
+| Frontend build | Vite and React in `web/`, ported from the approved design, `npm run build` to Firebase Hosting | Lovable export | Full control of the code and no export step; the port is hand work |
 
 ### What was checked on 30 Sep 2026
 

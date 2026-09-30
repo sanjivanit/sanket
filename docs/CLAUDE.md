@@ -21,12 +21,14 @@ All clinic, stock, bed and doctor data is sample data. Say so wherever data appe
 | `ENGINEERING.md` | Architecture, tool choices, API, tests, risks |
 | `PLAN.md` | What to do next and what to cut |
 | `PROGRESS.md` | What is done, checked and open |
+| `API_CONTRACT.md` | Request and response shapes the web app uses |
 | `ARCHITECTURE.md`, `README.md` | Google Cloud setup and run instructions |
+| `design/Main.dc.html` | The approved design prototype. Read-only reference for layout, copy, states and tokens. It is a Claude Design file with its own runtime, so it cannot be deployed. Port it, do not edit it |
 
 ## Commands
 
 ```bash
-npm test          # 14 tests, no API key needed
+npm test          # 16 tests, no API key needed
 npm start         # API on http://localhost:8080 (needs GEMINI_API_KEY for live Gemini)
 ```
 
@@ -51,6 +53,23 @@ No dependencies to install for the API. Node 20 or newer.
 
 The primary model is `gemini-3.5-flash-lite`, set by `GEMINI_MODEL`. The fallback is `gemini-3.1-flash-lite`, set by `GEMINI_FALLBACK_MODEL`. Each gets 8 seconds, then the template waybill is used. `gemini-2.5-flash` is scheduled for retirement and limited for new keys, so do not use it. Confirm model IDs in Google AI Studio before changing them, because model names change.
 
+## Product decisions already made
+
+- Sanket is a **desktop web app**. The layout is fixed at 1440 px wide by decision. Do not build a responsive or mobile layout. Show a short note "Best viewed on a desktop browser, 1440 px or wider" and let smaller windows scroll sideways.
+- The onboarding (6 steps) is approved as designed in `design/Main.dc.html`. Do not redesign it. Port it as it is.
+- The visual design is locked. Port it faithfully first. Polish comes after it works.
+
+## Frontend build
+
+The web app lives in `web/` (Vite and React). `npm run build` writes to `dist/`, which Firebase Hosting serves. The API stays dependency-free. Frontend dependencies are dev dependencies at the repo root and are not copied into the Docker image.
+
+Build in phases. Finish and check each phase before starting the next:
+
+1. **Port.** Rebuild the approved design in `web/`, including onboarding, both themes and every dashboard state, still running on the scripted demo data. It must look the same as `design/Main.dc.html`.
+2. **Wire.** Replace the scripted parts with `/api/dispatch` and `/api/warning-brief` (see `API_CONTRACT.md`). Show the offline template and "Offline fallback used" if a call fails.
+3. **Check.** Run the app locally against the API, in light and dark, and run `npm test`.
+4. **Deploy.** Follow the README.
+
 ## Working on the design
 
 Follow `DESIGN.md`. In Claude Code, use this order:
@@ -74,12 +93,9 @@ Semantic colours are fixed: green stable, amber early warning, red critical, tea
 
 ## Next tasks, in order
 
-1. Redesign onboarding so it feels seamless and memorable. Brief: `DESIGN.md`, section 10. Proof screen first, then GStack, then approval.
-2. Build the National screen.
-3. Native-speaker review of Marathi, Hindi and Tamil, then set `verified: true` with a reviewer name.
-4. Replace or remove the two assumption numbers ("0 hours today", "14 to 21 days").
-5. Connect the React app to `/api/dispatch`, `/api/warning-brief`, `/api/checkin`, `/api/federated` (see `docs/LOVABLE_BACKEND_SWAP.md`).
-6. Deploy and update `PROGRESS.md`.
+1. Frontend phase 1 to 3 (see "Frontend build").
+2. Deploy and update `PROGRESS.md`.
+3. After the submission: the National screen, native-speaker review of Marathi, Hindi and Tamil (then `verified: true` with a reviewer name), and replacing the two assumption numbers ("0 hours today", "14 to 21 days") with sources or removing them.
 
 ## Style for docs and copy
 

@@ -1,10 +1,10 @@
-# Lovable: use the Cloud Run API instead of a Supabase function
+# API contract for the web app
 
-Use this in place of the old prompt that asked for a Supabase Edge Function. The web app calls the same-origin path `/api/...`. Firebase Hosting forwards it to Cloud Run.
+The web app calls the same-origin path `/api/...`. Firebase Hosting forwards it to Cloud Run. In local development, Vite proxies `/api` to `http://localhost:8080`.
 
-## Paste into Lovable
+## Rules for the frontend
 
-Do not use Supabase or any backend inside Lovable. All AI calls go to the same-origin paths below with `fetch`. Keep the engine rules in `engine.ts` for the on-screen numbers.
+No Supabase and no other backend. All AI calls go to the paths below with `fetch`. Keep the on-screen numbers (days of supply, vials needed) computed in the browser from the same rules as `server/engine.js`; the API result is the source of truth for the donor, vial count, waybill and IDs.
 
 1. `POST /api/dispatch`
    Body: `{ "stateCode": "MH", "clinics": [ ...all clinics with today's footfall ], "recipientId": "MH-01", "language": "mr", "counter": 1 }`

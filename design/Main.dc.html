@@ -1,0 +1,1365 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sanket state node, live surge</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+<style>
+body { margin: 0; background: #F3F5F8; font-family: 'Public Sans', system-ui, sans-serif; }
+.pg-root { --bg: #F3F5F8; --panel: #FFFFFF; --panel3: #EAEEF4; --rule: #E1E6EE; --rule2: #C8D0DC; --rule3: #9AA5B4; --text: #0F172A; --text2: #334155; --muted: #4B5768; --faint: #6B7686; --track: #E3E8EF; --ok: #16A34A; --ok-t: #166534; --ok-bg: #E8F6EE; --ok-bd: #B7E1C7; --crit: #DC2626; --crit-t: #B91C1C; --crit-bg: #FDECEC; --crit-bd: #F0B4B4; --warn: #B45309; --warn-t: #92400E; --warn-bg: #FFF4E0; --warn-bd: #F1CF94; --acc: #0E7490; --acc-t: #0E7490; --acc-bg: #E3F3F7; --acc-bd: #9CD3E0; --acc-on: #FFFFFF; --doc: #6D28D9; --doc-t: #5B21B6; --doc-bg: #EFE9FE; --crit-halo: rgba(220,38,38,0.18); --warn-halo: rgba(180,83,9,0.20); --doc-halo: rgba(109,40,217,0.22); --ok-halo: rgba(22,163,74,0.16); --acc-halo: rgba(14,116,144,0.20); --tier2: #F5F8FB; --shadow: 0 1px 2px rgba(15,23,42,0.06), 0 8px 24px rgba(15,23,42,0.06); }
+.pg-root[data-theme="dark"] { --bg: #080C14; --panel: #0A101B; --panel3: #05080F; --rule: #1E293B; --rule2: #334155; --rule3: #475569; --text: #E2E8F0; --text2: #CBD5E1; --muted: #94A3B8; --faint: #64748B; --track: #1E293B; --ok: #22C55E; --ok-t: #4ADE80; --ok-bg: rgba(34,197,94,0.10); --ok-bd: rgba(34,197,94,0.40); --crit: #EF4444; --crit-t: #F87171; --crit-bg: rgba(239,68,68,0.10); --crit-bd: rgba(239,68,68,0.45); --warn: #F59E0B; --warn-t: #FBBF24; --warn-bg: rgba(245,158,11,0.10); --warn-bd: rgba(245,158,11,0.45); --acc: #22D3EE; --acc-t: #67E8F9; --acc-bg: rgba(34,211,238,0.06); --acc-bd: rgba(34,211,238,0.40); --acc-on: #04222B; --doc: #A78BFA; --doc-t: #C4B5FD; --doc-bg: rgba(167,139,250,0.16); --crit-halo: rgba(239,68,68,0.24); --warn-halo: rgba(245,158,11,0.24); --doc-halo: rgba(167,139,250,0.28); --ok-halo: rgba(34,197,94,0.18); --acc-halo: rgba(34,211,238,0.22); --tier2: rgba(255,255,255,0.02); --shadow: 0 1px 2px rgba(0,0,0,0.5), 0 8px 24px rgba(0,0,0,0.35); }
+button, select { white-space: nowrap; }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+button:focus-visible, select:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+.pg-col > * { flex-shrink: 0; }
+.pg-bar { transition: width 0.7s ease, background-color 0.4s ease; }
+.pg-tip { position: relative; display: flex; align-items: center; gap: 6px; padding: 0; margin: 0; background: none; border: none; font: inherit; font-size: 13px; color: inherit; cursor: help; text-align: left; }
+.pg-tipbox { display: none; position: absolute; right: 0; top: calc(100% + 6px); z-index: 30; white-space: nowrap; padding: 6px 10px; border-radius: 6px; font-size: 12px; background: var(--text); color: var(--bg); box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
+.pg-tip::after { content: ''; position: absolute; left: -6px; right: -6px; top: 50%; height: 44px; transform: translateY(-50%); }
+.pg-tip:hover .pg-tipbox, .pg-tip:focus-visible .pg-tipbox { display: block; }
+@keyframes pg-flow { to { stroke-dashoffset: -22; } }
+@keyframes pg-pulse { 0% { transform: scale(1); opacity: 0.7; } 100% { transform: scale(3); opacity: 0; } }
+.pg-flow { stroke-dasharray: 7 4; animation: pg-flow 1.2s linear infinite; }
+.pg-pulse { animation: pg-pulse 1.8s ease-out infinite; }
+.pg-arc { transition: stroke-dasharray 0.7s ease, stroke 0.4s ease; }
+@media (prefers-reduced-motion: reduce) { .pg-flow, .pg-pulse, .pg-vial { animation: none; display: none; } .pg-bar, .pg-arc { transition: none; } }
+</style>
+</helmet>
+<div class="pg-root" data-theme="{{theme}}" style="position: relative; width: 1440px; height: 1330px; box-sizing: border-box; display: flex; flex-direction: column; background: var(--bg); color: var(--text); font-family: 'Public Sans', system-ui, sans-serif">
+
+  <div role="banner" style="height: 72px; box-sizing: border-box; padding: 0 24px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid var(--rule); background: var(--panel)">
+    <div style="display: flex; align-items: center; gap: 12px; white-space: nowrap">
+      <span style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 10px; background: var(--acc)"><svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><path d="M2 15 H8 L11 7 L15 22 L18 15 H26" fill="none" style="stroke: var(--acc-on)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+      <div>
+        <div style="font-size: 18px; font-weight: 700">Sanket</div>
+        <div style="font-size: 12px; color: var(--muted)">National Health Resource Command</div>
+      </div>
+    </div>
+    <div role="navigation" aria-label="Screens" style="display: flex; gap: 4px; height: 72px">
+      <button style="height: 72px; padding: 0 14px; background: transparent; color: var(--text); border: none; border-bottom: 2px solid var(--acc); font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer">State node</button>
+      <button style="height: 72px; padding: 0 14px; background: transparent; color: var(--muted); border: none; border-bottom: 2px solid transparent; font-family: inherit; font-size: 14px; cursor: pointer">National</button>
+    </div>
+    <div style="flex-grow: 1; min-width: 0"></div>
+    <select aria-label="State" style="height: 44px; padding: 0 12px; background: var(--panel); color: var(--text); border: 1px solid var(--rule2); border-radius: 6px; font-family: inherit; font-size: 14px">
+      <option selected="selected">Maharashtra</option>
+      <option>Tamil Nadu</option>
+    </select>
+    <select aria-label="Scenario" style="height: 44px; padding: 0 12px; background: var(--panel); color: var(--text); border: 1px solid var(--rule2); border-radius: 6px; font-family: inherit; font-size: 14px">
+      <option selected="selected">One-clinic surge</option>
+      <option>District-wide surge</option>
+      <option>Normal baseline</option>
+    </select>
+    <div role="group" aria-label="Colour theme" style="display: flex; border: 1px solid var(--rule2); border-radius: 8px; overflow: hidden">
+      <button type="button" onClick="{{setLight}}" aria-pressed="{{isLight}}" style="height: 44px; padding: 0 12px; display: flex; align-items: center; gap: 6px; border: none; background: {{lightBg}}; color: {{lightFg}}; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="2.6" fill="none" stroke="currentColor" stroke-width="1.5"></circle><path d="M7 1v1.6M7 11.4V13M1 7h1.6M11.4 7H13M2.8 2.8l1.1 1.1M10.1 10.1l1.1 1.1M2.8 11.2l1.1-1.1M10.1 3.9l1.1-1.1" stroke="currentColor" stroke-width="1.5" fill="none"></path></svg>Light</button>
+      <button type="button" onClick="{{setDark}}" aria-pressed="{{isDark}}" style="height: 44px; padding: 0 12px; display: flex; align-items: center; gap: 6px; border: none; border-left: 1px solid var(--rule2); background: {{darkBg}}; color: {{darkFg}}; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M11.6 8.4A5 5 0 0 1 5.6 2.4a5 5 0 1 0 6 6z" fill="none" stroke="currentColor" stroke-width="1.5"></path></svg>Dark</button>
+    </div>
+  </div>
+
+  <div class="pg-bar" style="height: 3px; background: {{topBar}}"></div>
+
+  <div role="group" aria-label="Demo controls: surge simulation" style="height: 76px; box-sizing: border-box; display: flex; align-items: center; gap: 24px; padding: 0 28px; border-bottom: 1px solid var(--rule); background: var(--panel)">
+    <div style="flex: 0 0 132px">
+      <div style="font-size: 12px; color: var(--muted)">Demo: surge simulation</div>
+      <div style="font-size: 16px; font-weight: 600; white-space: nowrap">{{dayLabel}}</div>
+    </div>
+    <div style="flex: 1 1 0; min-width: 0; display: flex; align-items: flex-start">
+      <sc-for list="{{tlNodes}}" as="n" hint-placeholder-count="7">
+        <button type="button" onClick="{{n.pick}}" aria-label="{{n.aria}}" aria-current="{{n.current}}" style="display: flex; flex-direction: column; align-items: center; gap: 4px; width: 72px; padding: 8px 0 6px; background: none; border: none; font-family: inherit; cursor: pointer">
+          <span style="{{n.dotStyle}}"></span>
+          <span style="font-size: 12px; font-weight: {{n.weight}}; color: {{n.color}}; white-space: nowrap">{{n.label}}</span>
+        </button>
+        <div style="flex-grow: 1; height: 2px; margin-top: 23px; background: {{n.line}}; display: {{n.lineShow}}"></div>
+      </sc-for>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px">
+      <button type="button" onClick="{{reset}}" style="height: 44px; padding: 0 12px; background: transparent; color: var(--muted); border: none; font-family: inherit; font-size: 14px; cursor: pointer">Reset</button>
+      <button type="button" onClick="{{advance}}" disabled="{{advanceOff}}" style="height: 44px; padding: 0 16px; background: transparent; color: var(--text); border: 1px solid var(--rule2); border-radius: 6px; font-family: inherit; font-size: 14px; cursor: pointer">Advance day</button>
+      <button type="button" onClick="{{inject}}" style="height: 44px; padding: 0 16px; background: transparent; color: var(--text); border: 1px solid var(--rule2); border-radius: 6px; font-family: inherit; font-size: 14px; cursor: pointer">Inject crisis surge</button>
+    </div>
+  </div>
+
+  <div style="height: 68px; box-sizing: border-box; display: flex; border-bottom: 1px solid var(--rule); background: var(--panel)">
+    <div style="flex: 1 1 0; display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 0 28px">
+      <div style="font-size: 12px; color: var(--muted)">Clinics</div>
+      <div style="display: flex; align-items: baseline; gap: 12px">
+        <span style="font-size: 18px; font-weight: 600; white-space: nowrap">{{statMain}}</span>
+        <span style="font-size: 14px; font-weight: 600; white-space: nowrap; color: {{statSubColor}}">{{statSub}}</span>
+      </div>
+    </div>
+    <div style="flex: 1 1 0; display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 0 28px; border-left: 1px solid var(--rule)">
+      <div style="font-size: 12px; color: var(--muted)">Beds in use</div>
+      <div style="display: flex; align-items: center; gap: 12px">
+        <span style="font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums">57 of 98</span>
+        <div style="flex-grow: 1; max-width: 100px; height: 6px; border-radius: 3px; background: var(--track)"><div style="width: 58%; height: 6px; border-radius: 3px; background: var(--faint)"></div></div>
+      </div>
+    </div>
+    <div style="flex: 1 1 0; display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 0 28px; border-left: 1px solid var(--rule)">
+      <div style="font-size: 12px; color: var(--muted)">Doctors on duty</div>
+      <div style="display: flex; align-items: center; gap: 12px">
+        <span style="font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums">9 of 11</span>
+        <div style="display: flex; gap: 3px" role="img" aria-label="9 of 11 doctors on duty. 2 clinics have no doctor on duty.">
+          <span style="display: block; width: 9px; height: 9px; border-radius: 50%; background: var(--ok)"></span>
+          <span style="display: block; width: 9px; height: 9px; border-radius: 50%; background: var(--ok)"></span>
+          <span style="display: block; width: 9px; height: 9px; border-radius: 50%; background: var(--ok)"></span>
+          <span style="display: block; width: 9px; height: 9px; border-radius: 50%; background: var(--ok)"></span>
+          <span style="display: block; width: 9px; height: 9px; border-radius: 50%; background: var(--ok)"></span>
+          <span style="display: block; width: 9px; height: 9px; border-radius: 50%; background: var(--ok)"></span>
+          <span style="display: block; width: 9px; height: 9px; border-radius: 50%; background: var(--ok)"></span>
+          <span style="display: block; width: 9px; height: 9px; border-radius: 50%; background: var(--ok)"></span>
+          <span style="display: block; width: 9px; height: 9px; border-radius: 50%; background: var(--ok)"></span>
+          <span style="display: block; width: 9px; height: 9px; border-radius: 50%; background: var(--doc)"></span>
+          <span style="display: block; width: 9px; height: 9px; border-radius: 50%; background: var(--doc)"></span>
+        </div>
+      </div>
+    </div>
+    <div style="flex: 1 1 0; display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 0 28px; border-left: 1px solid var(--rule)">
+      <div style="font-size: 12px; color: var(--muted)">District A supply reserve</div>
+      <div style="display: flex; align-items: center; gap: 12px">
+        <span style="font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums">{{reserveText}}</span>
+        <div style="flex-grow: 1; max-width: 100px; height: 6px; border-radius: 3px; background: var(--track)"><div class="pg-bar" style="width: {{reservePct}}%; height: 6px; border-radius: 3px; background: var(--ok)"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div role="main" aria-label="State node dashboard" style="flex-grow: 1; display: flex; min-height: 0">
+
+    <div class="pg-col" style="flex: 0 0 880px; box-sizing: border-box; padding: 24px 24px 24px 28px; border-right: 1px solid var(--rule); display: flex; flex-direction: column; gap: 20px">
+
+      <div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 16px">
+          <div role="heading" aria-level="2" style="font-size: 16px; font-weight: 600">Who can help Rampur</div>
+          <div style="display: flex; gap: 18px; font-size: 12px; color: var(--muted)">
+            <span style="display: flex; align-items: center; gap: 6px"><span style="display: block; width: 10px; height: 10px; border-radius: 50%; background: var(--ok)"></span>Stable</span>
+            <span style="display: flex; align-items: center; gap: 6px"><span style="display: block; width: 10px; height: 10px; border-radius: 50%; background: var(--crit)"></span>Critical</span>
+            <span style="display: flex; align-items: center; gap: 6px"><span style="display: block; width: 10px; height: 10px; border-radius: 50%; background: var(--doc)"></span>No doctor on duty</span>
+            <span style="display: flex; align-items: center; gap: 6px"><span style="display: block; width: 20px; height: 3px; background: var(--acc)"></span>Transfer</span>
+            <span style="display: flex; align-items: center; gap: 6px"><svg width="20" height="12" viewBox="0 0 20 12" aria-hidden="true"><circle cx="5" cy="6" r="3" style="fill: var(--faint)"></circle><circle cx="14" cy="6" r="5" style="fill: var(--faint)"></circle></svg>Size = vials</span>
+          </div>
+        </div>
+        <div style="font-size: 13px; color: var(--muted); margin: 2px 0 10px">{{mapSub}}</div>
+        <div style="position: relative; height: 350px; box-sizing: border-box; border: 1px solid var(--rule); border-radius: 12px; background-color: var(--panel); background-image: radial-gradient(var(--rule) 1px, transparent 1px); background-size: 20px 20px; box-shadow: var(--shadow); overflow: hidden">
+          <svg width="826" height="348" viewBox="0 0 826 348" style="position: absolute; left: 0; top: 0" role="img" aria-label="{{mapAria}}">
+            <circle cx="413" cy="178" r="156" style="fill: var(--tier2); stroke: var(--rule3)" stroke-width="1" stroke-dasharray="3 5"></circle>
+            <circle cx="413" cy="178" r="68" style="fill: var(--acc-bg); stroke: var(--rule3)" stroke-width="1"></circle>
+            <text x="413" y="16" text-anchor="middle" style="fill: var(--muted)" font-size="12" font-family="Public Sans, sans-serif">80 km, next district</text>
+            <text x="413" y="102" text-anchor="middle" style="fill: var(--muted)" font-size="12" font-family="Public Sans, sans-serif">35 km, same district</text>
+            <path d="{{line.d}}" fill="none" style="stroke: var(--acc); opacity: {{line.standbyOp}}" stroke-width="2" stroke-dasharray="3 5" stroke-linecap="round"></path>
+            <path class="pg-flow" d="{{line.d}}" fill="none" style="stroke: var(--acc); opacity: {{line.transitOp}}" stroke-width="3" stroke-linecap="round"></path>
+            <path d="{{line.d}}" fill="none" style="stroke: var(--acc); opacity: {{line.doneOp}}" stroke-width="3" stroke-linecap="round"></path>
+            <g style="opacity: {{line.transitOp}}">
+              <circle class="pg-vial" r="4.5" opacity="0" style="fill: var(--acc)"><animateMotion dur="1.5s" begin="0s" repeatCount="indefinite" path="{{line.path}}"></animateMotion><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="1.5s" begin="0s" repeatCount="indefinite"></animate></circle>
+              <circle class="pg-vial" r="4.5" opacity="0" style="fill: var(--acc)"><animateMotion dur="1.5s" begin="0.5s" repeatCount="indefinite" path="{{line.path}}"></animateMotion><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="1.5s" begin="0.5s" repeatCount="indefinite"></animate></circle>
+              <circle class="pg-vial" r="4.5" opacity="0" style="fill: var(--acc)"><animateMotion dur="1.5s" begin="1s" repeatCount="indefinite" path="{{line.path}}"></animateMotion><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="1.5s" begin="1s" repeatCount="indefinite"></animate></circle>
+            </g>
+            <circle cx="413" cy="178" r="23" fill="none" style="stroke: var(--track)" stroke-width="4"></circle>
+            <circle class="pg-arc" cx="413" cy="178" r="23" fill="none" style="stroke: {{arc.color}}" stroke-width="4" stroke-linecap="round" stroke-dasharray="{{arc.dash}}" transform="rotate(-90 413 178)"></circle>
+          </svg>
+          <div class="pg-pulse" style="position: absolute; left: 399px; top: 164px; width: 28px; height: 28px; box-sizing: border-box; border-radius: 50%; border: 2px solid {{arc.color}}; opacity: {{arc.pulseOp}}"></div>
+          <div style="position: absolute; left: 402px; top: 167px; width: 22px; height: 22px; box-sizing: border-box; border-radius: 50%; background: {{arc.color}}; border: 2px solid var(--panel); box-shadow: 0 0 0 8px {{arc.halo}}"></div>
+          <div style="position: absolute; left: 373px; top: 112px; width: 80px; text-align: center; font-size: 13px; font-weight: 600; line-height: 1.25; color: {{arc.text}}">Rampur<div style="font-size: 12px; font-weight: 500">{{arc.sub}}</div></div>
+          <div style="position: absolute; left: 24px; top: 24px; width: 170px; display: flex; flex-direction: column; gap: 20px">
+            <div>
+              <div style="font-size: 32px; font-weight: 700; line-height: 1; color: var(--acc-t); font-variant-numeric: tabular-nums">{{callout.need}}</div>
+              <div style="font-size: 13px; color: var(--muted); margin-top: 4px">{{callout.needLabel}}</div>
+            </div>
+            <div>
+              <div style="font-size: 32px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums">{{callout.donors}}</div>
+              <div style="font-size: 13px; color: var(--muted); margin-top: 4px">donors in range</div>
+            </div>
+          </div>
+          <div style="position: absolute; right: 24px; top: 24px; width: 170px; display: flex; flex-direction: column; gap: 20px; text-align: right">
+            <div>
+              <div style="font-size: 32px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums">{{callout.dist}}</div>
+              <div style="font-size: 13px; color: var(--muted); margin-top: 4px">nearest donor</div>
+            </div>
+            <div>
+              <div style="font-size: 32px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums">{{callout.eta}}</div>
+              <div style="font-size: 13px; color: var(--muted); margin-top: 4px">travel time</div>
+            </div>
+          </div>
+          <sc-for list="{{mapNodes}}" as="n" hint-placeholder-count="10">
+            <div style="{{n.dotStyle}}"></div>
+            <div style="{{n.labelStyle}}">{{n.label}}</div>
+          </sc-for>
+        </div>
+        <div style="font-size: 12px; color: var(--muted); margin-top: 6px">Sample locations, distances to scale. The ring around Rampur shows time left, out of 72 hours.</div>
+      </div>
+
+
+      <div style="border: 1px solid var(--rule); border-radius: 12px; background: var(--panel); box-shadow: var(--shadow); overflow: hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--rule)">
+          <div style="display: flex; align-items: baseline; gap: 10px"><span role="heading" aria-level="2" style="font-size: 16px; font-weight: 600">Clinics</span><span style="font-size: 13px; color: var(--muted)">District A, 8 clinics</span></div>
+          <div role="group" aria-label="Clinic view" style="display: flex; border: 1px solid var(--rule2); border-radius: 8px; overflow: hidden">
+            <sc-for list="{{viewTabs}}" as="v" hint-placeholder-count="3">
+              <button type="button" onClick="{{v.pick}}" aria-pressed="{{v.active}}" style="height: 44px; padding: 0 16px; border: none; border-left: {{v.divider}}; background: {{v.bg}}; color: {{v.fg}}; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer">{{v.label}}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="height: 460px; overflow-y: auto; box-sizing: border-box; padding: 16px">
+
+          <sc-if value="{{viewTiles}}" hint-placeholder-val="{{ true }}">
+            <div>
+              <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+                <sc-for list="{{tiles}}" as="c" hint-placeholder-count="8">
+                  <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 12px; border: 1px solid {{c.tileBorder}}; background: {{c.tileBg}}">
+                    <div>
+                      <div style="font-size: 15px; font-weight: 600">{{c.short}}</div>
+                      <div style="font-size: 12px; color: var(--muted); margin-top: 2px">{{c.tileMeta}}</div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px">
+                      <svg width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="{{c.ringAria}}">
+                        <circle cx="32" cy="32" r="28" fill="none" style="stroke: var(--track)" stroke-width="7"></circle>
+                        <circle cx="32" cy="32" r="28" fill="none" style="stroke: {{c.fill}}" stroke-width="7" stroke-linecap="round" stroke-dasharray="{{c.ringDash}}" transform="rotate(-90 32 32)"></circle>
+                        <text x="32" y="38" text-anchor="middle" style="fill: var(--text)" font-size="17" font-weight="700" font-family="Public Sans, sans-serif">{{c.daysText}}</text>
+                      </svg>
+                      <div>
+                        <div style="font-size: 12px; color: var(--muted)">{{c.unit}} of supply</div>
+                        <div style="font-size: 12px; font-weight: 600; margin-top: 2px; color: {{c.textColor}}; min-height: 15px">{{c.statusLabel}}</div>
+                      </div>
+                    </div>
+                    <sc-if value="{{c.hasChip}}" hint-placeholder-val="{{ false }}">
+                      <span style="align-self: flex-start; font-size: 12px; padding: 1px 7px; border-radius: 4px; border: 1px solid {{c.chipColor}}; color: {{c.chipColor}}">{{c.chipText}}</span>
+                    </sc-if>
+                    <div>
+                      <div style="display: flex; flex-wrap: wrap; gap: 2px">
+                        <sc-for list="{{c.bedSquares}}" as="b" hint-placeholder-count="8">
+                          <span style="display: block; width: 9px; height: 9px; box-sizing: border-box; border-radius: 2px; background: {{b.bg}}; border: 1px solid {{b.bd}}"></span>
+                        </sc-for>
+                      </div>
+                      <div style="font-size: 12px; margin-top: 4px; color: {{c.bedColor}}">Beds {{c.bedText}}</div>
+                    </div>
+                    <button type="button" class="pg-tip" aria-label="{{c.docTip}}" title="{{c.docTip}}" style="{{c.docBtn}}">
+                      <span style="display: block; flex: 0 0 auto; width: 10px; height: 10px; box-sizing: border-box; border-radius: 50%; background: {{c.docFill}}; border: 2px solid {{c.docColor}}"></span>
+                      <span style="color: {{c.docTextColor}}; font-weight: {{c.docWeight}}">{{c.docText}}</span>
+                      <span class="pg-tipbox" role="tooltip" style="{{c.tipStyle}}">{{c.docTip}}</span>
+                    </button>
+                  </div>
+                </sc-for>
+              </div>
+              <button type="button" onClick="{{toggleB}}" aria-expanded="{{showB}}" style="display: flex; align-items: baseline; gap: 10px; width: 100%; margin-top: 12px; padding: 14px 0; background: none; border: none; border-bottom: 1px solid var(--rule2); font-family: inherit; color: var(--text); cursor: pointer; text-align: left">
+                <span style="font-size: 15px; font-weight: 600">District B</span>
+                <span style="font-size: 13px; color: var(--muted)">3 clinics, searched only if District A cannot cover the need</span>
+                <span style="flex-grow: 1"></span>
+                <span style="font-size: 13px; color: var(--acc-t); font-weight: 600">{{bLabel}}</span>
+              </button>
+              <sc-if value="{{showB}}" hint-placeholder-val="{{ false }}">
+                <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 12px">
+                  <sc-for list="{{tilesB}}" as="c" hint-placeholder-count="3">
+                    <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 12px; border: 1px solid var(--rule); background: transparent">
+                      <div>
+                        <div style="font-size: 15px; font-weight: 600">{{c.short}}</div>
+                        <div style="font-size: 12px; color: var(--muted); margin-top: 2px">{{c.tileMeta}}</div>
+                      </div>
+                      <div style="display: flex; align-items: center; gap: 12px">
+                        <svg width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="{{c.ringAria}}">
+                          <circle cx="32" cy="32" r="28" fill="none" style="stroke: var(--track)" stroke-width="7"></circle>
+                          <circle cx="32" cy="32" r="28" fill="none" style="stroke: {{c.fill}}" stroke-width="7" stroke-linecap="round" stroke-dasharray="{{c.ringDash}}" transform="rotate(-90 32 32)"></circle>
+                          <text x="32" y="38" text-anchor="middle" style="fill: var(--text)" font-size="17" font-weight="700" font-family="Public Sans, sans-serif">{{c.daysText}}</text>
+                        </svg>
+                        <div style="font-size: 12px; color: var(--muted)">{{c.unit}} of supply</div>
+                      </div>
+                      <div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 2px">
+                          <sc-for list="{{c.bedSquares}}" as="b" hint-placeholder-count="8">
+                            <span style="display: block; width: 9px; height: 9px; box-sizing: border-box; border-radius: 2px; background: {{b.bg}}; border: 1px solid {{b.bd}}"></span>
+                          </sc-for>
+                        </div>
+                        <div style="font-size: 12px; margin-top: 4px; color: {{c.bedColor}}">Beds {{c.bedText}}</div>
+                      </div>
+                      <button type="button" class="pg-tip" aria-label="{{c.docTip}}" title="{{c.docTip}}" style="{{c.docBtn}}">
+                        <span style="display: block; flex: 0 0 auto; width: 10px; height: 10px; box-sizing: border-box; border-radius: 50%; background: {{c.docFill}}; border: 2px solid {{c.docColor}}"></span>
+                        <span style="color: {{c.docTextColor}}; font-weight: {{c.docWeight}}">{{c.docText}}</span>
+                        <span class="pg-tipbox" role="tooltip" style="{{c.tipStyle}}">{{c.docTip}}</span>
+                      </button>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{viewTable}}" hint-placeholder-val="{{ false }}">
+            <div>
+        <div style="display: grid; grid-template-columns: 210px 84px 200px 120px 96px; column-gap: 12px; padding: 0 12px 6px 12px; font-size: 12px; color: var(--muted); border-bottom: 1px solid var(--rule2)">
+          <div>Clinic</div><div>Supply</div><div>Stock, ticks at 1 and 3 days</div><div>Beds</div><div>Doctor</div>
+        </div>
+        <sc-for list="{{districtA}}" as="c" hint-placeholder-count="8">
+        <div style="display: grid; grid-template-columns: 210px 84px 200px 120px 96px; column-gap: 12px; align-items: center; padding: 8px 12px; border-bottom: 1px solid var(--rule); background: {{c.rowBg}}">
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap">
+              <span style="font-size: 15px; font-weight: 600">{{c.name}}</span>
+              <sc-if value="{{c.hasChip}}" hint-placeholder-val="{{ false }}">
+                <span style="font-size: 12px; padding: 1px 7px; border-radius: 4px; border: 1px solid {{c.chipColor}}; color: {{c.chipColor}}">{{c.chipText}}</span>
+              </sc-if>
+            </div>
+            <div style="font-size: 12px; color: var(--muted); margin-top: 2px">{{c.meta}}</div>
+          </div>
+          <div>
+            <div style="display: flex; align-items: baseline; gap: 4px">
+              <span style="font-size: 22px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums">{{c.daysText}}</span>
+              <span style="font-size: 12px; color: var(--muted)">{{c.unit}}</span>
+            </div>
+            <div style="font-size: 12px; margin-top: 4px; color: {{c.textColor}}; min-height: 14px">{{c.statusLabel}}</div>
+          </div>
+          <div>
+            <div style="position: relative; height: 8px; border-radius: 4px; background: var(--track); margin-top: 4px">
+              <div class="pg-bar" style="height: 8px; border-radius: 4px; width: {{c.fillPct}}%; background: {{c.fill}}"></div>
+              <div style="position: absolute; left: 7.14%; top: -3px; width: 1px; height: 14px; background: var(--muted)"></div>
+              <div style="position: absolute; left: 21.43%; top: -3px; width: 1px; height: 14px; background: var(--muted)"></div>
+            </div>
+            <div style="font-size: 12px; color: var(--muted); margin-top: 8px">{{c.supplyText}}</div>
+          </div>
+          <div>
+            <div style="display: flex; flex-wrap: wrap; gap: 2px; width: 116px">
+              <sc-for list="{{c.bedSquares}}" as="b" hint-placeholder-count="8">
+                <span style="display: block; width: 9px; height: 9px; box-sizing: border-box; border-radius: 2px; background: {{b.bg}}; border: 1px solid {{b.bd}}"></span>
+              </sc-for>
+            </div>
+            <div style="font-size: 12px; margin-top: 5px; color: {{c.bedColor}}">{{c.bedText}}</div>
+          </div>
+          <div>
+            <button type="button" class="pg-tip" aria-label="{{c.docTip}}" style="{{c.docBtn}}">
+              <span style="display: block; flex: 0 0 auto; width: 10px; height: 10px; box-sizing: border-box; border-radius: 50%; background: {{c.docFill}}; border: 2px solid {{c.docColor}}"></span>
+              <span style="color: {{c.docTextColor}}; font-weight: {{c.docWeight}}">{{c.docText}}</span>
+              <span class="pg-tipbox" role="tooltip" style="{{c.tipStyle}}">{{c.docTip}}</span>
+            </button>
+          </div>
+        </div>
+        </sc-for>
+
+              <div style="margin-top: 16px">
+        <button type="button" onClick="{{toggleB}}" aria-expanded="{{showB}}" style="display: flex; align-items: baseline; gap: 10px; width: 100%; padding: 0 0 8px; background: none; border: none; border-bottom: 1px solid var(--rule2); font-family: inherit; color: var(--text); cursor: pointer; text-align: left">
+          <span style="font-size: 16px; font-weight: 600">District B</span>
+          <span style="font-size: 13px; color: var(--muted)">3 clinics, searched only if District A cannot cover the need</span>
+          <span style="flex-grow: 1"></span>
+          <span style="font-size: 13px; color: var(--acc-t); font-weight: 600">{{bLabel}}</span>
+        </button>
+        <sc-if value="{{showB}}" hint-placeholder-val="{{ false }}">
+          <div>
+          <sc-for list="{{districtB}}" as="c" hint-placeholder-count="3">
+          <div style="display: grid; grid-template-columns: 210px 84px 200px 120px 96px; column-gap: 12px; align-items: center; padding: 8px 12px; border-bottom: 1px solid var(--rule)">
+            <div>
+              <div style="font-size: 15px; font-weight: 600">{{c.name}}</div>
+              <div style="font-size: 12px; color: var(--muted); margin-top: 2px">{{c.meta}}</div>
+            </div>
+            <div>
+              <div style="display: flex; align-items: baseline; gap: 4px">
+                <span style="font-size: 22px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums">{{c.daysText}}</span>
+                <span style="font-size: 12px; color: var(--muted)">{{c.unit}}</span>
+              </div>
+            </div>
+            <div>
+              <div style="position: relative; height: 8px; border-radius: 4px; background: var(--track); margin-top: 4px">
+                <div style="height: 8px; border-radius: 4px; width: {{c.fillPct}}%; background: {{c.fill}}"></div>
+                <div style="position: absolute; left: 7.14%; top: -3px; width: 1px; height: 14px; background: var(--muted)"></div>
+                <div style="position: absolute; left: 21.43%; top: -3px; width: 1px; height: 14px; background: var(--muted)"></div>
+              </div>
+              <div style="font-size: 12px; color: var(--muted); margin-top: 8px">{{c.supplyText}}</div>
+            </div>
+            <div>
+              <div style="display: flex; flex-wrap: wrap; gap: 2px; width: 116px">
+                <sc-for list="{{c.bedSquares}}" as="b" hint-placeholder-count="8">
+                  <span style="display: block; width: 9px; height: 9px; box-sizing: border-box; border-radius: 2px; background: {{b.bg}}; border: 1px solid {{b.bd}}"></span>
+                </sc-for>
+              </div>
+              <div style="font-size: 12px; margin-top: 5px; color: {{c.bedColor}}">{{c.bedText}}</div>
+            </div>
+            <div>
+              <button type="button" class="pg-tip" aria-label="{{c.docTip}}" style="{{c.docBtn}}">
+                <span style="display: block; flex: 0 0 auto; width: 10px; height: 10px; box-sizing: border-box; border-radius: 50%; background: {{c.docFill}}; border: 2px solid {{c.docColor}}"></span>
+                <span style="color: {{c.docTextColor}}; font-weight: {{c.docWeight}}">{{c.docText}}</span>
+                <span class="pg-tipbox" role="tooltip" style="{{c.tipStyle}}">{{c.docTip}}</span>
+              </button>
+            </div>
+          </div>
+          </sc-for>
+          </div>
+        </sc-if>
+
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{viewCharts}}" hint-placeholder-val="{{ false }}">
+            <div>
+              <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px">
+                <div>
+                  <div style="font-size: 14px; font-weight: 600">Days of supply by clinic</div>
+                  <div style="font-size: 12px; color: var(--muted); margin: 2px 0 10px">Ticks at 1 and 3 days</div>
+                  <div style="display: flex; flex-direction: column; gap: 8px">
+                    <sc-for list="{{chartSup}}" as="r" hint-placeholder-count="8">
+                      <div style="display: grid; grid-template-columns: 76px minmax(0, 1fr) 44px; column-gap: 10px; align-items: center; font-size: 12px">
+                        <div>{{r.name}}</div>
+                        <div style="position: relative; height: 10px; border-radius: 5px; background: var(--track)">
+                          <div class="pg-bar" style="height: 10px; border-radius: 5px; width: {{r.pct}}%; background: {{r.color}}"></div>
+                          <div style="position: absolute; left: 7.14%; top: -3px; width: 1px; height: 16px; background: var(--muted)"></div>
+                          <div style="position: absolute; left: 21.43%; top: -3px; width: 1px; height: 16px; background: var(--muted)"></div>
+                        </div>
+                        <div style="text-align: right; font-variant-numeric: tabular-nums">{{r.text}}</div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+                <div>
+                  <div style="font-size: 14px; font-weight: 600">Beds in use by clinic</div>
+                  <div style="font-size: 12px; color: var(--muted); margin: 2px 0 10px">Tick at 85%. Donors must stay below it</div>
+                  <div style="display: flex; flex-direction: column; gap: 8px">
+                    <sc-for list="{{chartBeds}}" as="r" hint-placeholder-count="8">
+                      <div style="display: grid; grid-template-columns: 76px minmax(0, 1fr) 44px; column-gap: 10px; align-items: center; font-size: 12px">
+                        <div>{{r.name}}</div>
+                        <div style="position: relative; height: 10px; border-radius: 5px; background: var(--track)">
+                          <div style="height: 10px; border-radius: 5px; width: {{r.pct}}%; background: {{r.color}}"></div>
+                          <div style="position: absolute; left: 85%; top: -3px; width: 1px; height: 16px; background: var(--muted)"></div>
+                        </div>
+                        <div style="text-align: right; font-variant-numeric: tabular-nums">{{r.text}}</div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+              <div style="margin-top: 20px">
+                <div style="font-size: 14px; font-weight: 600">Rampur days of supply through the surge</div>
+                <svg width="100%" viewBox="0 0 796 150" style="display: block; margin-top: 6px" role="img" aria-label="{{cr.aria}}">
+                  <line x1="30" y1="112" x2="766" y2="112" style="stroke: var(--rule2)" stroke-width="1"></line>
+                  <line x1="30" y1="{{cr.y3}}" x2="766" y2="{{cr.y3}}" style="stroke: var(--warn)" stroke-width="1" stroke-dasharray="4 4"></line>
+                  <text x="34" y="{{cr.y3l}}" style="fill: var(--warn-t)" font-size="12" font-family="Public Sans, sans-serif">3 days</text>
+                  <line x1="30" y1="{{cr.y1}}" x2="766" y2="{{cr.y1}}" style="stroke: var(--crit)" stroke-width="1" stroke-dasharray="4 4"></line>
+                  <text x="34" y="{{cr.y1l}}" style="fill: var(--crit-t)" font-size="12" font-family="Public Sans, sans-serif">1 day</text>
+                  <polyline points="{{cr.future}}" fill="none" style="stroke: var(--rule3)" stroke-width="2" stroke-dasharray="5 4"></polyline>
+                  <polyline points="{{cr.solid}}" fill="none" style="stroke: var(--text)" stroke-width="2.5" stroke-linejoin="round"></polyline>
+                  <circle cx="{{cr.x0}}" cy="{{cr.v0y}}" r="5" style="fill: {{cr.c0}}; opacity: {{cr.o0}}"></circle>
+                  <circle cx="{{cr.x1}}" cy="{{cr.v1y}}" r="5" style="fill: {{cr.c1}}; opacity: {{cr.o1}}"></circle>
+                  <circle cx="{{cr.x2}}" cy="{{cr.v2y}}" r="5" style="fill: {{cr.c2}}; opacity: {{cr.o2}}"></circle>
+                  <circle cx="{{cr.x3}}" cy="{{cr.v3y}}" r="5" style="fill: {{cr.c3}}; opacity: {{cr.o3}}"></circle>
+                  <circle cx="{{cr.x4}}" cy="{{cr.v4y}}" r="5" style="fill: {{cr.c4}}; opacity: {{cr.o4}}"></circle>
+                  <circle cx="{{cr.x5}}" cy="{{cr.v5y}}" r="5" style="fill: {{cr.c5}}; opacity: {{cr.o5}}"></circle>
+                  <text x="{{cr.x0}}" y="134" text-anchor="middle" style="fill: var(--muted)" font-size="12" font-family="Public Sans, sans-serif">Normal</text>
+                  <text x="{{cr.x1}}" y="134" text-anchor="middle" style="fill: var(--muted)" font-size="12" font-family="Public Sans, sans-serif">Day 1</text>
+                  <text x="{{cr.x2}}" y="134" text-anchor="middle" style="fill: var(--muted)" font-size="12" font-family="Public Sans, sans-serif">Day 2</text>
+                  <text x="{{cr.x3}}" y="134" text-anchor="middle" style="fill: var(--muted)" font-size="12" font-family="Public Sans, sans-serif">Day 3</text>
+                  <text x="{{cr.x4}}" y="134" text-anchor="middle" style="fill: var(--muted)" font-size="12" font-family="Public Sans, sans-serif">Day 4</text>
+                  <text x="{{cr.x5}}" y="134" text-anchor="middle" style="fill: var(--muted)" font-size="12" font-family="Public Sans, sans-serif">After transfer</text>
+                </svg>
+              </div>
+            </div>
+          </sc-if>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="pg-col" style="flex: 1 1 0; min-width: 0; box-sizing: border-box; padding: 24px; display: flex; flex-direction: column; gap: 20px">
+
+      <div style="position: relative; overflow: hidden; padding: 20px; border-radius: 12px; border: 1px solid {{alert.bd}}; background: {{alert.bg}}; box-shadow: var(--shadow)">
+        <svg width="150" height="36" viewBox="0 0 120 36" preserveAspectRatio="none" aria-hidden="true" style="position: absolute; right: 16px; top: 12px; opacity: 0.22"><path d="{{alert.ecg}}" fill="none" vector-effect="non-scaling-stroke" style="stroke: {{alert.fg}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        <div style="position: relative; display: flex; align-items: center; gap: 16px">
+          <div style="flex: 0 0 84px; text-align: center">
+            <div style="font-size: 40px; font-weight: 700; line-height: 1; color: {{alert.fg}}; font-variant-numeric: tabular-nums">{{alert.big}}</div>
+            <div style="font-size: 12px; color: {{alert.fg}}; margin-top: 2px">{{alert.unit}}</div>
+          </div>
+          <div role="status" aria-live="polite" style="padding-right: 96px">
+            <div role="heading" aria-level="2" style="font-size: 18px; font-weight: 600; line-height: 1.3">{{alert.head}}</div>
+            <div style="font-size: 13px; color: var(--text2); margin-top: 4px">{{alert.sub}}</div>
+          </div>
+        </div>
+
+        <sc-if value="{{showPlan}}" hint-placeholder-val="{{ true }}">
+          <div style="position: relative; margin-top: 18px; padding-top: 18px; border-top: 1px solid {{alert.bd}}">
+            <div style="font-size: 13px; font-weight: 600; color: var(--muted)">{{planTitle}}</div>
+            <div style="display: flex; align-items: center; gap: 10px; margin-top: 8px">
+              <span style="display: block; flex: 0 0 auto; width: 12px; height: 12px; border-radius: 50%; background: var(--ok)"></span>
+              <span style="font-size: 15px; font-weight: 600">Shivpuri</span>
+              <div style="flex-grow: 1; height: 2px; background: var(--acc)"></div>
+              <span style="font-size: 15px; font-weight: 600; color: var(--acc-t); white-space: nowrap">{{routeVials}}</span>
+              <div style="flex-grow: 1; height: 2px; background: var(--acc)"></div>
+              <span style="font-size: 15px; font-weight: 600">Rampur</span>
+              <span style="display: block; flex: 0 0 auto; width: 12px; height: 12px; border-radius: 50%; background: {{arc.color}}"></span>
+            </div>
+            <div style="font-size: 13px; color: var(--muted); margin-top: 4px; text-align: center">18.4 km, about 28 min</div>
+
+            <div style="margin-top: 14px">
+              <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-end">
+                <sc-for list="{{vialIcons}}" as="v" hint-placeholder-count="12">
+                  <span style="{{v.style}}"></span>
+                </sc-for>
+              </div>
+              <div style="font-size: 12px; color: var(--muted); margin-top: 6px">{{vialLegend}}</div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 12px; margin-top: 16px; min-height: 44px">
+              <sc-if value="{{showApprove}}" hint-placeholder-val="{{ true }}">
+                <button type="button" onClick="{{approve}}" disabled="{{approveOff}}" style="height: 44px; padding: 0 20px; background: var(--acc); color: var(--acc-on); border: none; border-radius: 6px; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Approve as DMO, District A</button>
+                <button type="button" onClick="{{rejectIt}}" style="height: 44px; padding: 0 20px; background: transparent; color: var(--text); border: 1px solid var(--rule2); border-radius: 6px; font-family: inherit; font-size: 14px; cursor: pointer">Reject</button>
+              </sc-if>
+              <sc-if value="{{showDeliver}}" hint-placeholder-val="{{ false }}">
+                <button type="button" onClick="{{deliver}}" style="height: 44px; padding: 0 20px; background: var(--ok); color: #FFFFFF; border: none; border-radius: 6px; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Mark delivered</button>
+              </sc-if>
+              <span style="font-size: 13px; color: var(--muted)">{{actionNote}}</span>
+            </div>
+
+            <sc-if value="{{showBedNote}}" hint-placeholder-val="{{ true }}">
+              <div style="font-size: 13px; color: var(--warn-t); margin-top: 12px">▲ Rampur beds are 88% full. Plan to refer overflow patients.</div>
+            </sc-if>
+
+            <button type="button" onClick="{{toggleWhy}}" aria-expanded="{{showWhy}}" style="margin-top: 4px; padding: 15px 0; background: none; border: none; font-family: inherit; font-size: 13px; font-weight: 600; color: var(--acc-t); cursor: pointer">{{whyLabel}}</button>
+            <sc-if value="{{showWhy}}" hint-placeholder-val="{{ false }}">
+              <div>
+                <sc-if value="{{showBA}}" hint-placeholder-val="{{ true }}">
+                  <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 4px">
+                    <div style="display: flex; gap: 16px; font-size: 12px; color: var(--muted)">
+                      <span style="display: flex; align-items: center; gap: 6px"><span style="display: block; width: 14px; height: 5px; border-radius: 2px; background: var(--rule3)"></span>Now</span>
+                      <span style="display: flex; align-items: center; gap: 6px"><span style="display: block; width: 14px; height: 5px; border-radius: 2px; background: var(--text)"></span>After transfer</span>
+                    </div>
+                    <sc-for list="{{beforeAfter}}" as="r" hint-placeholder-count="2">
+                      <div style="display: grid; grid-template-columns: 76px minmax(0, 1fr) 118px; column-gap: 12px; align-items: center">
+                        <div style="font-size: 14px; font-weight: 600">{{r.name}}</div>
+                        <div style="position: relative">
+                          <div style="height: 5px; border-radius: 2px; background: var(--track)"><div class="pg-bar" style="height: 5px; border-radius: 2px; width: {{r.nowPct}}%; background: {{r.nowColor}}; opacity: 0.55"></div></div>
+                          <div style="height: 8px; border-radius: 3px; background: var(--track); margin-top: 4px"><div class="pg-bar" style="height: 8px; border-radius: 3px; width: {{r.afterPct}}%; background: {{r.afterColor}}"></div></div>
+                          <div style="position: absolute; left: 7.14%; top: -3px; width: 1px; height: 24px; background: var(--muted)"></div>
+                          <div style="position: absolute; left: 21.43%; top: -3px; width: 1px; height: 24px; background: var(--muted)"></div>
+                        </div>
+                        <div style="font-size: 13px; font-variant-numeric: tabular-nums; text-align: right">{{r.text}}</div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-if>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px">
+                  <sc-for list="{{others}}" as="o" hint-placeholder-count="6">
+                    <span style="font-size: 12px; padding: 3px 9px; border-radius: 4px; border: 1px solid {{o.color}}; color: {{o.color}}">{{o.text}}</span>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+      </div>
+
+      <sc-if value="{{showPlan}}" hint-placeholder-val="{{ true }}">
+      <div style="display: flex; align-items: flex-start">
+        <sc-for list="{{stepper}}" as="s" hint-placeholder-count="4">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; width: 84px">
+            <span style="display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; box-sizing: border-box; border-radius: 50%; border: 2px solid {{s.ring}}; background: {{s.fill}}">
+              <sc-if value="{{s.done}}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><polyline points="2,6.5 5,9 10,3" fill="none" style="stroke: var(--acc-on)" stroke-width="2"></polyline></svg></sc-if>
+            </span>
+            <span style="font-size: 12px; font-weight: {{s.weight}}; color: {{s.color}}">{{s.label}}</span>
+          </div>
+          <div style="flex-grow: 1; height: 2px; margin-top: 9px; background: {{s.line}}; display: {{s.lineShow}}"></div>
+        </sc-for>
+      </div>
+      </sc-if>
+
+      <div style="flex: 1 1 0; min-height: 360px; overflow-y: auto; box-sizing: border-box; padding: 16px; border-radius: 12px; background: var(--panel); border: 1px solid var(--rule); box-shadow: var(--shadow)">
+        <div style="display: flex; gap: 20px; border-bottom: 1px solid var(--rule2)">
+          <sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
+            <button type="button" onClick="{{t.pick}}" aria-pressed="{{t.active}}" style="padding: 13px 0; min-width: 44px; margin-bottom: -1px; background: none; border: none; border-bottom: 2px solid {{t.line}}; font-family: inherit; font-size: 14px; font-weight: 600; color: {{t.color}}; cursor: pointer">{{t.label}}</button>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{tabForecast}}" hint-placeholder-val="{{ true }}">
+          <div style="padding-top: 14px">
+            <svg width="100%" viewBox="0 0 512 200" role="img" aria-label="{{chart.aria}}">
+              <line x1="36" y1="160" x2="476" y2="160" style="stroke: var(--rule2)" stroke-width="1"></line>
+              <line x1="36" y1="{{chart.baseY}}" x2="476" y2="{{chart.baseY}}" style="stroke: var(--rule3)" stroke-width="1" stroke-dasharray="2 4"></line>
+              <text x="40" y="{{chart.baseLabelY}}" style="fill: var(--muted)" font-size="12" font-family="Public Sans, sans-serif">Normal: 20</text>
+              <line x1="{{chart.warnX}}" y1="14" x2="{{chart.warnX}}" y2="160" style="stroke: var(--warn); opacity: {{chart.warnOp}}" stroke-width="1" stroke-dasharray="4 3"></line>
+              <text x="{{chart.warnLabelX}}" y="24" style="fill: var(--warn-t); opacity: {{chart.warnOp}}" font-size="12" text-anchor="end" font-family="Public Sans, sans-serif">Early warning</text>
+              <polyline points="{{chart.hist}}" fill="none" style="stroke: var(--text)" stroke-width="2"></polyline>
+              <polyline points="{{chart.proj}}" fill="none" style="stroke: var(--warn); opacity: {{chart.projOp}}" stroke-width="2" stroke-dasharray="6 4"></polyline>
+              <circle cx="{{chart.warnX}}" cy="{{chart.warnY}}" r="4" style="fill: var(--warn); opacity: {{chart.warnOp}}"></circle>
+              <circle cx="{{chart.todayX}}" cy="{{chart.todayY}}" r="5" style="fill: {{arc.color}}"></circle>
+              <text x="{{chart.todayLabelX}}" y="{{chart.todayLabelY}}" style="fill: {{arc.text}}; opacity: {{chart.todayLabelOp}}" font-size="12" text-anchor="end" font-family="Public Sans, sans-serif">Today: {{chart.todayValue}}</text>
+              <text x="36" y="182" style="fill: var(--muted)" font-size="12" font-family="Public Sans, sans-serif">10 days ago</text>
+              <text x="{{chart.todayX}}" y="182" style="fill: var(--muted)" font-size="12" text-anchor="middle" font-family="Public Sans, sans-serif">Today</text>
+              <text x="{{chart.endX}}" y="182" style="fill: var(--muted); opacity: {{chart.projOp}}" font-size="12" text-anchor="middle" font-family="Public Sans, sans-serif">In 3 days</text>
+            </svg>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{tabWaybill}}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top: 14px; padding: 16px; border-radius: 8px; background: var(--panel); border: 1px solid var(--rule)">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+              <span style="font-size: 14px; font-weight: 600">Dispatch waybill</span>
+              <span style="font-size: 12px; color: {{wb.statusColor}}">{{wb.status}}</span>
+            </div>
+            <div style="display: flex; gap: 16px; align-items: flex-start; margin-top: 12px">
+              <div style="flex-grow: 1; min-width: 0">
+                <div style="display: flex; flex-wrap: wrap; gap: 8px">
+                  <span style="font-size: 13px; padding: 4px 10px; border-radius: 4px; background: var(--panel3)">{{wb.vials}}</span>
+                  <span style="font-size: 13px; padding: 4px 10px; border-radius: 4px; background: var(--panel3)">Batch ASV-26-B</span>
+                  <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; padding: 4px 10px; border-radius: 4px; background: var(--panel3)"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1v10M1.7 3.5l8.6 5M1.7 8.5l8.6-5" style="stroke: var(--acc)" stroke-width="1.4" fill="none"></path></svg>2 to 8 °C</span>
+                  <span style="font-size: 13px; padding: 4px 10px; border-radius: 4px; background: var(--panel3)">{{wb.number}}</span>
+                </div>
+                <div style="font-size: 13px; line-height: 1.5; margin-top: 10px">{{wb.english}}</div>
+                <sc-if value="{{wb.showLocal}}" hint-placeholder-val="{{ true }}">
+                  <div>
+                    <div lang="{{wb.langCode}}" style="font-family: 'Noto Sans Devanagari', 'Noto Sans Tamil', 'Public Sans', sans-serif; font-size: 13px; line-height: 1.6; margin-top: 4px; color: var(--text2)">{{wb.local}}</div>
+                    <div style="font-size: 12px; line-height: 1.5; margin-top: 4px; color: var(--muted)">{{wb.back}}</div>
+                  </div>
+                </sc-if>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px">
+                  <sc-for list="{{wb.chips}}" as="ch" hint-placeholder-count="2">
+                    <span style="font-size: 12px; padding: 3px 9px; border-radius: 4px; border: 1px solid {{ch.color}}; color: {{ch.color}}">{{ch.text}}</span>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="flex: 0 0 72px">
+                <sc-if value="{{wb.approved}}" hint-placeholder-val="{{ false }}">
+                  <div>
+                    <svg width="72" height="72" viewBox="0 0 21 21" role="img" aria-label="Sample QR code" style="display: block"><rect width="21" height="21" style="fill: var(--panel)"></rect><path d="{{wb.qr}}" style="fill: var(--text)"></path></svg>
+                    <div style="font-size: 12px; color: var(--muted); margin-top: 4px; text-align: center">Sample QR</div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{wb.pending}}" hint-placeholder-val="{{ true }}">
+                  <div style="height: 64px; box-sizing: border-box; border: 1px dashed var(--rule3); border-radius: 4px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 12px; color: var(--muted); padding: 4px">QR on approval</div>
+                </sc-if>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+
+        <sc-if value="{{tabLog}}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top: 14px; padding: 12px 14px; border-radius: 8px; background: var(--panel3); border: 1px solid var(--rule); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; line-height: 1.6">
+            <sc-for list="{{logLines}}" as="l" hint-placeholder-count="5">
+              <div style="color: {{l.color}}">{{l.text}}</div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{tabImpact}}" hint-placeholder-val="{{ false }}">
+          <div style="padding-top: 16px">
+            <div style="font-size: 14px; font-weight: 600">What Sanket changes</div>
+            <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 12px">
+              <sc-for list="{{impact}}" as="m" hint-placeholder-count="3">
+                <div>
+                  <div style="font-size: 12px; color: var(--muted)">{{m.label}}</div>
+                  <div style="font-size: 26px; font-weight: 700; line-height: 1.15; margin-top: 4px; color: {{m.color}}; font-variant-numeric: tabular-nums; white-space: nowrap">{{m.value}}</div>
+                  <div style="font-size: 12px; color: var(--muted); margin-top: 2px">{{m.sub}}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="font-size: 12px; color: var(--muted); margin-top: 10px">* Assumption, source needed.</div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-top: 22px">
+              <span style="font-size: 14px; font-weight: 600">Shared across states</span>
+              <span style="font-size: 12px; color: var(--muted)">Clinic records never leave a state</span>
+            </div>
+        <svg width="100%" viewBox="0 0 480 112" style="display: block; margin-top: 8px" role="img" aria-label="Maharashtra shares a warning threshold of 12 percent and Tamil Nadu 18 percent. The national average is 13.9 percent. Maharashtra now uses 12.9 percent.">
+          <rect x="0.5" y="6.5" width="150" height="44" rx="8" style="fill: var(--panel3); stroke: var(--rule2)"></rect>
+          <text x="12" y="24" style="fill: var(--muted)" font-size="12" font-family="Public Sans, sans-serif">Maharashtra</text>
+          <text x="12" y="42" style="fill: var(--text)" font-size="14" font-weight="700" font-family="Public Sans, sans-serif">12.0%</text>
+          <rect x="0.5" y="62.5" width="150" height="44" rx="8" style="fill: var(--panel3); stroke: var(--rule2)"></rect>
+          <text x="12" y="80" style="fill: var(--muted)" font-size="12" font-family="Public Sans, sans-serif">Tamil Nadu</text>
+          <text x="12" y="98" style="fill: var(--text)" font-size="14" font-weight="700" font-family="Public Sans, sans-serif">18.0%</text>
+          <line x1="150" y1="28" x2="211" y2="45" style="stroke: var(--rule3)" stroke-width="2" stroke-linecap="round"></line>
+          <polygon points="218,46 209.3,47.8 211.3,40.1" style="fill: var(--rule3)"></polygon>
+          <line x1="150" y1="84" x2="211" y2="67" style="stroke: var(--rule3)" stroke-width="2" stroke-linecap="round"></line>
+          <polygon points="218,66 211.3,71.9 209.2,64.2" style="fill: var(--rule3)"></polygon>
+          <circle cx="252" cy="56" r="34" style="fill: var(--acc-bg); stroke: var(--acc)" stroke-width="2"></circle>
+          <text x="252" y="56" text-anchor="middle" style="fill: var(--text)" font-size="15" font-weight="700" font-family="Public Sans, sans-serif">13.9%</text>
+          <text x="252" y="72" text-anchor="middle" style="fill: var(--muted)" font-size="12" font-family="Public Sans, sans-serif">average</text>
+          <line x1="286" y1="56" x2="332" y2="56" style="stroke: var(--acc)" stroke-width="2" stroke-linecap="round"></line>
+          <polygon points="340,56 332,52 332,60" style="fill: var(--acc)"></polygon>
+          <rect x="340.5" y="34.5" width="139" height="44" rx="8" style="fill: var(--acc-bg); stroke: var(--acc)"></rect>
+          <text x="352" y="52" style="fill: var(--muted)" font-size="12" font-family="Public Sans, sans-serif">Maharashtra uses</text>
+          <text x="352" y="70" style="fill: var(--acc-t)" font-size="14" font-weight="700" font-family="Public Sans, sans-serif">12.9%</text>
+        </svg>
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--muted)">
+        <span>Sample data. Not for clinical use.</span>
+        <button type="button" onClick="{{replay}}" style="padding: 15px 0; background: none; border: none; font-family: inherit; font-size: 12px; font-weight: 600; color: var(--acc-t); cursor: pointer">Replay setup</button>
+      </div>
+    </div>
+  </div>
+
+  <sc-if value="{{hint}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 40; display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 18px; border-radius: 12px; background: var(--text); color: var(--bg); box-shadow: var(--shadow); font-size: 14px">
+      <span>Try it: press <b>Advance day</b> to watch a surge unfold, then approve the transfer.</span>
+      <button type="button" onClick="{{dismissHint}}" aria-label="Dismiss tip" style="width: 44px; height: 44px; background: none; border: none; color: var(--bg); font-size: 22px; cursor: pointer">×</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ob.show}}" hint-placeholder-val="{{ false }}">
+  <div role="dialog" aria-modal="true" aria-label="Sanket setup" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; z-index: 60; display: flex; background: var(--bg)">
+
+    <div style="position: relative; overflow: hidden; flex: 0 0 460px; box-sizing: border-box; padding: 56px 44px; background: var(--panel); border-right: 1px solid var(--rule); display: flex; flex-direction: column">
+      <div style="display: flex; align-items: center; gap: 12px">
+        <span style="display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 11px; background: var(--acc)"><svg width="30" height="30" viewBox="0 0 28 28" aria-hidden="true"><path d="M2 15 H8 L11 7 L15 22 L18 15 H26" fill="none" style="stroke: var(--acc-on)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+        <span style="font-size: 22px; font-weight: 700">Sanket</span>
+        <span lang="hi" style="font-family: 'Noto Sans Devanagari', 'Public Sans', sans-serif; font-size: 18px; color: var(--muted)">संकेत</span>
+      </div>
+      <div style="font-size: 32px; font-weight: 700; line-height: 1.2; margin-top: 40px">Know before a clinic runs out.</div>
+      <div style="font-size: 15px; line-height: 1.55; color: var(--muted); margin-top: 12px">Early warning and safe sharing of life-saving medicine across India's health centres.</div>
+      <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 44px">
+        <sc-for list="{{ob.steps}}" as="p" hint-placeholder-count="6">
+          <div style="display: flex; align-items: center; gap: 14px; padding: 6px 0">
+            <span style="display: flex; align-items: center; justify-content: center; flex: 0 0 auto; width: 28px; height: 28px; box-sizing: border-box; border-radius: 50%; border: 2px solid {{p.ring}}; background: {{p.fill}}; font-size: 13px; font-weight: 700; color: {{p.numColor}}">
+              <sc-if value="{{p.done}}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 12 12" aria-hidden="true"><polyline points="2,6.5 5,9 10,3" fill="none" style="stroke: var(--acc-on)" stroke-width="2"></polyline></svg></sc-if>
+              <sc-if value="{{p.notDone}}" hint-placeholder-val="{{ true }}"><span>{{p.num}}</span></sc-if>
+            </span>
+            <span style="font-size: 15px; font-weight: {{p.weight}}; color: {{p.color}}">{{p.label}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="flex-grow: 1"></div>
+      <svg width="372" height="60" viewBox="0 0 372 60" aria-hidden="true" style="opacity: 0.28"><path d="M0 34 H90 L100 34 L108 14 L120 52 L130 8 L140 46 L150 34 H230 L240 34 L248 22 L258 44 L266 34 H372" fill="none" style="stroke: var(--acc)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 12px; color: var(--muted)">
+        <span>Sample data. Not for clinical use.</span>
+        <button type="button" onClick="{{ob.skip}}" style="padding: 15px 0; background: none; border: none; font-family: inherit; font-size: 13px; font-weight: 600; color: var(--acc-t); cursor: pointer">Skip setup</button>
+      </div>
+    </div>
+
+    <div style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; box-sizing: border-box; padding: 32px 48px">
+      <div style="display: flex; justify-content: flex-end">
+        <div role="group" aria-label="Colour theme" style="display: flex; border: 1px solid var(--rule2); border-radius: 8px; overflow: hidden">
+          <button type="button" onClick="{{setLight}}" aria-pressed="{{isLight}}" style="height: 44px; padding: 0 12px; display: flex; align-items: center; gap: 6px; border: none; background: {{lightBg}}; color: {{lightFg}}; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Light</button>
+          <button type="button" onClick="{{setDark}}" aria-pressed="{{isDark}}" style="height: 44px; padding: 0 12px; display: flex; align-items: center; gap: 6px; border: none; border-left: 1px solid var(--rule2); background: {{darkBg}}; color: {{darkFg}}; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Dark</button>
+        </div>
+      </div>
+
+      <div style="flex: 1 1 0; display: flex; align-items: center; justify-content: center">
+        <div style="width: 640px; box-sizing: border-box; padding: 40px; border-radius: 16px; background: var(--panel); border: 1px solid var(--rule); box-shadow: var(--shadow)">
+          <div style="font-size: 13px; font-weight: 600; color: var(--acc-t)">Step {{ob.n}} of 6</div>
+          <div style="font-size: 28px; font-weight: 700; line-height: 1.2; margin-top: 6px">{{ob.title}}</div>
+          <div style="font-size: 15px; line-height: 1.5; color: var(--muted); margin-top: 8px">{{ob.sub}}</div>
+
+          <sc-if value="{{ob.s1}}" hint-placeholder-val="{{ true }}">
+            <div style="margin-top: 28px; display: flex; flex-direction: column; gap: 12px">
+              <button type="button" onClick="{{ob.next}}" style="height: 52px; background: var(--acc); color: var(--acc-on); border: none; border-radius: 8px; font-family: inherit; font-size: 16px; font-weight: 600; cursor: pointer">Continue with Google</button>
+              <button type="button" onClick="{{ob.next}}" style="height: 52px; background: transparent; color: var(--text); border: 1px solid var(--rule2); border-radius: 8px; font-family: inherit; font-size: 16px; cursor: pointer">Use the demo account</button>
+              <div style="font-size: 13px; line-height: 1.5; color: var(--muted)">Sign-in is simulated in this prototype. The deployed app is designed for Firebase Authentication with Google accounts. The demo account uses sample data only.</div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ob.s2}}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top: 24px; display: flex; flex-direction: column; gap: 12px" role="radiogroup" aria-label="Role">
+              <sc-for list="{{ob.roles}}" as="r" hint-placeholder-count="3">
+                <button type="button" role="radio" aria-checked="{{r.selected}}" onClick="{{r.pick}}" style="{{r.style}}">
+                  <span style="{{r.dot}}"></span>
+                  <span style="flex: 1 1 0; min-width: 0; text-align: left">
+                    <span style="display: block; font-size: 16px; font-weight: 600">{{r.title}}</span>
+                    <span style="display: block; font-size: 14px; line-height: 1.45; color: var(--muted); margin-top: 2px">{{r.desc}}</span>
+                  </span>
+                  <span style="flex: 0 0 auto; white-space: nowrap; font-size: 12px; padding: 2px 8px; border-radius: 4px; border: 1px solid {{r.tagColor}}; color: {{r.tagColor}}">{{r.tag}}</span>
+                </button>
+              </sc-for>
+            </div>
+            <div style="font-size: 13px; color: var(--warn-t); margin-top: 12px; min-height: 18px">{{ob.roleNote}}</div>
+          </sc-if>
+
+          <sc-if value="{{ob.s3}}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top: 24px; padding: 16px 18px; border-radius: 10px; background: var(--panel3); border: 1px solid var(--rule)">
+              <div style="display: grid; grid-template-columns: 110px 1fr; row-gap: 8px; font-size: 15px">
+                <div style="color: var(--muted)">State</div><div style="font-weight: 600">Maharashtra</div>
+                <div style="color: var(--muted)">District</div><div style="font-weight: 600">District A</div>
+                <div style="color: var(--muted)">Clinics</div><div style="font-weight: 600">8 in your district, 3 in the next</div>
+              </div>
+              <div style="font-size: 13px; color: var(--muted); margin-top: 10px">Assigned to your account. Only an administrator can change it.</div>
+            </div>
+            <div style="font-size: 15px; font-weight: 600; margin-top: 24px">Waybill language</div>
+            <div role="radiogroup" aria-label="Waybill language" style="display: flex; border: 1px solid var(--rule2); border-radius: 8px; overflow: hidden; margin-top: 8px">
+              <sc-for list="{{ob.langs}}" as="l" hint-placeholder-count="4">
+                <button type="button" role="radio" aria-checked="{{l.selected}}" onClick="{{l.pick}}" style="flex: 1 1 0; height: 48px; border: none; border-left: {{l.divider}}; background: {{l.bg}}; color: {{l.fg}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer">{{l.label}}</button>
+              </sc-for>
+            </div>
+            <div style="font-size: 13px; line-height: 1.5; color: var(--muted); margin-top: 10px; min-height: 40px">{{ob.langNote}}</div>
+          </sc-if>
+
+          <sc-if value="{{ob.s4}}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top: 24px; display: flex; flex-direction: column; gap: 12px" role="radiogroup" aria-label="Clinic data source">
+              <sc-for list="{{ob.datas}}" as="d" hint-placeholder-count="3">
+                <button type="button" role="radio" aria-checked="{{d.selected}}" disabled="{{d.disabled}}" onClick="{{d.pick}}" style="{{d.style}}">
+                  <span style="{{d.dot}}"></span>
+                  <span style="flex: 1 1 0; min-width: 0; text-align: left">
+                    <span style="display: block; font-size: 16px; font-weight: 600">{{d.title}}</span>
+                    <span style="display: block; font-size: 14px; line-height: 1.45; color: var(--muted); margin-top: 2px">{{d.desc}}</span>
+                  </span>
+                  <span style="flex: 0 0 auto; white-space: nowrap; font-size: 12px; padding: 2px 8px; border-radius: 4px; border: 1px solid {{d.tagColor}}; color: {{d.tagColor}}">{{d.tag}}</span>
+                </button>
+              </sc-for>
+            </div>
+            <sc-if value="{{ob.showMsg}}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top: 16px; padding: 14px 16px; border-radius: 10px; background: var(--panel3); border: 1px solid var(--rule)">
+                <div style="font-size: 12px; color: var(--muted)">Example of how a message is read</div>
+                <div style="display: inline-block; margin-top: 8px; padding: 8px 12px; border-radius: 12px 12px 12px 2px; background: var(--panel); border: 1px solid var(--rule); font-size: 14px">PHC Rampur: ASV 6 vial, doctor upasthit, bed 7/8, aaj OPD 45</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px">
+                  <sc-for list="{{ob.parsed}}" as="c" hint-placeholder-count="5">
+                    <span style="font-size: 12px; padding: 3px 9px; border-radius: 4px; background: var(--acc-bg); border: 1px solid var(--acc-bd); color: var(--acc-t)">{{c}}</span>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+          </sc-if>
+
+          <sc-if value="{{ob.s5}}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top: 24px; display: flex; flex-direction: column; gap: 14px">
+              <sc-for list="{{ob.rules}}" as="u" hint-placeholder-count="4">
+                <div style="display: flex; align-items: flex-start; gap: 12px">
+                  <span style="display: flex; align-items: center; justify-content: center; flex: 0 0 auto; width: 28px; height: 28px; border-radius: 8px; background: var(--acc-bg)"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><rect x="2.5" y="6" width="9" height="6.5" rx="1.5" fill="none" style="stroke: var(--acc)" stroke-width="1.6"></rect><path d="M4.5 6V4.5a2.5 2.5 0 0 1 5 0V6" fill="none" style="stroke: var(--acc)" stroke-width="1.6"></path></svg></span>
+                  <span style="font-size: 15px; line-height: 1.5">{{u}}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="font-size: 12px; color: var(--muted); margin-top: 12px">Default rules from the repository configuration.</div>
+            <button type="button" role="checkbox" aria-checked="{{ob.agreed}}" onClick="{{ob.toggleAgree}}" style="white-space: normal; display: flex; align-items: center; gap: 12px; width: 100%; margin-top: 18px; padding: 14px 16px; border-radius: 10px; border: 2px solid {{ob.agreeBorder}}; background: {{ob.agreeBg}}; font-family: inherit; font-size: 15px; color: var(--text); cursor: pointer; text-align: left">
+              <span style="display: flex; align-items: center; justify-content: center; flex: 0 0 auto; width: 24px; height: 24px; box-sizing: border-box; border-radius: 6px; border: 2px solid var(--acc); background: {{ob.agreeFill}}"><sc-if value="{{ob.agreed}}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 12 12" aria-hidden="true"><polyline points="2,6.5 5,9 10,3" fill="none" style="stroke: var(--acc-on)" stroke-width="2"></polyline></svg></sc-if></span>
+              <span>I understand Sanket only recommends. I approve every transfer.</span>
+            </button>
+          </sc-if>
+
+          <sc-if value="{{ob.s6}}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top: 24px; padding: 16px 18px; border-radius: 10px; background: var(--panel3); border: 1px solid var(--rule)">
+              <div style="display: grid; grid-template-columns: 150px 1fr; row-gap: 10px; font-size: 15px">
+                <sc-for list="{{ob.summary}}" as="m" hint-placeholder-count="5">
+                  <div style="color: var(--muted)">{{m.k}}</div><div style="font-weight: 600">{{m.v}}</div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="font-size: 14px; line-height: 1.5; color: var(--text2); margin-top: 16px">{{ob.next6}}</div>
+          </sc-if>
+
+          <sc-if value="{{ob.footer}}" hint-placeholder-val="{{ true }}">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 32px">
+              <button type="button" onClick="{{ob.back}}" style="height: 48px; padding: 0 22px; background: transparent; color: var(--text); border: 1px solid var(--rule2); border-radius: 8px; font-family: inherit; font-size: 15px; cursor: pointer">Back</button>
+              <button type="button" onClick="{{ob.forward}}" disabled="{{ob.forwardOff}}" style="height: 48px; padding: 0 26px; background: var(--acc); color: var(--acc-on); border: none; border-radius: 8px; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer">{{ob.forwardLabel}}</button>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"startAt":{"editor":"enum","options":["onboarding","dashboard"],"default":"onboarding","section":"Journey"},"theme":{"editor":"enum","options":["light","dark"],"default":"light","section":"Look"},"$preview":{"width":1440,"height":1330}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { step: 4, phase: 'watch', qty: 0, tab: 'forecast', why: false, showB: false, theme: null, rejected: false, ob: null, view: 'tiles', role: 'dmo', lang: 'mr', dataMode: 'sample', agreed: false, hint: false };
+  }
+
+  renderVals() {
+    const st = this.state;
+    const theme = st.theme || this.props.theme || 'light';
+    const OK = 'var(--ok)', CRIT = 'var(--crit)', WARN = 'var(--warn)', NEU = 'var(--faint)';
+    const noise = [0, -1, 1, 0, 2, -1, 0, 1, 0, 0];
+    const MULT = [1, 1.2, 1.7, 2.6, 5.5];
+    const THR = 0.129;
+    const step = st.step, phase = st.phase;
+    const delivered = phase === 'delivered';
+    const vials = (n) => n + (n === 1 ? ' vial' : ' vials');
+
+    const histAt = (s) => noise.map((n) => 20 + n).concat(MULT.slice(1, s + 1).map((m) => 20 * m));
+    const fit = (h) => {
+      const l5 = h.slice(-5);
+      const my = l5.reduce((a, b) => a + b, 0) / 5;
+      let sxy = 0, sxx = 0;
+      [0, 1, 2, 3, 4].forEach((x, i) => { sxy += (x - 2) * (l5[i] - my); sxx += (x - 2) * (x - 2); });
+      const slope = sxy / sxx;
+      return { slope, icpt: my - slope * 2 };
+    };
+    const forecast = (h, baseFoot, baseBurn, stock) => {
+      const f = fit(h);
+      let left = stock, t = 0;
+      for (let d = 1; d <= 10; d++) {
+        const foot = Math.max(baseFoot, f.icpt + f.slope * (4 + d));
+        const burn = baseBurn * foot / baseFoot;
+        if (left <= burn) return (t + left / burn) * 24;
+        left -= burn; t += 1;
+      }
+      return null;
+    };
+
+    const hist = histAt(step);
+    const rampMult = MULT[step];
+    const rampBurn = 2 * rampMult;
+    const rampStock = 6 + (delivered ? st.qty : 0);
+    const shivStock = 44 - (delivered ? st.qty : 0);
+    const dsr = rampStock / rampBurn;
+    const projH = forecast(hist, 20, 2, rampStock);
+    const growth = hist[hist.length - 1] / hist[hist.length - 2] - 1;
+    const warnRule = projH !== null && projH <= 72 && growth >= THR;
+    const status = dsr < 1 ? 'crit' : (dsr < 3 || warnRule) ? 'warn' : 'ok';
+    const need = Math.max(0, Math.ceil(2.0 * rampBurn - rampStock));
+    const leadH = Math.round(forecast(histAt(1), 20, 2, 6));
+    const qtyShown = phase === 'watch' ? need : st.qty;
+    const footNow = Math.round(20 * rampMult);
+    const hoursLeft = Math.round(dsr * 24);
+
+    const sc = status === 'crit' ? CRIT : status === 'warn' ? WARN : OK;
+    const scText = status === 'crit' ? 'var(--crit-t)' : status === 'warn' ? 'var(--warn-t)' : 'var(--ok-t)';
+    const scBg = status === 'crit' ? 'var(--crit-bg)' : status === 'warn' ? 'var(--warn-bg)' : 'transparent';
+
+    const build = (c, idx) => {
+      const mult = c.mult || 1;
+      const curBurn = c.burn * mult;
+      const d = c.stock / curBurn;
+      const s = d < 1 ? 'crit' : (c.forceWarn || d < 3) ? 'warn' : 'ok';
+      const color = s === 'crit' ? CRIT : s === 'warn' ? WARN : OK;
+      const full = c.bedsOcc / c.bedsTotal >= 0.85;
+      const squares = [];
+      for (let i = 0; i < c.bedsTotal; i++) {
+        const on = i < c.bedsOcc;
+        squares.push({ bg: on ? (full ? WARN : NEU) : 'transparent', bd: on ? (full ? WARN : NEU) : 'var(--rule3)' });
+      }
+      return {
+        name: c.name,
+        meta: c.meta,
+        rowBg: c.rowBg || 'transparent',
+        hasChip: !!c.chip,
+        chipText: c.chip || '',
+        chipColor: c.chipColor || 'var(--muted)',
+        daysText: s === 'crit' ? String(Math.round(d * 24)) : d.toFixed(1),
+        unit: s === 'crit' ? 'hours' : 'days',
+        statusLabel: s === 'crit' ? '■ Critical' : (c.rampur && s === 'warn') ? '▲ Early warning' : '',
+        textColor: s === 'crit' ? 'var(--crit-t)' : 'var(--warn-t)',
+        fill: color,
+        fillPct: Math.min(d, 14) / 14 * 100,
+        supplyText: c.stock + ' vials',
+        bedSquares: squares,
+        bedText: c.bedsOcc + ' of ' + c.bedsTotal + (full ? ', ' + Math.round(c.bedsOcc / c.bedsTotal * 100) + '%' : ''),
+        bedColor: full ? 'var(--warn-t)' : 'var(--muted)',
+        docFill: c.doc ? OK : 'var(--doc)',
+        docColor: c.doc ? OK : 'var(--doc)',
+        docBtn: c.doc ? '' : 'padding:3px 10px;border-radius:999px;background:var(--doc-bg);border:1px solid var(--doc)',
+        docText: c.doc ? 'On duty' : 'No doctor',
+        docTextColor: c.doc ? 'var(--text)' : 'var(--doc-t)',
+        docWeight: c.doc ? 400 : 600,
+        docTip: c.doc ? c.doctor + ' (sample name), on duty' : c.doctor + ' (sample name), not on duty today',
+        short: c.name.replace('PHC ', ''),
+        tileMeta: c.meta,
+        ringAria: c.name + ': ' + (s === 'crit' ? Math.round(d * 24) + ' hours' : d.toFixed(1) + ' days') + ' of supply',
+        ringDash: (Math.min(d, 14) / 14 * 175.93).toFixed(1) + ' 175.9',
+        tileBorder: c.rampur ? (s === 'crit' ? 'var(--crit-bd)' : s === 'warn' ? 'var(--warn-bd)' : 'var(--rule)') : (c.chip && c.chipColor === 'var(--acc-t)') ? 'var(--acc-bd)' : 'var(--rule)',
+        tileBg: c.rowBg || 'transparent',
+        tipStyle: idx >= 4 ? 'top:auto;bottom:calc(100% + 6px)' : '',
+        occ: c.bedsOcc / c.bedsTotal,
+        dsr: d
+      };
+    };
+
+    const R = 6371.0088, lat0 = 20.0, lng0 = 77.0, KM_DEG = R * Math.PI / 180;
+    const hav = (la1, lo1, la2, lo2) => {
+      const r = Math.PI / 180, dp = (la2 - la1) * r, dl = (lo2 - lo1) * r;
+      const h = Math.sin(dp / 2) ** 2 + Math.cos(la1 * r) * Math.cos(la2 * r) * Math.sin(dl / 2) ** 2;
+      return 2 * R * Math.asin(Math.sqrt(h));
+    };
+    const km = (c) => hav(lat0, lng0, c.lat, c.lng);
+
+    const shivChip = step === 0 ? '' : phase === 'transit' ? 'Sending ' + vials(st.qty) : delivered ? 'Gave ' + vials(st.qty) : need > 0 ? 'Proposed donor' : 'Standby donor';
+    const rawA = [
+      { name: 'PHC Rampur', short: 'Rampur', doctor: 'Dr. A. Verma', lat: 20.0, lng: 77.0, stock: rampStock, burn: 2, mult: rampMult, bedsTotal: 8, bedsOcc: 7, doc: true, rowBg: scBg, rampur: true, forceWarn: status === 'warn' },
+      { name: 'PHC Shivpuri', short: 'Shivpuri', doctor: 'Dr. S. Kulkarni', lat: 20.09485, lng: 77.14434, stock: shivStock, burn: 3, bedsTotal: 10, bedsOcc: 4, doc: true, chip: shivChip, chipColor: 'var(--acc-t)', rowBg: shivChip ? 'var(--acc-bg)' : 'transparent' },
+      { name: 'PHC Bhor', short: 'Bhor', doctor: 'Dr. R. Deshmukh', lat: 20.06909, lng: 76.79756, stock: 12, burn: 4, bedsTotal: 8, bedsOcc: 6, doc: false },
+      { name: 'PHC Khed', short: 'Khed', doctor: 'Dr. N. Patil', lat: 19.76544, lng: 77.06678, stock: 28, burn: 2, bedsTotal: 6, bedsOcc: 3, doc: true, chip: 'Expires in 77 days', chipColor: 'var(--warn-t)' },
+      { name: 'PHC Daund', short: 'Daund', doctor: 'Dr. V. Rao', lat: 19.8896, lng: 76.74864, stock: 18, burn: 3, bedsTotal: 10, bedsOcc: 6, doc: false },
+      { name: 'PHC Alibag Rural', short: 'Alibag', doctor: 'Dr. K. Joshi', lat: 20.21346, lng: 76.80904, stock: 8, burn: 2, bedsTotal: 10, bedsOcc: 9, doc: true },
+      { name: 'PHC Saswad', short: 'Saswad', doctor: 'Dr. P. Mane', lat: 19.84915, lng: 77.27739, stock: 30, burn: 2, bedsTotal: 8, bedsOcc: 4, doc: true },
+      { name: 'PHC Junnar', short: 'Junnar', doctor: 'Dr. M. Shinde', lat: 19.66575, lng: 76.83452, stock: 36, burn: 3, bedsTotal: 10, bedsOcc: 3, doc: true }
+    ];
+    const rawB = [
+      { name: 'PHC Pargaon', short: 'Pargaon', doctor: 'Dr. A. Pawar', lat: 20.27136, lng: 77.34517, stock: 9, burn: 3, bedsTotal: 10, bedsOcc: 8, doc: true },
+      { name: 'PHC Lonand', short: 'Lonand', doctor: 'Dr. T. More', lat: 19.64148, lng: 77.31917, stock: 40, burn: 3, bedsTotal: 10, bedsOcc: 3, doc: true },
+      { name: 'PHC Nimgaon', short: 'Nimgaon', doctor: 'Dr. S. Jadhav', lat: 19.89266, lng: 76.35954, stock: 26, burn: 2, bedsTotal: 8, bedsOcc: 4, doc: true }
+    ];
+    rawA.forEach((c) => { c.meta = c.rampur ? footNow + ' visits today' : km(c).toFixed(1) + ' km'; });
+    rawB.forEach((c) => { c.meta = Math.round(km(c)) + ' km'; });
+    const rowsA = rawA.map(build);
+    const rowsB = rawB.map(build);
+    rowsB.forEach((r) => { r.tileMeta = 'Next district, ' + r.meta; });
+
+    const reserve = rowsA.reduce((a, r) => a + Math.min(r.dsr, 14) / 14, 0) / rowsA.length;
+    const pips = [0, 1, 2, 3, 4].map((i) => ({ bg: i <= step ? (step >= 4 ? 'var(--crit)' : step >= 1 ? 'var(--warn)' : 'var(--ok)') : 'var(--track)' }));
+
+    // donors
+    const need0 = Math.max(need, 1);
+    const donors = [
+      { n: 'Shivpuri', stock: shivStock, burn: 3, doc: true, occ: 0.4, dist: 18.4 },
+      { n: 'Khed', stock: 28, burn: 2, doc: true, occ: 0.5, dist: 27.0 },
+      { n: 'Saswad', stock: 30, burn: 2, doc: true, occ: 0.5, dist: 33.5 },
+      { n: 'Bhor', stock: 12, burn: 4, doc: false, occ: 0.75, dist: 22.5 },
+      { n: 'Daund', stock: 18, burn: 3, doc: false, occ: 0.6, dist: 29.0 },
+      { n: 'Alibag', stock: 8, burn: 2, doc: true, occ: 0.9, dist: 31.0 },
+      { n: 'Junnar', stock: 36, burn: 3, doc: true, occ: 0.3, dist: 41.0 }
+    ];
+    const eligible = donors.filter((d) => d.doc && d.occ < 0.85 && d.dist <= 35 && Math.floor(d.stock - 3 * d.burn) >= need0);
+    const eligibleCount = eligible.length;
+
+    const others = [
+      { text: '✓ Khed backup', color: 'var(--ok-t)' },
+      { text: '✓ Saswad backup', color: 'var(--ok-t)' },
+      { text: 'Bhor: no doctor', color: 'var(--doc-t)' },
+      { text: 'Daund: no doctor', color: 'var(--doc-t)' },
+      { text: '✕ Alibag: low stock', color: 'var(--crit-t)' },
+      { text: '✕ Junnar: too far', color: 'var(--crit-t)' }
+    ];
+
+    // before / after bars
+    const days = (x) => x.toFixed(1) + ' days';
+    const beforeAfter = [
+      { name: 'Rampur', nowPct: Math.min(6 / rampBurn, 14) / 14 * 100, afterPct: Math.min((6 + qtyShown) / rampBurn, 14) / 14 * 100, nowColor: CRIT, afterColor: (6 + qtyShown) / rampBurn < 3 ? WARN : OK, text: (6 / rampBurn).toFixed(1) + ' → ' + ((6 + qtyShown) / rampBurn).toFixed(1) + ' days' },
+      { name: 'Shivpuri', nowPct: Math.min(44 / 3, 14) / 14 * 100, afterPct: Math.min((44 - qtyShown) / 3, 14) / 14 * 100, nowColor: OK, afterColor: OK, text: (44 / 3).toFixed(1) + ' → ' + ((44 - qtyShown) / 3).toFixed(1) + ' days' }
+    ];
+    beforeAfter[0].nowColor = 6 / rampBurn < 1 ? CRIT : 6 / rampBurn < 3 ? WARN : OK;
+
+    // map
+    const cx = 413, cy = 178, k = 1.95;
+    let line = { x1: 0, y1: 0 };
+    const mapNodes = rawA.slice(1).concat(rawB).map((p) => {
+      const east = (p.lng - lng0) * KM_DEG * Math.cos(lat0 * Math.PI / 180) * k;
+      const north = (p.lat - lat0) * KM_DEG * k;
+      const x = cx + east, y = cy - north;
+      const isDonor = p.short === 'Shivpuri', nodoc = !p.doc;
+      if (isDonor) line = { x1: x, y1: y };
+      const right = east >= 0;
+      const rad = 4 + Math.sqrt(p.stock) * 1.15;
+      const hot = isDonor && step > 0;
+      const bg = nodoc ? 'var(--doc)' : 'var(--ok)';
+      const halo = nodoc ? 'var(--doc-halo)' : hot ? 'var(--acc-halo)' : 'var(--ok-halo)';
+      const ring = hot ? ', 0 0 0 4px var(--acc)' : '';
+      return {
+        label: p.short,
+        dotStyle: 'position:absolute;left:' + (x - rad).toFixed(1) + 'px;top:' + (y - rad).toFixed(1) + 'px;width:' + (rad * 2).toFixed(1) + 'px;height:' + (rad * 2).toFixed(1) + 'px;border-radius:50%;background:' + bg + ';box-shadow:0 0 0 2px var(--panel)' + ring + ', 0 0 0 ' + (hot ? 9 : 7) + 'px ' + halo,
+        labelStyle: 'position:absolute;left:' + (right ? x + rad + 10 : x - rad - 10).toFixed(1) + 'px;top:' + (y - 9).toFixed(1) + 'px;font-size:12px;line-height:18px;white-space:nowrap;font-weight:' + (nodoc || hot ? 600 : 400) + ';color:' + (nodoc ? 'var(--doc-t)' : hot ? 'var(--acc-t)' : 'var(--text2)') + ';' + (right ? '' : 'transform:translateX(-100%);')
+      };
+    });
+    {
+      const dx = 413 - line.x1, dy = 178 - line.y1, len = Math.hypot(dx, dy) || 1;
+      const qx = (line.x1 + 413) / 2 - dy / len * 14, qy = (line.y1 + 178) / 2 + dx / len * 14;
+      line.d = 'M' + line.x1.toFixed(1) + ',' + line.y1.toFixed(1) + ' Q' + qx.toFixed(1) + ',' + qy.toFixed(1) + ' 413,178';
+      line.path = line.d;
+    }
+    line.standbyOp = (step > 0 && phase === 'watch') ? 1 : 0;
+    line.transitOp = phase === 'transit' ? 1 : 0;
+    line.doneOp = delivered ? 0.5 : 0;
+
+    const C = 2 * Math.PI * 23;
+    const frac = Math.min(hoursLeft, 72) / 72;
+    const arc = {
+      color: sc,
+      halo: status === 'crit' ? 'var(--crit-halo)' : status === 'warn' ? 'var(--warn-halo)' : 'var(--ok-halo)',
+      text: scText,
+      dash: (frac * C).toFixed(1) + ' ' + C.toFixed(1),
+      pulseOp: (status !== 'ok' && !delivered) ? 1 : 0,
+      sub: status === 'crit' ? hoursLeft + ' h left' : status === 'warn' ? (dsr < 3 ? days(dsr) + ' left' : 'Watch') : 'Stable'
+    };
+    const mapSub = delivered ? 'Rampur restocked from Shivpuri. Keep watching: supply is ' + dsr.toFixed(1) + ' days.' : phase === 'transit' ? st.qty + ' vials are moving from Shivpuri to Rampur.' : step === 0 ? 'All clinics stable. Press Advance day to start the surge.' :
+      need === 0 ? 'Standby donor ready. Nothing to send yet.' :
+      eligibleCount + ' clinics in range can cover ' + vials(need) + '. The next district is not needed.';
+    const mapAria = 'Reach map. PHC Rampur is at the centre with a ring at 35 kilometres for same-district donors and a ring at 80 kilometres for the next district. Shivpuri, 18.4 kilometres away, is the nearest donor.';
+
+    // chart
+    const f = fit(hist);
+    const proj = [1, 2, 3].map((d) => Math.max(20, f.icpt + f.slope * (4 + d)));
+    const X = (i) => 36 + i * 27.5;
+    const Y = (v) => 160 - Math.min(v, 160) * (130 / 160);
+    const last = hist.length - 1;
+    const chart = {
+      hist: hist.map((v, i) => X(i).toFixed(1) + ',' + Y(v).toFixed(1)).join(' '),
+      proj: [X(last).toFixed(1) + ',' + Y(hist[last]).toFixed(1)].concat(proj.map((v, i) => X(last + 1 + i).toFixed(1) + ',' + Y(v).toFixed(1))).join(' '),
+      projOp: step > 0 ? 1 : 0,
+      baseY: Y(20).toFixed(1),
+      baseLabelY: (Y(20) - 6).toFixed(1),
+      warnX: X(10).toFixed(1),
+      warnY: Y(hist[Math.min(10, last)]).toFixed(1),
+      warnLabelX: (X(10) - 6).toFixed(1),
+      warnOp: step >= 1 ? 1 : 0,
+      todayX: X(last).toFixed(1),
+      todayY: Y(hist[last]).toFixed(1),
+      todayLabelX: (X(last) - 10).toFixed(1),
+      todayLabelY: (Y(hist[last]) + 4).toFixed(1),
+      todayLabelOp: step >= 2 ? 1 : 0,
+      todayValue: footNow,
+      endX: Math.min(X(last + 3), 470).toFixed(1),
+      aria: 'Visits per day at PHC Rampur. Today is ' + footNow + ' against a normal 20.'
+    };
+
+    // alert
+    const ECG = {
+      ok: 'M0 18 H44 L49 18 L52 12 L56 24 L59 18 H120',
+      warn: 'M0 18 H30 L34 18 L37 8 L42 28 L45 18 H72 L75 12 L79 24 L82 18 H120',
+      crit: 'M0 18 H14 L18 4 L24 32 L28 8 L32 28 L36 18 H60 L64 2 L70 34 L74 10 L78 26 L82 18 H120'
+    };
+    let alert;
+    if (delivered) {
+      alert = { big: dsr.toFixed(1), unit: 'days now', head: 'Rampur has supply again', sub: vials(st.qty) + ' arrived. Still under 3 days, so keep watching.', fg: 'var(--warn-t)', bg: 'var(--warn-bg)', bd: 'var(--warn-bd)', ecg: ECG.ok };
+    } else if (phase === 'transit') {
+      alert = { big: '28', unit: 'min away', head: 'Transfer is on the way', sub: vials(st.qty) + ' from Shivpuri. Rampur has about ' + hoursLeft + ' hours left.', fg: 'var(--acc-t)', bg: 'var(--acc-bg)', bd: 'var(--acc-bd)', ecg: ECG.warn };
+    } else if (status === 'crit') {
+      alert = { big: String(hoursLeft), unit: 'hours left', head: 'Rampur is almost out of venom', sub: 'Warned ' + leadH + ' hours earlier. ' + footNow + ' visits today, normal is 20.', fg: 'var(--crit-t)', bg: 'var(--crit-bg)', bd: 'var(--crit-bd)', ecg: ECG.crit };
+    } else if (status === 'warn') {
+      alert = { big: String(Math.round(projH !== null ? projH : hoursLeft)), unit: 'hours to empty', head: 'Early warning: Rampur is heading for empty', sub: 'Visits are ' + footNow + ' a day, normal is 20. Act before it runs out.', fg: 'var(--warn-t)', bg: 'var(--warn-bg)', bd: 'var(--warn-bd)', ecg: ECG.warn };
+    } else {
+      alert = { big: dsr.toFixed(1), unit: 'days, lowest', head: 'All clinics have 3 days or more', sub: 'Nothing needs attention right now.', fg: 'var(--ok-t)', bg: 'var(--ok-bg)', bd: 'var(--ok-bd)', ecg: ECG.ok };
+    }
+
+    // plan
+    const showPlan = step >= 1;
+    const routeVials = phase === 'watch' ? (need > 0 ? vials(need) : 'Standby') : vials(st.qty);
+    const planTitle = phase === 'watch' ? (status === 'crit' ? 'Recommended transfer' : 'Standby plan') : phase === 'transit' ? 'Approved transfer' : 'Completed transfer';
+    const actionNote = st.rejected && phase === 'watch' ? 'Rejected. Advance the day for a new recommendation.' : delivered ? 'Delivered. Rampur is restocked.' : phase === 'watch' && need === 0 ? 'Nothing to send yet at today\u2019s pace.' : phase === 'watch' && status !== 'crit' ? 'Sized to today\u2019s pace. It grows if visits keep rising.' : '';
+    const stepDefs = [
+      { label: 'Recommended', done: need > 0 || phase !== 'watch', cur: false },
+      { label: 'Approval', done: phase !== 'watch', cur: phase === 'watch' && need > 0 },
+      { label: 'In transit', done: delivered, cur: phase === 'transit' },
+      { label: 'Delivered', done: delivered, cur: false }
+    ];
+    const stepper = stepDefs.map((s, i) => ({
+      label: s.label, done: s.done,
+      ring: s.done || s.cur ? 'var(--acc)' : 'var(--rule3)',
+      fill: s.done ? 'var(--acc)' : 'transparent',
+      color: s.done || s.cur ? 'var(--text)' : 'var(--muted)',
+      weight: s.cur ? 600 : 400,
+      line: stepDefs[i + 1] && stepDefs[i + 1].done ? 'var(--acc)' : 'var(--rule2)',
+      lineShow: i < 3 ? 'block' : 'none'
+    }));
+
+    // log
+    const log = [];
+    for (let s = 1; s <= step; s++) log.push('Day ' + s + ': Rampur ' + Math.round(20 * MULT[s]) + ' visits, normal 20');
+    if (step >= 1) log.push('Early warning: ' + leadH + ' hours to stock-out at day 1');
+    if (status === 'crit' && step >= 4) log.push('Rampur critical: ' + Math.round(6 / rampBurn * 24) + ' hours left');
+    if (step >= 1) log.push('Search: same district, 35 km or less');
+    if (step >= 1) log.push('Shivpuri can give ' + Math.floor(44 - 9) + ', need ' + need);
+    if (step >= 1 && need > 0) log.push('Gemini picked Shivpuri, code check passed');
+    if (phase !== 'watch') log.push('DMO approved. Dispatch SK-2026-MH-0001, ' + st.qty + ' vials');
+    if (delivered) log.push('Delivered. Rampur now ' + days(dsr));
+    if (st.rejected) log.push('DMO rejected the recommendation');
+    if (step === 0) log.push('All clinics stable. Waiting for the surge.');
+    const logLines = log.map((t, i) => ({ text: '+' + (i * 0.1).toFixed(1) + 's ' + t, color: i === log.length - 1 ? 'var(--text)' : 'var(--muted)' }));
+
+    // QR sample
+    let seed = 7;
+    const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+    let qr = '';
+    const finder = (x0, y0) => (x, y) => x >= x0 && x < x0 + 7 && y >= y0 && y < y0 + 7;
+    const fs = [finder(0, 0), finder(14, 0), finder(0, 14)];
+    for (let y = 0; y < 21; y++) for (let x = 0; x < 21; x++) {
+      let on;
+      const fi = fs.findIndex((fn) => fn(x, y));
+      if (fi >= 0) {
+        const ox = [0, 14, 0][fi], oy = [0, 0, 14][fi];
+        const dx = x - ox, dy = y - oy;
+        on = dx === 0 || dx === 6 || dy === 0 || dy === 6 || (dx >= 2 && dx <= 4 && dy >= 2 && dy <= 4);
+      } else if ((x === 7 || y === 7 || x === 13 || y === 13) && (x < 8 && y < 8 || x > 12 && y < 8 || x < 8 && y > 12)) {
+        on = false;
+      } else on = rnd() > 0.5;
+      if (on) qr += 'M' + x + ' ' + y + 'h1v1h-1z';
+    }
+    const approved = phase !== 'watch';
+    const fillTpl = (tpl, v) => tpl.replace(/\{(\w)\}/g, (_, k) => v[k]);
+    const LANG = {
+      en: { name: 'English', tpl: 'x', vial: ['vial', 'vials'], to: 'to' },
+      mr: { name: 'Marathi', tpl: '{d} येथून {r} येथे {v} अँटी-स्नेक व्हेनम (ASV) पोहोचवा. {t} °C तापमान राखा.', vial: ['कुपी', 'कुपी'], to: 'ते' },
+      hi: { name: 'Hindi', tpl: '{d} से {r} तक {v} एंटी-स्नेक वेनम (ASV) पहुँचाएँ। तापमान {t} °C रखें।', vial: ['शीशी', 'शीशी'], to: 'से' },
+      ta: { name: 'Tamil', tpl: '{d} இலிருந்து {r} க்கு {v} பாம்புக்கடி எதிர்ப்பு மருந்து (ASV) கொண்டு செல்லவும். {t} °C வெப்பநிலையில் வைக்கவும்.', vial: ['குப்பி', 'குப்பிகள்'], to: 'முதல்' }
+    };
+    const lang = LANG[st.lang] ? st.lang : 'mr';
+    const wb = {
+      status: delivered ? 'Delivered' : phase === 'transit' ? 'Approved, in transit' : 'Awaiting approval',
+      statusColor: delivered ? 'var(--ok-t)' : phase === 'transit' ? 'var(--acc-t)' : 'var(--warn-t)',
+      vials: qtyShown > 0 ? vials(qtyShown) : 'No vials yet',
+      number: approved ? 'SK-2026-MH-0001' : 'Number on approval',
+      english: qtyShown > 0 ? 'Take ' + vials(qtyShown) + ' of anti-snake venom from Shivpuri to Rampur.' : 'No transfer is needed yet.',
+      showLocal: lang !== 'en' && qtyShown > 0,
+      langCode: lang,
+      local: qtyShown > 0 ? fillTpl(LANG[lang].tpl, { v: qtyShown + ' ' + LANG[lang].vial[qtyShown === 1 ? 0 : 1], d: 'Shivpuri', r: 'Rampur', t: '2 ' + LANG[lang].to + ' 8' }) : '',
+      back: 'Back-translation (sample): Take ' + vials(qtyShown) + ' of anti-snake venom from Shivpuri to Rampur.',
+      chips: (lang !== 'en' && qtyShown > 0 ? [{ text: 'Not yet reviewed by a native speaker', color: 'var(--warn-t)' }] : []).concat([{ text: 'Drug, vials, temperature set by code', color: 'var(--text2)' }]),
+      approved: approved,
+      pending: !approved,
+      qr: qr
+    };
+
+    // ---------- onboarding
+    const ob = st.ob === null ? ((this.props.startAt || 'onboarding') === 'dashboard' ? 0 : 1) : st.ob;
+    const finish = () => this.setState({ ob: 0, hint: true, step: 0, phase: 'watch', qty: 0, rejected: false });
+    const ROLES = [
+      { key: 'dmo', title: 'District Medical Officer', desc: 'See your district\u2019s clinics, get early warnings, approve transfers.', tag: 'In this prototype', tagColor: 'var(--ok-t)' },
+      { key: 'state', title: 'State health cell', desc: 'See every district, every warning and the shared model.', tag: 'Roadmap', tagColor: 'var(--muted)' },
+      { key: 'phc', title: 'PHC medical officer', desc: 'Report stock by message and see your own clinic\u2019s status.', tag: 'Roadmap', tagColor: 'var(--muted)' }
+    ];
+    const cardStyle = (sel, dis) => 'white-space:normal;display:flex;align-items:center;gap:14px;width:100%;box-sizing:border-box;padding:16px 18px;border-radius:12px;border:2px solid ' + (sel ? 'var(--acc)' : 'var(--rule)') + ';background:' + (sel ? 'var(--acc-bg)' : 'var(--panel)') + ';font-family:inherit;color:var(--text);cursor:' + (dis ? 'not-allowed' : 'pointer') + ';' + (dis ? 'opacity:0.55;' : '');
+    const radioDot = (sel) => 'display:block;flex:0 0 auto;width:20px;height:20px;box-sizing:border-box;border-radius:50%;border:2px solid ' + (sel ? 'var(--acc)' : 'var(--rule3)') + ';background:' + (sel ? 'var(--acc)' : 'transparent') + ';box-shadow:' + (sel ? 'inset 0 0 0 4px var(--panel)' : 'none');
+    const roles = ROLES.map((r) => ({ title: r.title, desc: r.desc, tag: r.tag, tagColor: r.tagColor, selected: st.role === r.key, style: cardStyle(st.role === r.key, false), dot: radioDot(st.role === r.key), pick: () => this.setState({ role: r.key }) }));
+    const LANGS_UI = [{ key: 'en', label: 'English' }, { key: 'mr', label: 'मराठी' }, { key: 'hi', label: 'हिन्दी' }, { key: 'ta', label: 'தமிழ்' }];
+    const langs = LANGS_UI.map((l, i) => ({ label: l.label, selected: lang === l.key, bg: lang === l.key ? 'var(--acc)' : 'transparent', fg: lang === l.key ? 'var(--acc-on)' : 'var(--text)', divider: i === 0 ? 'none' : '1px solid var(--rule2)', pick: () => this.setState({ lang: l.key }) }));
+    const DATAS = [
+      { key: 'sample', title: 'Use sample data', desc: '11 sample clinics in Maharashtra. Best for trying Sanket today.', tag: 'Ready', tagColor: 'var(--ok-t)', disabled: false },
+      { key: 'messages', title: 'Clinic messages', desc: 'Clinic staff send a WhatsApp or SMS in any Indian language. Gemini reads it.', tag: 'Preview', tagColor: 'var(--warn-t)', disabled: false },
+      { key: 'csv', title: 'Upload a spreadsheet', desc: 'Import stock, beds and doctors from a CSV file.', tag: 'Roadmap', tagColor: 'var(--muted)', disabled: true }
+    ];
+    const datas = DATAS.map((d) => ({ title: d.title, desc: d.desc, tag: d.tag, tagColor: d.tagColor, disabled: d.disabled, selected: st.dataMode === d.key, style: cardStyle(st.dataMode === d.key, d.disabled), dot: radioDot(st.dataMode === d.key), pick: () => this.setState({ dataMode: d.key }) }));
+    const roleTitle = ROLES.find((r) => r.key === st.role).title;
+    const dataTitle = DATAS.find((d) => d.key === st.dataMode).title;
+    const TITLES = [null,
+      ['Sign in to Sanket', 'Use your government or Google account.'],
+      ['What is your role?', 'This decides what you see first.'],
+      ['Your district', 'Then choose the language for waybills.'],
+      ['Where does clinic data come from?', 'Choose how clinics report stock, beds and doctors.'],
+      ['How Sanket keeps patients safe', 'These rules run in plain code. Gemini cannot change them.'],
+      ['You are all set', 'Here is what you chose.']];
+    const STEP_LABELS = ['Sign in', 'Your role', 'Your district', 'Clinic data', 'Safety rules', 'Ready'];
+    const obSteps = STEP_LABELS.map((label, i) => {
+      const done = ob > i + 1, cur = ob === i + 1;
+      return { label, num: i + 1, done, notDone: !done, ring: done || cur ? 'var(--acc)' : 'var(--rule3)', fill: done ? 'var(--acc)' : 'transparent', numColor: cur ? 'var(--acc-t)' : 'var(--muted)', weight: cur ? 700 : 500, color: done || cur ? 'var(--text)' : 'var(--muted)' };
+    });
+    const obVals = {
+      show: ob > 0, n: ob, steps: obSteps,
+      title: ob > 0 ? TITLES[ob][0] : '', sub: ob > 0 ? TITLES[ob][1] : '',
+      s1: ob === 1, s2: ob === 2, s3: ob === 3, s4: ob === 4, s5: ob === 5, s6: ob === 6,
+      roles, langs, datas,
+      roleNote: st.role === 'dmo' ? '' : 'This role\u2019s screen is on the roadmap. The demo opens the District Medical Officer view.',
+      langNote: lang === 'en' ? 'English waybills need no language review.' : 'Local-language text comes from templates that keep the drug name, vials and temperature in code. It is marked \u201cnot yet reviewed\u201d until a native speaker signs off, and an English back-translation sits beside it.',
+      showMsg: st.dataMode === 'messages',
+      parsed: ['Clinic: PHC Rampur', 'Stock: 6 vials', 'Doctor: on duty', 'Beds: 7 of 8', 'Visits today: 45', 'Language: Hindi'],
+      rules: ['A donor always keeps at least 3 days of its own supply.', 'Same district first, within 35 km. Then the next district, within 80 km, with two approvals.', 'Never a donor with no doctor on duty, beds 85% full, or an expired batch.', 'Nothing is sent until you approve.'],
+      agreed: st.agreed, agreeBorder: st.agreed ? 'var(--acc)' : 'var(--rule)', agreeBg: st.agreed ? 'var(--acc-bg)' : 'var(--panel)', agreeFill: st.agreed ? 'var(--acc)' : 'transparent',
+      toggleAgree: () => this.setState({ agreed: !st.agreed }),
+      summary: [{ k: 'Signed in as', v: 'Demo account' }, { k: 'Role', v: roleTitle }, { k: 'District', v: 'District A, Maharashtra' }, { k: 'Waybill language', v: LANG[lang].name }, { k: 'Clinic data', v: dataTitle }],
+      next6: st.role === 'dmo' ? 'You will start on the State node screen. All clinics are stable. Press Advance day to watch a surge unfold.' : 'This role\u2019s screen is on the roadmap, so the demo opens the District Medical Officer view. Press Advance day to watch a surge unfold.',
+      footer: ob >= 2,
+      forward: ob === 6 ? finish : () => this.setState({ ob: Math.min(6, ob + 1) }),
+      forwardLabel: ob === 6 ? 'Open dashboard' : 'Continue',
+      forwardOff: ob === 5 && !st.agreed,
+      next: () => this.setState({ ob: Math.min(6, ob + 1) }),
+      back: () => this.setState({ ob: Math.max(1, ob - 1) }),
+      skip: finish
+    };
+
+    // ---------- dashboard v2: vials, timeline, views, charts
+    const solidCount = delivered ? 6 + st.qty : 6;
+    const ghostCount = delivered ? 0 : qtyShown;
+    const vBase = 'display:block;flex:0 0 auto;width:14px;height:26px;box-sizing:border-box;border-radius:3px 3px 6px 6px;';
+    const vialIcons = [];
+    for (let i = 0; i < Math.min(solidCount, 30); i++) vialIcons.push({ style: vBase + 'background:' + sc });
+    const ghostMax = Math.min(ghostCount, 30 - vialIcons.length);
+    for (let i = 0; i < ghostMax; i++) vialIcons.push({ style: vBase + (phase === 'transit' ? 'background:var(--acc);opacity:0.6' : 'border:2px dashed var(--acc)') });
+    const vialLegend = delivered ? solidCount + ' vials on hand' : ghostCount > 0 ? '6 on hand, ' + ghostCount + (phase === 'transit' ? ' on the way' : ' more needed') : '6 on hand';
+
+    const curNode = delivered ? 6 : phase === 'transit' ? 5 : step;
+    const MS = [
+      { label: 'Normal', c: 'var(--ok)' }, { label: 'Day 1', c: 'var(--warn)' }, { label: 'Day 2', c: 'var(--warn)' },
+      { label: 'Day 3', c: 'var(--warn)' }, { label: 'Day 4', c: 'var(--crit)' }, { label: 'Approved', c: 'var(--acc)' }, { label: 'Delivered', c: 'var(--ok)' }
+    ];
+    const gotoNode = (i) => (i <= 4 ? this.setState({ step: i, phase: 'watch', qty: 0, rejected: false })
+      : i === 5 ? this.setState({ step: 4, phase: 'transit', qty: 16, rejected: false })
+      : this.setState({ step: 4, phase: 'delivered', qty: 16, rejected: false }));
+    const tlNodes = MS.map((m, i) => {
+      const on = i <= curNode, cur = i === curNode;
+      const size = cur ? 20 : 14;
+      return {
+        label: m.label, current: cur, aria: m.label + (cur ? ', current step' : ''),
+        dotStyle: 'display:block;box-sizing:border-box;border-radius:50%;width:' + size + 'px;height:' + size + 'px;border:2px solid ' + (on ? m.c : 'var(--rule3)') + ';background:' + (on ? m.c : 'var(--panel)') + (cur ? ';box-shadow:0 0 0 4px var(--acc-halo)' : ''),
+        weight: cur ? 700 : 500, color: cur ? 'var(--text)' : 'var(--muted)',
+        line: i < curNode ? 'var(--acc)' : 'var(--rule2)', lineShow: i < 6 ? 'block' : 'none',
+        pick: () => gotoNode(i)
+      };
+    });
+
+    const VIEWS = [{ key: 'tiles', label: 'Tiles' }, { key: 'table', label: 'Table' }, { key: 'charts', label: 'Charts' }];
+    const viewTabs = VIEWS.map((v, i) => ({ label: v.label, active: st.view === v.key, bg: st.view === v.key ? 'var(--acc)' : 'transparent', fg: st.view === v.key ? 'var(--acc-on)' : 'var(--text)', divider: i === 0 ? 'none' : '1px solid var(--rule2)', pick: () => this.setState({ view: v.key }) }));
+
+    const chartSup = rowsA.slice().sort((a, b) => a.dsr - b.dsr).map((r) => ({ name: r.short, pct: Math.min(r.dsr, 14) / 14 * 100, color: r.fill, text: r.dsr < 1 ? Math.round(r.dsr * 24) + ' h' : r.dsr.toFixed(1) + ' d' }));
+    const chartBeds = rowsA.slice().sort((a, b) => b.occ - a.occ).map((r) => ({ name: r.short, pct: Math.round(r.occ * 100), color: r.occ >= 0.85 ? WARN : NEU, text: Math.round(r.occ * 100) + '%' }));
+
+    const vals6 = MULT.map((m) => 6 / (2 * m));
+    vals6.push((6 + qtyShown) / rampBurn);
+    const CX = (i) => 70 + i * 132;
+    const CY = (v) => 112 - Math.min(v, 3.5) / 3.5 * 100;
+    const stat6 = (v) => (v < 1 ? 'var(--crit)' : v < 3 ? 'var(--warn)' : 'var(--ok)');
+    const upto = phase === 'watch' ? step : 5;
+    const solidIdx = []; for (let i = 0; i <= Math.min(upto, 5); i++) solidIdx.push(i);
+    if (phase !== 'watch') { solidIdx.length = 0; for (let i = 0; i <= 4; i++) solidIdx.push(i); solidIdx.push(5); }
+    const futureIdx = []; if (phase === 'watch') { for (let i = step; i <= 4; i++) futureIdx.push(i); if (qtyShown > 0) futureIdx.push(5); }
+    const pts = (idx) => idx.map((i) => CX(i) + ',' + CY(vals6[i]).toFixed(1)).join(' ');
+    const cr = {
+      solid: pts(solidIdx), future: futureIdx.length > 1 ? pts(futureIdx) : '',
+      y3: CY(3).toFixed(1), y1: CY(1).toFixed(1), y3l: (CY(3) - 5).toFixed(1), y1l: (CY(1) - 5).toFixed(1),
+      aria: 'Rampur days of supply by day: ' + vals6.slice(0, 5).map((v) => v.toFixed(1)).join(', ') + '. After a transfer: ' + vals6[5].toFixed(1) + '.'
+    };
+    for (let i = 0; i < 6; i++) {
+      cr['x' + i] = CX(i); cr['v' + i + 'y'] = CY(vals6[i]).toFixed(1); cr['c' + i] = stat6(vals6[i]);
+      cr['o' + i] = i <= 4 ? (i <= step ? 1 : 0.28) : (qtyShown > 0 ? (phase === 'watch' ? 0.45 : 1) : 0);
+    }
+
+    const tabDefs = [{ key: 'forecast', label: 'Forecast' }, { key: 'waybill', label: 'Waybill' }, { key: 'log', label: 'Log' }, { key: 'impact', label: 'Impact' }];
+    const tabs = tabDefs.map((t) => ({
+      label: t.label,
+      active: st.tab === t.key,
+      color: st.tab === t.key ? 'var(--text)' : 'var(--muted)',
+      line: st.tab === t.key ? 'var(--acc)' : 'transparent',
+      pick: () => this.setState({ tab: t.key })
+    }));
+
+    const impact = [
+      { label: 'Warning lead time', value: step >= 1 ? leadH + ' h' : '\u2014', sub: 'Today: about 0 h*', color: 'var(--acc-t)' },
+      { label: 'Transfer time', value: (need > 0 || phase !== 'watch') ? '28 min' : '\u2014', sub: 'Central: 14 to 21 days*', color: 'var(--acc-t)' },
+      { label: 'Donor keeps', value: ((44 - qtyShown) / 3).toFixed(1) + ' days', sub: 'Rule: at least 3 days', color: 'var(--ok-t)' }
+    ];
+    const topBar = phase === 'transit' ? 'var(--acc)' : sc;
+    const nonOk = status === 'ok' ? 0 : 1;
+    const isLight = theme === 'light';
+
+    return {
+      theme,
+      isLight, isDark: !isLight, impact, topBar,
+      tlNodes, viewTabs, chartSup, chartBeds, cr, vialIcons, vialLegend,
+      viewTiles: st.view === 'tiles', viewTable: st.view === 'table', viewCharts: st.view === 'charts',
+      tiles: rowsA, tilesB: rowsB,
+      ob: obVals, hint: st.hint,
+      replay: () => this.setState({ ob: 1, agreed: false, hint: false }),
+      dismissHint: () => this.setState({ hint: false }),
+      callout: { need: step === 0 ? '\u2014' : String(qtyShown), needLabel: step === 0 ? 'no vials needed' : phase === 'delivered' ? 'vials delivered' : phase === 'transit' ? 'vials in transit' : (qtyShown === 1 ? 'vial needed' : 'vials needed'), donors: step === 0 ? '\u2014' : String(eligibleCount), dist: step === 0 ? '\u2014' : '18.4 km', eta: step === 0 ? '\u2014' : '28 min' },
+      lightBg: isLight ? 'var(--acc)' : 'transparent', lightFg: isLight ? 'var(--acc-on)' : 'var(--muted)',
+      darkBg: !isLight ? 'var(--acc)' : 'transparent', darkFg: !isLight ? 'var(--acc-on)' : 'var(--muted)',
+      setLight: () => this.setState({ theme: 'light' }),
+      setDark: () => this.setState({ theme: 'dark' }),
+      advance: () => { if (st.step < 4) this.setState({ step: st.step + 1, phase: 'watch', qty: 0, rejected: false }); },
+      advanceOff: st.step >= 4,
+      inject: () => this.setState({ step: 4, phase: 'watch', qty: 0, rejected: false }),
+      reset: () => this.setState({ step: 0, phase: 'watch', qty: 0, rejected: false }),
+      approve: () => this.setState({ phase: 'transit', qty: need, rejected: false }),
+      approveOff: !(need > 0 && phase === 'watch'),
+      rejectIt: () => this.setState({ rejected: true }),
+      deliver: () => this.setState({ phase: 'delivered' }),
+      dayLabel: step === 0 ? 'Before the surge' : 'Surge day ' + step + ' of 4',
+      pips,
+      statMain: (11 - nonOk) + ' stable',
+      statSub: status === 'crit' ? '1 critical' : status === 'warn' ? '1 early warning' : '',
+      statSubColor: scText,
+      reserveText: Math.round(reserve * 100) + '%',
+      reservePct: Math.round(reserve * 100),
+      districtA: rowsA, districtB: rowsB,
+      others, beforeAfter, mapNodes, line, arc, mapSub, mapAria, chart, alert, tabs, stepper, logLines, wb,
+      showPlan,
+      planTitle, routeVials,
+      showBA: qtyShown > 0,
+      showBedNote: qtyShown > 0,
+      showApprove: phase === 'watch',
+      showDeliver: phase === 'transit',
+      actionNote,
+      tabForecast: st.tab === 'forecast',
+      tabWaybill: st.tab === 'waybill',
+      tabLog: st.tab === 'log',
+      tabImpact: st.tab === 'impact',
+      showWhy: st.why,
+      whyLabel: st.why ? 'Hide details' : 'Details: what changes, and why this donor',
+      toggleWhy: () => this.setState({ why: !st.why }),
+      showB: st.showB,
+      bLabel: st.showB ? 'Hide' : 'Show',
+      toggleB: () => this.setState({ showB: !st.showB })
+    };
+  }
+}
+</script>
+</body>
+</html>

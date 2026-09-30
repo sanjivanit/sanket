@@ -1,4 +1,4 @@
-> **Superseded in one place.** Prompt P3 and P4 below mention a Supabase Edge Function. The submitted architecture uses Cloud Run behind Firebase Hosting instead. Use `LOVABLE_BACKEND_SWAP.md` for the backend calls. Everything else here still applies.
+> **Superseded in one place.** Prompt P3 and P4 below mention a Supabase Edge Function. The submitted architecture uses Cloud Run behind Firebase Hosting instead. Use `API_CONTRACT.md` for the backend calls. Everything else here still applies.
 
 # Sanket v2: Full Solution (PRD + Design + Engineering + Build Prompts + Submission)
 

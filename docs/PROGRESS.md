@@ -11,7 +11,7 @@ Legend: Done = built and checked. Checked = tested or rendered in the build envi
 | Item | Status | Notes |
 |---|---|---|
 | Track: Resilience | Done | Stated in README |
-| Public GitHub repo | Not done | Blocked on you. Code is ready in `sanket-repo.zip` |
+| Public GitHub repo | Not done | Repo is public. Push the doc fixes and `web/` when built |
 | App logic, prompt configs, run instructions in the repo | Done | `server/`, `prompts/`, `schemas/`, `config/`, `README.md` |
 | Architecture overview, Google Cloud plus Gemini | Done | `ARCHITECTURE.md` with a diagram |
 | Pitch deck | Drafted | Text in `docs/PITCH_DECK.md`. Slides not built |
@@ -26,7 +26,7 @@ Legend: Done = built and checked. Checked = tested or rendered in the build envi
 | PRD | Done | `PRD.md` |
 | Design system and tokens | Done | `DESIGN.md` |
 | Engineering doc | Done | `ENGINEERING.md`, tools checked 30 Sep 2026 |
-| Onboarding, 6 steps | Checked | Works. To be redesigned in the morning |
+| Onboarding, 6 steps | Checked | Approved as designed. Not being redesigned for the submission |
 | Dashboard: map, tiles, table, charts, action card, timeline, tabs | Checked | Rendered in every state, light and dark |
 | Light and dark themes | Checked | Toggle works. Contrast scan: 0 failures |
 | Accessibility review | Checked | Fixed 5 issues. 4 open (see `DESIGN.md`, section 9) |
@@ -45,7 +45,7 @@ Legend: Done = built and checked. Checked = tested or rendered in the build envi
 | Models | Done | `GEMINI_MODEL=gemini-3.5-flash-lite`, then `GEMINI_FALLBACK_MODEL=gemini-3.1-flash-lite`, 8 s each, then template waybill. Dispatch reply has a `model` field. `gemini-3.5-flash` returned 503 "high demand" in a live test, so it is no longer the default |
 | Firebase Hosting rewrite | Not done | Written in `firebase.json`, not deployed. Region support to be confirmed |
 | Secret Manager and Cloud Run deploy | Not done | Commands in README |
-| React app connected to the API | Not done | Notes in `docs/LOVABLE_BACKEND_SWAP.md` |
+| React app connected to the API | Not done | Not started. Phases in `CLAUDE.md`, shapes in `docs/API_CONTRACT.md` |
 
 ## Known issues and open questions
 

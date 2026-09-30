@@ -1,6 +1,6 @@
 # DESIGN.md: Sanket
 
-Status: locked for the submission build, with one item (onboarding) reopened for the morning redesign.
+Status: locked for the submission build. Decisions on 30 Sep 2026: onboarding stays as built, and Sanket is a desktop web app fixed at 1440 px wide (no responsive layout for now). Section 10 lists what remains as debt.
 Live prototype: https://claude.ai/artifact/BXZcM8UJMTFXFGioHwNgDz
 All clinic, stock, bed and doctor data on screen is sample data. Not for clinical use.
 
@@ -200,7 +200,7 @@ Open:
 
 ## 10. Design debt and the morning brief
 
-1. **Onboarding must feel seamless and memorable.** Direction to explore, not yet built:
+1. **Onboarding: decided to keep as built for the submission.** The ideas below are kept for later, not scheduled:
    - One screen that changes as you answer. Pick your district by tapping the map. The map and a sample dashboard preview build behind the card as choices are made.
    - Choosing a language shows the waybill in that language live, with its "not reviewed" status.
    - Fewer steps: merge role and district, and fold the safety rules into a single acknowledgement on the last card.
@@ -210,7 +210,7 @@ Open:
 3. Standardise corner radii and chip styles.
 4. Reword unclear labels: "Standby plan", "Inject crisis surge".
 5. Build the National screen.
-6. Make the layout responsive (tablet first).
+6. Responsive layout: not planned. Decided to ship as a desktop web app at 1440 px.
 7. Run GStack and the Taste and Interface Design skills in Claude Code, then lock.
 
 ## 11. How to use your Claude Code skills on this

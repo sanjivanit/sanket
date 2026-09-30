@@ -7,7 +7,7 @@ Today is 30 Sep 2026. The prototype submission phase in the guide ends on 30 Sep
 | Requirement | Status | What is done | What you must still do |
 |---|---|---|---|
 | Theme alignment: one official track | Met | Track is **Resilience**: health supply-chain resilience for PHCs. Stated at the top of README and slide 1 | Pick "Resilience" if the form asks for a track |
-| Public GitHub repo with app logic, prompt configs and run instructions | Ready to publish | App logic: `server/engine.js`, `server/app.js`. Prompt configs: `prompts/`, `schemas/`, `config/`. Instructions: `README.md`. 14 passing tests | Create a public repo, push the repo folder plus the Lovable app. Paste the repo link into the form |
+| Public GitHub repo with app logic, prompt configs and run instructions | Ready to publish | App logic: `server/engine.js`, `server/app.js`. Prompt configs: `prompts/`, `schemas/`, `config/`. Instructions: `README.md`. 16 passing tests | Create a public repo, push the repo folder including `web/`. Paste the repo link into the form |
 | Architecture overview: Google Cloud with Gemini | Written | `ARCHITECTURE.md` has a diagram and a walk-through: Firebase Hosting, Cloud Run, Secret Manager, Gemini API, Cloud Logging | Deploy it (README, "Deploy on Google Cloud"). Put the diagram on slide 8 |
 | Pitch deck: how it helps real communities | Drafted | `docs/PITCH_DECK.md` has 12 slides with a community-impact slide and sourced numbers | Build the slides. Add screenshots. Export as PDF |
 
