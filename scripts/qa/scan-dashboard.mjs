@@ -39,6 +39,8 @@ for (const theme of ['light', 'dark']) for (const [name, nodes] of Object.entrie
     await page.getByRole('button', { name: view, exact: true }).click();
     for (const tab of ['Forecast', 'Waybill', 'Log', 'Impact']) {
       await page.getByRole('button', { name: tab, exact: true }).click(); await page.waitForTimeout(60);
+      // The dashboard has motion now: measure only after every finite animation and transition has finished.
+      await page.evaluate(() => Promise.allSettled(document.getAnimations().filter((a) => a.effect && a.effect.getComputedTiming().iterations !== Infinity).map((a) => a.finished)));
       const r = await scan(); total += r.count;
       r.fails.forEach((f) => allFails.add(`${theme}/${name}: ${f}`)); if (r.overflowX) allFails.add(`${theme}/${name}: OVERFLOW-X`);
       r.small.filter((x) => !/sample name|Medical officer (on duty|absent today)/.test(x)).forEach((x) => allFails.add(`${theme}/${name}: small target ${x}`));

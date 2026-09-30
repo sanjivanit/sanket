@@ -299,7 +299,7 @@ export function buildView({ step, phase, qty, rejected }, lang = 'or', ds = DEFA
 
   // waybill
   const approved = phase !== 'watch';
-  const L = WAYBILL_LANGS[lang] ? lang : 'mr';
+  const L = WAYBILL_LANGS[lang] ? lang : 'or';
   const wb = {
     status: delivered ? 'Delivered' : phase === 'transit' ? 'Approved, in transit' : 'Awaiting approval',
     statusColor: delivered ? 'var(--ok-t)' : phase === 'transit' ? 'var(--acc-t)' : 'var(--warn-t)',

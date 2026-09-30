@@ -81,14 +81,24 @@ Build in phases. Finish and check each phase before starting the next:
 Follow `DESIGN.md`. In Claude Code, use this order:
 
 1. Anthropic **Frontend Design** is always the base layer.
-2. Use **Taste** as the one style driver on the dashboard with DESIGN_VARIANCE 3, MOTION_INTENSITY 2, VISUAL_DENSITY 6. The onboarding screens use **UI/UX Pro Max** as their one style driver instead, and not Taste. Never use both drivers on the same screen.
+2. Use **Taste** as the one style driver on the dashboard with DESIGN_VARIANCE 3, VISUAL_DENSITY 6 and MOTION_INTENSITY 2 for the layout itself. Dashboard motion was added on 30 Sep 2026 on request, with the `animate` skill (see "Motion" below). The onboarding screens use **UI/UX Pro Max** as their one style driver instead, and not Taste. Never use both drivers on the same screen.
 3. Keep **Interface Design** on so the tokens persist. If a token changes, update `DESIGN.md`, section 3, first.
-4. Do not use Emil Kowalski Design. This is an internal tool.
+4. Do not use Emil Kowalski Design for the look of the app. This is an internal tool. The one exception is the `animate` skill, which the owner asked for on 30 Sep 2026 to add motion to the dashboard.
 5. Do not use Designer Skills. That suite is for UX research.
 6. For any new or redesigned screen: build one proof screen first, run **GStack** on it for an AI-slop and quality score, and get approval before building more.
 7. Check every change in light and dark, and for contrast (4.5:1 text, 3:1 large text and graphics), touch targets (44 px) and reduced motion.
 
 Semantic colours are fixed: green stable, amber early warning, red critical, teal action and transfer, violet no medical officer on duty. Never reuse violet for anything else. Never use colour alone to show status.
+
+## Motion
+
+The dashboard has purposeful motion, all in the "Motion" block at the end of `web/src/styles.css`, plus `web/src/motion.js` (a counting number). Rules:
+
+- Animate only `transform`, `opacity`, `clip-path` and SVG stroke. Curves are the tokens `--ease-out`, `--ease-in-out` and `--ease-drawer`. Never `transition: all`, never `ease-in`, never `scale(0)`.
+- Every animation has a purpose: first load builds top to bottom, numbers count to their new value, rings and bars settle, the proposed donor pings three times, vials fill in, the QR reveals on approval, the telemetry panel slides in and out.
+- `prefers-reduced-motion` keeps the fades and drops the movement and the loops. New motion ships with its reduced-motion rule.
+- Nothing the person reads or acts on moves for style, and nothing animates on a keyboard shortcut.
+- `scripts/qa/scan-dashboard.mjs` waits for animations to finish before it measures contrast. Keep that wait.
 
 ## Working on the engine and API
 

@@ -189,6 +189,12 @@ test('mayurbhanj: Odia waybill comes from the template and names the donor and r
   assert.equal(v.wb.batch, 'ASV-26-E');
 });
 
+test('language: Odia is the default, and an unknown code falls back to Odia', () => {
+  assert.equal(buildView(STATES.critical).wb.langCode, 'or');
+  assert.equal(buildView(STATES.critical, 'xx', MBJ).wb.langCode, 'or');
+  assert.equal(buildView(STATES.critical, 'mr', MBJ).wb.langCode, 'mr', 'an explicit choice is kept');
+});
+
 test('mayurbhanj: the demo timeline nodes use the data set need, not a fixed number', () => {
   assert.equal(actions.goto(5, MBJ.need4).qty, 14);
   assert.equal(actions.goto(6, MBJ.need4).qty, 14);

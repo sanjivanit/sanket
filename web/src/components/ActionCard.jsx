@@ -1,16 +1,17 @@
 import { Fragment } from 'react';
 import { Tick, DataLabel } from './shared.jsx';
+import { CountUp } from '../motion.js';
 
 export function ActionCard({ v, why, setWhy, onApprove, onReject, onDeliver }) {
   const a = v.alert;
   return (
     <div className="alert" style={{ borderColor: a.bd, background: a.bg }}>
-      <svg className="ecg" width="150" height="36" viewBox="0 0 120 36" preserveAspectRatio="none" aria-hidden="true">
+      <svg key={a.ecg} className="ecg" width="150" height="36" viewBox="0 0 120 36" preserveAspectRatio="none" aria-hidden="true">
         <path d={a.ecg} fill="none" vectorEffect="non-scaling-stroke" style={{ stroke: a.fg }} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
       <div className="alert-top">
         <div className="alert-num" style={{ color: a.fg }}>
-          <div className="n">{a.big}</div>
+          <div className="n"><CountUp value={a.big} /></div>
           <div className="u">{a.unit}</div>
         </div>
         <div className="alert-msg" role="status" aria-live="polite">
@@ -38,7 +39,7 @@ export function ActionCard({ v, why, setWhy, onApprove, onReject, onDeliver }) {
 
           <div style={{ marginTop: 14 }}>
             <div className="vials" style={{ marginTop: 0 }}>
-              {v.vialIcons.map((k, i) => <span key={i} className={'vial ' + (k === 'solid' ? '' : k)} style={k === 'solid' ? { background: v.map.arc.color } : undefined} />)}
+              {v.vialIcons.map((k, i) => <span key={i} className={'vial ' + (k === 'solid' ? '' : k)} style={k === 'solid' ? { background: v.map.arc.color, '--i': Math.min(i, 24) } : { '--i': Math.min(i, 24) }} />)}
             </div>
             <div className="fine" style={{ marginTop: 6 }}>{v.vialLegend}</div>
           </div>

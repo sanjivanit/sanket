@@ -3,9 +3,9 @@ import DataSourceControl from './DataSourceControl.jsx';
 
 const VIEWS = [{ key: 'tiles', label: 'Tiles' }, { key: 'table', label: 'Table' }, { key: 'charts', label: 'Charts' }];
 
-function Tile({ c, extra }) {
+function Tile({ c, extra, i = 0 }) {
   return (
-    <div className="tile" style={{ borderColor: c.tileBorder, background: c.rowBg }}>
+    <div className="tile" style={{ borderColor: c.tileBorder, background: c.rowBg, '--i': i }}>
       <div>
         <div className="nm">{c.short}</div>
         <div className="mt">{c.tileMeta}</div>
@@ -38,15 +38,15 @@ function DistrictB({ rows, open, onToggle, table, district }) {
         <span className="c">{open ? 'Hide' : 'Show'}</span>
       </button>
       {open && (table
-        ? rows.map((c) => <TableRow key={c.name} c={c} />)
-        : <div className="tiles b">{rows.map((c) => <Tile key={c.name} c={c} extra />)}</div>)}
+        ? rows.map((c, i) => <TableRow key={c.name} c={c} i={i} />)
+        : <div className="tiles b">{rows.map((c, i) => <Tile key={c.name} c={c} extra i={i} />)}</div>)}
     </div>
   );
 }
 
-function TableRow({ c, withStatus }) {
+function TableRow({ c, withStatus, i = 0 }) {
   return (
-    <div className="trow" style={{ background: withStatus ? c.rowBg : undefined }}>
+    <div className="trow" style={{ background: withStatus ? c.rowBg : undefined, '--i': i }}>
       <div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
           <span className="nm">{c.name}</span>
@@ -138,14 +138,14 @@ export default function Clinics({ v, view, setView, showB, setShowB, source }) {
       <div className="panel-body">
         {view === 'tiles' && (
           <div>
-            <div className="tiles">{v.rowsA.map((c) => <Tile key={c.name} c={c} />)}</div>
+            <div className="tiles">{v.rowsA.map((c, i) => <Tile key={c.name} c={c} i={i} />)}</div>
             <DistrictB rows={v.rowsB} open={showB} onToggle={toggleB} district={v.place.district} />
           </div>
         )}
         {view === 'table' && (
           <div>
             <div className="trow head"><div>Facility</div><div>Supply</div><div>Stock, ticks at 1 and 3 days</div><div>Beds</div><div>Medical officer</div></div>
-            {v.rowsA.map((c) => <TableRow key={c.name} c={c} withStatus />)}
+            {v.rowsA.map((c, i) => <TableRow key={c.name} c={c} withStatus i={i} />)}
             <DistrictB rows={v.rowsB} open={showB} onToggle={toggleB} table district={v.place.district} />
           </div>
         )}

@@ -1,4 +1,5 @@
 import { DataLabel } from './shared.jsx';
+import { CountUp } from '../motion.js';
 
 // Distance map centred on the surge target. Distances are to scale; positions are approximate.
 export default function ReachMap({ v }) {
@@ -27,9 +28,9 @@ export default function ReachMap({ v }) {
           <circle cx="413" cy="178" r="68" style={{ fill: 'var(--acc-bg)', stroke: 'var(--rule3)' }} strokeWidth="1" />
           <text x="413" y="16" textAnchor="middle" style={{ fill: 'var(--muted)' }} fontSize="12">80 km, next district</text>
           <text x="413" y="102" textAnchor="middle" style={{ fill: 'var(--muted)' }} fontSize="12">35 km, same district</text>
-          <path d={line.d} fill="none" style={{ stroke: 'var(--acc)', opacity: line.standbyOp }} strokeWidth="2" strokeDasharray="3 5" strokeLinecap="round" />
+          <path className="route-fade" d={line.d} fill="none" style={{ stroke: 'var(--acc)', opacity: line.standbyOp }} strokeWidth="2" strokeDasharray="3 5" strokeLinecap="round" />
           <path className="flow" d={line.d} fill="none" style={{ stroke: 'var(--acc)', opacity: line.transitOp }} strokeWidth="3" strokeLinecap="round" />
-          <path d={line.d} fill="none" style={{ stroke: 'var(--acc)', opacity: line.doneOp }} strokeWidth="3" strokeLinecap="round" />
+          <path className="route-fade" d={line.d} fill="none" style={{ stroke: 'var(--acc)', opacity: line.doneOp }} strokeWidth="3" strokeLinecap="round" />
           <g style={{ opacity: line.transitOp }}>
             {vialDots.map((begin) => (
               <circle key={begin} className="vial-moving" r="4.5" opacity="0" style={{ fill: 'var(--acc)' }}>
@@ -47,24 +48,25 @@ export default function ReachMap({ v }) {
         <div className="rampur-label" style={{ color: arc.text }}>{v.names.target}<div>{arc.sub}</div></div>
 
         <div className="map-stats left">
-          <div><div className="n" style={{ color: 'var(--acc-t)' }}>{callout.need}</div><div className="l">{callout.needLabel}</div></div>
-          <div><div className="n">{callout.donors}</div><div className="l">donors in range</div></div>
+          <div><div className="n" style={{ color: 'var(--acc-t)' }}><CountUp value={callout.need} /></div><div className="l">{callout.needLabel}</div></div>
+          <div><div className="n"><CountUp value={callout.donors} /></div><div className="l">donors in range</div></div>
         </div>
         <div className="map-stats right">
-          <div><div className="n">{callout.dist}</div><div className="l">nearest donor{v.approx ? ', approx.' : ''}</div></div>
-          <div><div className="n">{callout.eta}</div><div className="l">travel time</div></div>
+          <div><div className="n"><CountUp value={callout.dist} /></div><div className="l">nearest donor{v.approx ? ', approx.' : ''}</div></div>
+          <div><div className="n"><CountUp value={callout.eta} /></div><div className="l">travel time</div></div>
         </div>
 
-        {map.nodes.map((n) => {
+        {map.nodes.map((n, idx) => {
           const halo = n.nodoc ? 'var(--doc-halo)' : n.hot ? 'var(--acc-halo)' : 'var(--ok-halo)';
           return (
             <div key={n.label}>
-              <div className="abs" style={{
+              {n.hot && <div className="abs node-ping" style={{ left: n.x - n.rad, top: n.y - n.rad, width: n.rad * 2, height: n.rad * 2, borderRadius: '50%', border: '2px solid var(--acc)' }} />}
+              <div className="abs node-pop" style={{ '--i': idx,
                 left: n.x - n.rad, top: n.y - n.rad, width: n.rad * 2, height: n.rad * 2, borderRadius: '50%',
                 background: n.nodoc ? 'var(--doc)' : 'var(--ok)',
                 boxShadow: '0 0 0 2px var(--panel)' + (n.hot ? ', 0 0 0 4px var(--acc)' : '') + ', 0 0 0 ' + (n.hot ? 9 : 7) + 'px ' + halo,
               }} />
-              <div className="abs" style={{
+              <div className="abs node-pop" style={{ '--i': idx,
                 left: n.right ? n.x + n.rad + 10 : n.x - n.rad - 10, top: n.y - 9 + (n.dy || 0),
                 fontSize: 12, lineHeight: '18px', whiteSpace: 'nowrap', fontWeight: n.nodoc || n.hot ? 600 : 400,
                 color: n.nodoc ? 'var(--doc-t)' : n.hot ? 'var(--acc-t)' : 'var(--text2)',

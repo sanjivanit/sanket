@@ -14,7 +14,7 @@ export function Ring({ c }) {
   return (
     <svg width="64" height="64" viewBox="0 0 64 64" role="img" aria-label={c.ringAria}>
       <circle cx="32" cy="32" r="28" fill="none" style={{ stroke: 'var(--track)' }} strokeWidth="7" />
-      <circle cx="32" cy="32" r="28" fill="none" style={{ stroke: c.fill }} strokeWidth="7" strokeLinecap="round" strokeDasharray={c.ringDash} transform="rotate(-90 32 32)" />
+      <circle className="ring-fill" cx="32" cy="32" r="28" fill="none" style={{ stroke: c.fill }} strokeWidth="7" strokeLinecap="round" strokeDasharray={c.ringDash} transform="rotate(-90 32 32)" />
       <text x="32" y="38" textAnchor="middle" style={{ fill: 'var(--text)' }} fontSize="17" fontWeight="700">{c.daysText}</text>
     </svg>
   );
