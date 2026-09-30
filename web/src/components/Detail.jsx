@@ -75,7 +75,14 @@ export function Waybill({ v }) {
                 <div className="fine" style={{ marginTop: 4, textAlign: 'center' }}>Sample QR</div>
               </div>
             )
-            : <div className="qr-slot">QR on approval</div>}
+            : (
+              <div>
+                <svg className="qr-sample" width="72" height="72" viewBox="0 0 21 21" role="img" aria-label="Sample QR code, made live on approval">
+                  <rect width="21" height="21" style={{ fill: 'var(--panel)' }} /><path d={w.qr} style={{ fill: 'var(--text)' }} />
+                </svg>
+                <div className="fine" style={{ marginTop: 4, textAlign: 'center' }}>Live on approval</div>
+              </div>
+            )}
         </div>
       </div>
     </div>

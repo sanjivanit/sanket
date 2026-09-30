@@ -111,9 +111,9 @@ function Charts({ v }) {
         <svg width="100%" viewBox="0 0 796 150" style={{ display: 'block', marginTop: 6 }} role="img" aria-label={s.aria}>
           <line x1="30" y1="112" x2="766" y2="112" style={{ stroke: 'var(--rule2)' }} strokeWidth="1" />
           <line x1="30" y1={s.y3} x2="766" y2={s.y3} style={{ stroke: 'var(--warn)' }} strokeWidth="1" strokeDasharray="4 4" />
-          <text x="34" y={s.y3l} style={{ fill: 'var(--warn-t)' }} fontSize="12">3 days</text>
+          <text x="762" y={s.y3l} textAnchor="end" style={{ fill: 'var(--warn-t)' }} fontSize="12">3 days</text>
           <line x1="30" y1={s.y1} x2="766" y2={s.y1} style={{ stroke: 'var(--crit)' }} strokeWidth="1" strokeDasharray="4 4" />
-          <text x="34" y={s.y1l} style={{ fill: 'var(--crit-t)' }} fontSize="12">1 day</text>
+          <text x="762" y={s.y1l} textAnchor="end" style={{ fill: 'var(--crit-t)' }} fontSize="12">1 day</text>
           {s.future && <polyline points={s.future} fill="none" style={{ stroke: 'var(--rule3)' }} strokeWidth="2" strokeDasharray="5 4" />}
           <polyline points={s.solid} fill="none" style={{ stroke: 'var(--text)' }} strokeWidth="2.5" strokeLinejoin="round" />
           {s.dots.map((d, i) => <circle key={i} cx={d.x} cy={d.y} r="5" style={{ fill: d.color, opacity: d.opacity }} />)}
@@ -144,7 +144,7 @@ export default function Clinics({ v, view, setView, showB, setShowB, source }) {
         )}
         {view === 'table' && (
           <div>
-            <div className="trow head"><div>Facility</div><div>Supply</div><div>Stock, ticks at 1 and 3 days</div><div>Beds</div><div>Doctor</div></div>
+            <div className="trow head"><div>Facility</div><div>Supply</div><div>Stock, ticks at 1 and 3 days</div><div>Beds</div><div>Medical officer</div></div>
             {v.rowsA.map((c) => <TableRow key={c.name} c={c} withStatus />)}
             <DistrictB rows={v.rowsB} open={showB} onToggle={toggleB} table district={v.place.district} />
           </div>
